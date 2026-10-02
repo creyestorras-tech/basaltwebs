@@ -4,12 +4,12 @@ export const site = {
   url: 'https://basaltwebs.pages.dev',
   persona: '[EL TEU NOM]',
   // Mòbil amb prefix de país i sense espais ni signes, p. ex. 34612345678
-  mobil: '[MÒBIL]',
-  correu: '[CORREU]',
+  mobil: '34623269620',
+  correu: 'basaltwebs@gmail.com',
   titular: '[TITULAR]',
   nif: '[NIF]',
-  preuPosada: '[PREU]',
-  preuManteniment: '[PREU]',
+  preuPosada: '290',
+  preuManteniment: '29',
   comarques: ['Garrotxa', 'Ripollès', "Pla de l'Estany"],
   foto: {
     autor: 'Jesús Esteban',

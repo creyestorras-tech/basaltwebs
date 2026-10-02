@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site, type Lang } from '../config/site';
+import { site, mobilVisible, type Lang } from '../config/site';
 import { rutes } from '../i18n/content';
 
 interface Props {
@@ -34,7 +34,7 @@ const titol =
             <li><strong>NIF:</strong> {site.nif}</li>
             <li><strong>Nom comercial:</strong> {site.nom}</li>
             <li><strong>Correu electrònic:</strong> <a href={`mailto:${site.correu}`}>{site.correu}</a></li>
-            <li><strong>Telèfon:</strong> {site.mobil}</li>
+            <li><strong>Telèfon:</strong> +34 {mobilVisible()}</li>
           </ul>
           <h2>2. Objecte</h2>
           <p>Aquest lloc web té per objecte informar sobre els serveis de disseny i manteniment de webs amb reserves en línia que ofereix {site.nom} a negocis de proximitat.</p>
@@ -60,7 +60,7 @@ const titol =
             <li><strong>NIF:</strong> {site.nif}</li>
             <li><strong>Nombre comercial:</strong> {site.nom}</li>
             <li><strong>Correo electrónico:</strong> <a href={`mailto:${site.correu}`}>{site.correu}</a></li>
-            <li><strong>Teléfono:</strong> {site.mobil}</li>
+            <li><strong>Teléfono:</strong> +34 {mobilVisible()}</li>
           </ul>
           <h2>2. Objeto</h2>
           <p>Este sitio web tiene por objeto informar sobre los servicios de diseño y mantenimiento de webs con reservas online que ofrece {site.nom} a negocios de proximidad.</p>
