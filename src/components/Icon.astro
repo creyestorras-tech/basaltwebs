@@ -1,0 +1,17 @@
+---
+// Icones de Phosphor (un sol joc, un sol gruix), inserides com a SVG en línia.
+import whatsapp from '@phosphor-icons/core/assets/regular/whatsapp-logo.svg?raw';
+import phoneX from '@phosphor-icons/core/assets/regular/phone-x.svg?raw';
+import check from '@phosphor-icons/core/assets/bold/check-bold.svg?raw';
+import arrow from '@phosphor-icons/core/assets/bold/arrow-up-right-bold.svg?raw';
+
+const icons = { whatsapp, 'phone-x': phoneX, check, arrow } as const;
+
+interface Props {
+  name: keyof typeof icons;
+  class?: string;
+}
+const { name, class: cls } = Astro.props;
+const svg = icons[name].replace('<svg ', `<svg aria-hidden="true" focusable="false" class="icon${cls ? ' ' + cls : ''}" `);
+---
+<Fragment set:html={svg} />

@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import { type Lang } from '../config/site';
 import { dict } from '../i18n/content';
 
@@ -90,7 +91,7 @@ const config = {
 
         <div class="ph-done" data-done hidden>
           <span class="ph-check" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <Icon name="check" />
           </span>
           <p class="ph-done-title">{t.confirmada}</p>
           <p class="ph-done-summary" data-summary></p>
@@ -414,7 +415,7 @@ const config = {
     min-height: 44px;
     padding: 10px 12px;
     border-radius: 10px;
-    background: #fff;
+    background: #fcfbf8;
     box-shadow: 0 0 0 1.5px #e2dfd8 inset;
     font-size: 0.9375rem;
     font-weight: 600;
@@ -443,7 +444,7 @@ const config = {
     min-height: 56px;
     padding: 6px 0;
     border-radius: 10px;
-    background: #fff;
+    background: #fcfbf8;
     box-shadow: 0 0 0 1.5px #e2dfd8 inset;
     cursor: pointer;
     user-select: none;
@@ -474,7 +475,7 @@ const config = {
     place-items: center;
     min-height: 44px;
     border-radius: 9px;
-    background: #fff;
+    background: #fcfbf8;
     box-shadow: 0 0 0 1.5px #e2dfd8 inset;
     font-family: var(--display);
     font-size: 0.9375rem;
@@ -500,7 +501,7 @@ const config = {
   .ph-day:has(input:checked),
   .ph-slot:has(input:checked) {
     background: var(--ink);
-    color: #fff;
+    color: #fcfbf8;
     box-shadow: none;
   }
   .ph-service:has(input:checked) .ph-service-time,
@@ -560,7 +561,7 @@ const config = {
     background: var(--ink);
     color: var(--lichen);
   }
-  .ph-check svg {
+  .ph-check :global(svg) {
     width: 30px;
     height: 30px;
   }

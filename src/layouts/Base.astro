@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
-import WhatsappIcon from '../components/WhatsappIcon.astro';
+import Icon from '../components/Icon.astro';
 import { site, whatsapp, type Lang } from '../config/site';
 import { dict, rutes } from '../i18n/content';
 
@@ -55,6 +55,7 @@ const jsonLd = {
     <link rel="alternate" hreflang="es" href={new URL(alt.es, site.url).href} />
     <link rel="alternate" hreflang="x-default" href={new URL(alt.ca, site.url).href} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/img/basalt.webp" as="image" type="image/webp" fetchpriority="high" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#131517" />
     <meta name="color-scheme" content="dark light" />
@@ -90,8 +91,8 @@ const jsonLd = {
             <a href={alt.es} hreflang="es" lang="es" aria-current={lang === 'es' ? 'true' : undefined}>ES</a>
           </div>
           <a class="btn header-cta" href={whatsapp(lang)} target="_blank" rel="noopener">
-            <WhatsappIcon />
-            <span>{t.nav.contacte}</span>
+            <Icon name="whatsapp" />
+            <span>{t.hero.cta}</span>
           </a>
         </div>
       </div>
@@ -121,8 +122,8 @@ const jsonLd = {
 
     {home && (
       <a class="btn fab" href={whatsapp(lang)} target="_blank" rel="noopener" data-fab tabindex="-1" aria-hidden="true">
-        <WhatsappIcon />
-        <span>WhatsApp</span>
+        <Icon name="whatsapp" />
+        <span>{t.hero.cta}</span>
       </a>
     )}
 

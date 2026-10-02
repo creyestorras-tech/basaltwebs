@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import WhatsappIcon from './WhatsappIcon.astro';
+import Icon from './Icon.astro';
 import Demo from './Demo.astro';
 import foto from '../assets/castellfollit.jpg';
 import { site, whatsapp, mobilVisible, type Lang } from '../config/site';
@@ -26,12 +26,14 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
       <p class="lede rise" style="--i:1">{t.hero.subtitol}</p>
       <div class="hero-actions rise" style="--i:2">
         <a class="btn" href={wa} target="_blank" rel="noopener">
-          <WhatsappIcon />
+          <Icon name="whatsapp" />
           {t.hero.cta}
         </a>
-        <a class="btn btn-line" href="#exemples">{t.hero.secundari}</a>
+        <a class="link-arrow hero-link" href="#exemples">
+          {t.hero.secundari}
+          <Icon name="arrow" />
+        </a>
       </div>
-      <p class="hero-origin rise" style="--i:3">{t.hero.origen}</p>
     </div>
 
     <div class="plaque rise" style="--i:1">
@@ -57,7 +59,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
       <ol>
         {trucades.map((h) => (
           <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 1.1 4.2 2 2 0 0 1 3.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L7 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2ZM16 2l6 6M22 2l-6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <Icon name="phone-x" />
             <time>{h}</time>
             <span>{t.problema.perduda}</span>
           </li>
@@ -103,7 +105,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
               {e.enLinia ? (
                 <a class="link-arrow" href={e.url} target="_blank" rel="noopener">
                   {t.exemples.veure}<span class="sr-only">: {e.nom}</span>
-                  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  <Icon name="arrow" />
                 </a>
               ) : (
                 <span class="work-badge">{t.exemples.aviat}</span>
@@ -133,7 +135,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
 </section>
 
 <!-- Què inclou: un mur en filades -->
-<section class="course course-dark">
+<section class="course course-lime">
   <div class="wrap">
     <h2 class="h2 head" data-set>{t.inclou.titol}</h2>
     <ul class="wall" data-set style="--i:1">
@@ -157,7 +159,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
       <ul class="price-points">
         {t.preu.punts.map((p) => (
           <li>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <Icon name="check" />
             {p}
           </li>
         ))}
@@ -166,15 +168,15 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     <div class="price-plaque" data-set style="--i:1">
       <p>{t.preu.destacat}</p>
       <a class="btn" href={wa} target="_blank" rel="noopener">
-        <WhatsappIcon />
-        {t.preu.cta}
+        <Icon name="whatsapp" />
+        {t.hero.cta}
       </a>
     </div>
   </div>
 </section>
 
 <!-- Qui som -->
-<section class="course course-dark">
+<section class="course course-lime">
   <div class="wrap about">
     <figure class="about-photo" data-set>
       <Image
@@ -201,17 +203,14 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
 <section class="course course-lime" id="preguntes">
   <div class="wrap faq-in">
     <h2 class="h2" data-set>{t.faq.titol}</h2>
-    <div class="faq" data-set style="--i:1">
+    <dl class="faq" data-set style="--i:1">
       {t.faq.llista.map((f) => (
-        <details>
-          <summary>
-            {f.q}
-            <span class="faq-mark" aria-hidden="true"></span>
-          </summary>
-          <p>{f.a}</p>
-        </details>
+        <div class="faq-item">
+          <dt>{f.q}</dt>
+          <dd>{f.a}</dd>
+        </div>
       ))}
-    </div>
+    </dl>
   </div>
 </section>
 
@@ -228,8 +227,8 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
         <p class="contact-label">WhatsApp</p>
         <p class="contact-value">{mobilVisible()}</p>
         <a class="btn btn-big" href={wa} target="_blank" rel="noopener">
-          <WhatsappIcon />
-          <span>{t.contacte.cta}</span>
+          <Icon name="whatsapp" />
+          <span>{t.hero.cta}</span>
         </a>
       </div>
       <div class="contact-stone">
@@ -250,7 +249,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
 
   /* ---------- Portada ---------- */
   .hero {
-    padding-block: clamp(56px, 9vw, 112px) 0;
+    padding-block: clamp(48px, 7vw, 96px) 0;
     overflow: hidden;
   }
   .hero-in {
@@ -264,22 +263,22 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     padding-bottom: 8px;
   }
   .hero h1 {
-    font-size: clamp(2.75rem, 7vw, 5.75rem);
-    line-height: 1.02;
-    max-width: 13ch;
+    font-size: clamp(2.5rem, 5vw, 3.75rem);
+    line-height: 1.04;
+    max-width: 22ch;
   }
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    align-items: center;
+    gap: 12px 28px;
     margin-top: 6px;
   }
   .hero-actions .btn {
-    flex: 1 1 auto;
+    flex: 1 1 100%;
   }
-  .hero-origin {
-    color: var(--mist);
-    font-size: 0.9375rem;
+  .hero-link {
+    color: var(--chalk);
   }
   @media (min-width: 520px) {
     .hero-actions .btn {
@@ -328,7 +327,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   }
   @media (min-width: 900px) {
     .hero-in {
-      grid-template-columns: 1.35fr 1fr;
+      grid-template-columns: 1.6fr 1fr;
       gap: 40px;
     }
     .hero-copy {
@@ -347,7 +346,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     align-items: center;
   }
   .problem .h2 {
-    max-width: 15ch;
+    max-width: 19ch;
   }
   .problem-text {
     margin-top: 22px;
@@ -389,7 +388,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     padding: 14px 20px;
     background: var(--face);
   }
-  .ledger svg {
+  .ledger :global(svg) {
     width: 18px;
     height: 18px;
     color: var(--missed);
@@ -575,6 +574,9 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   .stone:nth-child(4) { --bx: 85%; --by: 64%; }
   .stone:nth-child(5) { --bx: 18%; --by: 90%; }
   .stone:nth-child(6) { --bx: 60%; --by: 82%; }
+  .stone {
+    color: #f2f1ed;
+  }
   .stone h3 {
     font-family: var(--display);
     font-weight: 400;
@@ -635,7 +637,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     align-items: center;
     gap: 12px;
   }
-  .price-points svg {
+  .price-points :global(svg) {
     width: 20px;
     height: 20px;
     color: var(--lichen-ink);
@@ -687,7 +689,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   }
   .about-photo figcaption {
     margin-top: 12px;
-    color: var(--mist);
+    color: var(--ink-muted);
     font-size: 0.8125rem;
   }
   .about-copy {
@@ -697,12 +699,12 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   .about-text {
     font-size: clamp(1.125rem, 2vw, 1.3125rem);
     line-height: 1.6;
-    color: var(--mist-2);
+    color: var(--ink-muted);
     max-width: 36rem;
   }
   .signature {
     padding-top: 20px;
-    border-top: 2px solid var(--slate);
+    border-top: 3px solid var(--joint-lime);
     font-family: var(--display);
     font-size: 1.25rem;
   }
@@ -713,90 +715,44 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     }
   }
 
-  /* ---------- Preguntes ---------- */
+  /* ---------- Preguntes: obertes, sense desplegables ---------- */
   .faq-in {
     display: grid;
     gap: 40px;
   }
   .faq {
-    border-top: 3px solid var(--joint-lime);
+    display: grid;
+    gap: 3px;
+    margin: 0;
+    padding: 3px;
+    background: var(--joint-lime);
   }
-  .faq details {
-    border-bottom: 3px solid var(--joint-lime);
+  .faq-item {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: clamp(22px, 3vw, 32px);
+    background: var(--face);
   }
-  .faq summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    min-height: 72px;
-    padding: 18px 0;
+  .faq dt {
     font-size: 1.1875rem;
     font-weight: 650;
     line-height: 1.3;
-    list-style: none;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
   }
-  .faq summary::-webkit-details-marker {
-    display: none;
-  }
-  .faq-mark {
-    position: relative;
-    flex: none;
-    width: 34px;
-    height: 34px;
-    background: var(--face);
-    box-shadow: inset 0 0 0 2px var(--joint-lime);
-    transition: transform 260ms var(--ease-out), background-color 200ms ease;
-  }
-  .faq-mark::before,
-  .faq-mark::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 12px;
-    height: 1.75px;
-    background: var(--ink);
-    translate: -50% -50%;
-  }
-  .faq-mark::after {
-    rotate: 90deg;
-  }
-  .faq details[open] .faq-mark {
-    transform: rotate(45deg);
-    background: var(--lichen);
-    box-shadow: none;
-  }
-  .faq details p {
+  .faq dd {
+    margin: 0;
     max-width: 60ch;
-    padding: 0 52px 26px 0;
     color: var(--ink-muted);
   }
-  .faq details::details-content {
-    block-size: 0;
-    overflow: clip;
-    opacity: 0;
-    transition:
-      block-size 320ms var(--ease-out),
-      opacity 240ms ease,
-      content-visibility 320ms allow-discrete;
-  }
-  .faq details[open]::details-content {
-    block-size: auto;
-    opacity: 1;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .faq summary:hover .faq-mark {
-      background: #fff;
+  @media (min-width: 760px) {
+    .faq {
+      grid-template-columns: 1fr 1fr;
     }
   }
-  @media (min-width: 900px) {
+  @media (min-width: 1040px) {
     .faq-in {
-      grid-template-columns: 1fr 1.5fr;
-      gap: 80px;
+      grid-template-columns: 1fr 2.4fr;
+      gap: 64px;
       align-items: start;
     }
   }
@@ -884,10 +840,6 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
       from {
         opacity: 0;
       }
-    }
-    .faq-mark,
-    .faq details::details-content {
-      transition-duration: 0ms;
     }
   }
 </style>

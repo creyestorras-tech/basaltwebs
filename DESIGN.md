@@ -124,7 +124,7 @@ The palette is near-black stone, cool mist and warm lime, with one living colour
 The world refuses the SaaS split hero with a row of feature cards, colour gradients, glows, and pill-shaped controls on the wall.
 
 **Key Characteristics:**
-- Full-width courses alternating basalt (dark) and lime (light); same-tone neighbours are separated by a 2px mortar joint.
+- One reading tone: lime courses carry the page; basalt is reserved for three courses only (hero, booking demo, contact). Same-tone neighbours are separated by a mortar joint.
 - Mortar joints (2px on dark, 3px on lime) as the only grid: stones sit on a visible bed colour.
 - Running bond: stone widths and positions offset between rows (7/5 then 5/7 spans; wider middle stone; dropped middle column).
 - Square stones: corners of 2 to 4px, never pills.
@@ -138,7 +138,7 @@ The world refuses the SaaS split hero with a row of feature cards, colour gradie
 Cold volcanic stone and warm lime mortar, punctured by a single lichen yellow.
 
 ### Primary
-- **Xanthoria Lichen** (lichen): the only accent. Fill of every primary action (WhatsApp buttons, demo confirm), the skip link, focus rings, text selection on dark, the caret, the active language, the open FAQ mark and the "new" tag in the demo panel. It always carries ink-coloured text, never chalk.
+- **Xanthoria Lichen** (lichen): the only accent. Fill of every primary action (WhatsApp buttons, demo confirm), the skip link, focus rings, text selection on dark, the caret, the active language and the "new" tag in the demo panel. It always carries ink-coloured text, never chalk.
 - **Sunlit Lichen** (lichen-hi): hover state of the lichen button only.
 - **Lichen Ink** (lichen-ink): lichen darkened for use as text and marks on lime courses (step numerals, check marks, "visit site" links), where raw lichen would fail contrast.
 
@@ -155,7 +155,7 @@ Cold volcanic stone and warm lime mortar, punctured by a single lichen yellow.
 - **Light Mist** (mist-light): lede and body copy on dark where chalk would be too loud.
 - **Chalk** (chalk): primary text on dark.
 - **Lime Mortar** (lime): ground of the light reading courses.
-- **Lime Face** (lime-face): stone faces set into a lime wall (ledger rows, process steps, FAQ marks, badges).
+- **Lime Face** (lime-face): stone faces set into a lime wall (ledger rows, process steps, FAQ answers, badges).
 - **Lime Bed** (lime-bed): joint between two lime courses; rim of the price plaque.
 - **Lime Joint** (joint-lime): visible mortar between stones on lime courses and the FAQ course lines.
 - **Ink** (ink): text on lime and on lichen.
@@ -167,9 +167,11 @@ Cold volcanic stone and warm lime mortar, punctured by a single lichen yellow.
 
 **The Ink-on-Lichen Rule.** Anything set on lichen is ink, never chalk or white.
 
-**The Two Courses Rule.** A section is either a basalt course or a lime course. On a lime course the chalk token is remapped to ink, so components read correctly on either.
+**The Two Courses Rule.** A section is either a basalt course or a lime course. On a lime course the chalk token is remapped to ink, so components read correctly on either. Basalt courses are limited to the hero, the booking demo and the contact close; every other section is lime, so the page never flips tone at random (dark stones may still sit inside a lime course, as in the price plaque and the "what is included" wall, and keep chalk text).
 
 ## Typography
+
+**Icons:** Phosphor (regular, and bold for check and arrow), inlined as SVG through `src/components/Icon.astro`. One family, no hand-drawn paths.
 
 **Display Font:** Marcellus (with Palatino Linotype, Palatino, serif)
 **Body Font:** Schibsted Grotesk Variable (with Segoe UI, system-ui, sans-serif)
@@ -177,7 +179,7 @@ Cold volcanic stone and warm lime mortar, punctured by a single lichen yellow.
 **Character:** Marcellus is a flared, glyphic capital face that reads as lettering cut into stone; Schibsted Grotesk is a dense, newsy grotesk that stays legible at small sizes on a phone. The serif speaks, the grotesk explains.
 
 ### Hierarchy
-- **Display** (400, clamp(2.75rem, 7vw, 5.75rem), 1.02): the hero headline and the contact headline only, held to about 12 to 13ch.
+- **Display** (400, clamp(2.5rem, 5vw, 3.75rem), 1.04): the hero headline, held to 22ch so it sets in two lines on desktop; the contact headline uses up to 5.5rem.
 - **Headline** (400, clamp(2.25rem, 5.4vw, 3.75rem), 1.06): section headings; balanced wrapping.
 - **Title** (Marcellus 400, clamp(1.375rem, 2.2vw, 1.75rem), 1.15): names cut into stones: wall stones, example sites, the plaque quote.
 - **Title Text** (Schibsted 650, 1.3125rem, 1.25): step and FAQ titles where the title is an instruction rather than a name.
@@ -225,6 +227,7 @@ Cut blocks, heavy and certain.
 - **Hover / Focus:** hover lifts to sunlit lichen (fine pointers only); focus is a 2px lichen outline at 3px offset; press scales to 0.97 on a quick ease-out.
 - **Line:** transparent block with a 1.5px inset rule in currentColor at 34%, hover fills with 7% currentColor. Works on both courses.
 - **Large:** 60px tall, used inside the contact stone.
+- **One label per intent:** every WhatsApp button says "Parlem per WhatsApp" / "Hablemos por WhatsApp" (header, hero, price, contact, floating button). The hero's secondary action is a text link with an arrow, not a second button.
 
 ### Stones (cards)
 - **Dark stone:** slate wash over the grain plate, each stone offset to sample a different patch of the plate; 2px corners; padding clamp(24px, 3.4vw, 40px); Marcellus title and light mist body.
@@ -237,8 +240,8 @@ A stone set into the wall that carries a statement: basalt wash at 88% over the 
 ### Navigation
 Sticky basalt header, 64px, on a 2px bed joint. Links are mist at 0.9375rem/500, turning chalk on hover; they appear from 1040px. The CA | ES switch is a pair of 44px cells with a slate-edge divider, the current language in lichen. A compact lichen WhatsApp button (42px) appears from 640px. Below 760px a floating WhatsApp button rises in after the hero and hides at the contact course.
 
-### Disclosure (FAQ)
-Course-width rows ruled by 3px lime joints. The marker is a 34px square lime-face stone with a plus; when open it rotates 45 degrees and fills with lichen. Content opens by animating block size on the long ease-out.
+### Questions (FAQ)
+All answers are visible: no accordion to tap open. Each question and answer is a lime-face stone in a lime-joint wall (3px joints), two columns from 760px, one on phones. Question in Schibsted 650, answer in muted ink.
 
 ### Booking demo (signature)
 A depicted phone beside a slate panel. Choosing service, day and hour fills each step; confirming drops a new row into the panel's day list with a short settle (8px, 520ms) and a warm highlight that cools to its resting tone. Taken slots are drawn hatched and struck through, not hidden.

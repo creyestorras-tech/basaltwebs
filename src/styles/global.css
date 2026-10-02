@@ -145,11 +145,21 @@ summary,
 }
 
 .course-dark {
+  isolation: isolate;
+  background: var(--basalt);
+  color: var(--chalk);
+}
+
+/* La textura és una capa decorativa: no compta com a contingut principal */
+.course-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background:
     linear-gradient(rgb(19 21 23 / 0.8), rgb(19 21 23 / 0.8)),
-    url('/img/basalt.webp') center / cover no-repeat,
-    var(--basalt);
-  color: var(--chalk);
+    url('/img/basalt.webp') center / cover no-repeat;
+  pointer-events: none;
 }
 
 .course-lime {
