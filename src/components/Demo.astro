@@ -49,7 +49,7 @@ const config = {
               {t.serveis.map((s, i) => (
                 <label class="ph-service">
                   <input type="radio" name="servei" value={i} />
-                  <span class="ph-service-name">{s.nom}</span>
+                  <span class="ph-service-name"><span class="ph-tick"><Icon name="check" /></span>{s.nom}</span>
                   <span class="ph-service-time">{s.durada}</span>
                 </label>
               ))}
@@ -179,7 +179,7 @@ const config = {
       return [...taken, ...own].sort((a, b) => a.hora - b.hora);
     }
 
-    function renderPanel(day: number, highlight?: number) {
+    function renderPanel(day: number, highlight?: number, hold = false) {
       currentDay = day;
       const first = long.format(days[day]);
       panelDay.textContent = first.charAt(0).toUpperCase() + first.slice(1);
@@ -209,9 +209,46 @@ const config = {
           return li;
         }),
       );
-      if (highlight !== undefined) {
-        requestAnimationFrame(() => requestAnimationFrame(() => list.querySelector('.is-arriving')?.classList.add('is-in')));
-      }
+      const arriving = list.querySelector<HTMLElement>('.is-arriving');
+      if (highlight !== undefined && !hold) land(arriving);
+      return arriving;
+    }
+
+    function land(row: HTMLElement | null) {
+      requestAnimationFrame(() => requestAnimationFrame(() => row?.classList.add('is-in')));
+    }
+
+    // La reserva «vola» del botó del mòbil fins a la seva fila al panell
+    function fly(from: DOMRect, row: HTMLElement, label: string) {
+      const to = row.getBoundingClientRect();
+      const inView = (r: DOMRect) => r.top >= 0 && r.bottom <= window.innerHeight;
+      if (reduce || !inView(from) || !inView(to)) return false;
+      const chip = document.createElement('div');
+      chip.className = 'flight';
+      chip.textContent = label;
+      chip.setAttribute('aria-hidden', 'true');
+      document.body.append(chip);
+      const w = chip.offsetWidth;
+      const hh = chip.offsetHeight;
+      const x0 = from.left + from.width / 2 - w / 2;
+      const y0 = from.top + from.height / 2 - hh / 2;
+      const x1 = to.left + 16;
+      const y1 = to.top + to.height / 2 - hh / 2;
+      const lift = Math.min(90, Math.abs(x1 - x0) * 0.18);
+      chip
+        .animate(
+          [
+            { transform: `translate(${x0}px, ${y0}px) scale(0.96)`, opacity: 0 },
+            { transform: `translate(${x0}px, ${y0 - 6}px) scale(1)`, opacity: 1, offset: 0.12 },
+            { transform: `translate(${(x0 + x1) / 2}px, ${Math.min(y0, y1) - lift}px) scale(1)`, opacity: 1, offset: 0.55 },
+            { transform: `translate(${x1}px, ${y1}px) scale(0.98)`, opacity: 1, offset: 0.92 },
+            { transform: `translate(${x1}px, ${y1}px) scale(0.98)`, opacity: 0 },
+          ],
+          { duration: 820, easing: 'cubic-bezier(0.77, 0, 0.175, 1)', fill: 'forwards' },
+        )
+        .finished.then(() => chip.remove());
+      setTimeout(() => land(row), 700);
+      return true;
     }
 
     function syncSlots(day: number | null) {
@@ -254,7 +291,9 @@ const config = {
       const h = value('hora');
       if (s === null || day === null || h === null) return;
       mine.set(day, [...(mine.get(day) ?? []), { hora: h, servei: s }]);
-      renderPanel(day, h);
+      const from = confirm.getBoundingClientRect();
+      const row = renderPanel(day, h, true);
+      if (row && !fly(from, row, `${cfg.hores[h]} · ${cfg.serveis[s].nom}`)) land(row);
       const text = `${long.format(days[day])} · ${cfg.hores[h]} · ${cfg.serveis[s].nom}`;
       summary.textContent = text.charAt(0).toUpperCase() + text.slice(1);
       live.textContent = `${cfg.textos.novaArribada}: ${summary.textContent}`;
@@ -423,6 +462,35 @@ const config = {
     user-select: none;
     -webkit-user-select: none;
     transition: box-shadow 160ms ease, background-color 160ms ease, transform 140ms var(--ease-press);
+  }
+  .ph-service-name {
+    display: inline-flex;
+    align-items: center;
+  }
+  /* Marca de selecció: apareix suau en triar el servei */
+  .ph-tick {
+    display: inline-grid;
+    place-items: center;
+    width: 0;
+    margin-right: 0;
+    opacity: 0;
+    transform: scale(0.6);
+    color: var(--lichen);
+    transition:
+      width 200ms var(--ease-out),
+      margin-right 200ms var(--ease-out),
+      opacity 160ms ease,
+      transform 200ms var(--ease-out);
+  }
+  .ph-tick :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+  .ph-service:has(input:checked) .ph-tick {
+    width: 14px;
+    margin-right: 8px;
+    opacity: 1;
+    transform: none;
   }
   .ph-service-time {
     color: var(--ink-muted);
@@ -693,6 +761,23 @@ const config = {
     opacity: 1;
     transform: none;
     background: #33352f;
+  }
+
+  /* Xip que viatja del mòbil al panell (creat per JS, fora del component) */
+  :global(.flight) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    padding: 9px 14px;
+    border-radius: var(--r);
+    background: var(--lichen);
+    color: var(--ink);
+    font: 650 0.875rem/1.2 var(--text);
+    white-space: nowrap;
+    box-shadow: 0 12px 28px -10px rgb(0 0 0 / 0.55);
+    pointer-events: none;
+    will-change: transform, opacity;
   }
 
   @keyframes settle {

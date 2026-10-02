@@ -20,6 +20,20 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
 
 <!-- Portada -->
 <section class="course course-dark hero" data-hero>
+  <div class="hero-field" data-field aria-hidden="true">
+    <img class="hero-field-still" src="/img/camp-basalt.webp" alt="" width="1600" height="561" loading="lazy" decoding="async" />
+  </div>
+  <script is:inline>
+    (function () {
+      var f = document.currentScript.previousElementSibling;
+      var mq = function (q) { return window.matchMedia(q).matches; };
+      var c = navigator.connection || {};
+      var ok = mq('(hover: hover) and (pointer: fine)') && !mq('(prefers-reduced-motion: reduce)') &&
+        !c.saveData && (navigator.hardwareConcurrency || 4) >= 4 && !!window.WebGLRenderingContext;
+      if (/[?&]camp=(3d|still)/.test(location.search)) ok = true;
+      f.dataset.mode = ok ? '3d' : 'still';
+    })();
+  </script>
   <div class="wrap hero-in">
     <div class="hero-copy">
       <h1 class="rise" style="--i:0">{t.hero.titol}</h1>
@@ -92,7 +106,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
         const img = captura(e.id);
         return (
           <li class="work" data-set style={`--i:${i % 3}`}>
-            <div class="work-device">
+            <div class="work-device" data-tilt>
               {e.enLinia && img ? (
                 <Image src={img} alt={`${t.exemples.alt} ${e.nom}`} widths={[260, 420, 560]} sizes="(min-width: 960px) 280px, min(68vw, 260px)" loading="lazy" />
               ) : (
@@ -154,8 +168,16 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   <div class="wrap price">
     <div class="price-figure" data-set>
       <h2 class="price-title">{t.preu.titol}</h2>
-      <p class="price-num">{site.preu}<span class="price-eur">€</span></p>
+      <p class="price-num"><span data-count={site.preu}>{site.preu}</span><span class="price-eur">€</span></p>
       <p class="price-iva">{t.preu.iva}</p>
+      <dl class="price-facts">
+        {t.preu.xifres.map((x) => (
+          <div>
+            <dt><span data-count={x.valor}>{x.valor}</span> {x.unitat}</dt>
+            <dd>{x.text}</dd>
+          </div>
+        ))}
+      </dl>
       <ul class="price-points">
         {t.preu.punts.map((p) => (
           <li>
@@ -239,6 +261,78 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   </div>
 </section>
 
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // ---- Columnes de basalt: three.js només quan el navegador està lliure ----
+  const field = document.querySelector<HTMLElement>('[data-field]');
+  if (field?.dataset.mode === '3d') {
+    const still = /[?&]camp=still/.test(location.search);
+    const start = () =>
+      import('../scripts/basalt-field')
+        .then(({ mountBasaltField }) => {
+          const { canvas } = mountBasaltField(field, { still });
+          requestAnimationFrame(() => canvas.classList.add('is-ready'));
+          field.dataset.ready = '';
+        })
+        .catch(() => (field.dataset.mode = 'still'));
+    const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 2500 }) : setTimeout(start, 600));
+    if (document.readyState === 'complete') idle();
+    else window.addEventListener('load', idle, { once: true });
+  }
+
+  // ---- Xifres que compten fins al seu valor quan apareixen ----
+  const counters = document.querySelectorAll<HTMLElement>('[data-count]');
+  const countUp = (el: HTMLElement) => {
+    const to = Number(el.dataset.count);
+    if (!to || reduce.matches) return;
+    el.style.minWidth = el.offsetWidth + 'px';
+    const t0 = performance.now();
+    const dur = 1100;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - t0) / dur);
+      el.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 4))));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    el.textContent = '0';
+    requestAnimationFrame(tick);
+  };
+  const cio = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          countUp(e.target as HTMLElement);
+          cio.unobserve(e.target);
+        }
+      }
+    },
+    { threshold: 0.6 },
+  );
+  counters.forEach((el) => cio.observe(el));
+
+  // ---- Mòbils dels exemples: inclinació 3D seguint el ratolí ----
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduce.matches) {
+    document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((el) => {
+      let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
+      const loop = () => {
+        x += (tx - x) * 0.14;
+        y += (ty - y) * 0.14;
+        el.style.transform = `perspective(900px) rotateX(${y.toFixed(2)}deg) rotateY(${x.toFixed(2)}deg)`;
+        raf = Math.abs(tx - x) > 0.01 || Math.abs(ty - y) > 0.01 ? requestAnimationFrame(loop) : 0;
+        if (!raf && tx === 0 && ty === 0) el.style.transform = '';
+      };
+      const go = () => { if (!raf) raf = requestAnimationFrame(loop); };
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        tx = ((e.clientX - r.left) / r.width - 0.5) * 10;
+        ty = -((e.clientY - r.top) / r.height - 0.5) * 8;
+        go();
+      });
+      el.addEventListener('pointerleave', () => { tx = 0; ty = 0; go(); });
+    });
+  }
+</script>
+
 <style>
   .head {
     display: grid;
@@ -253,9 +347,44 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     overflow: hidden;
   }
   .hero-in {
+    position: relative;
+    z-index: 1;
     display: grid;
     gap: 48px;
     align-items: end;
+  }
+
+  /* Camp de columnes de basalt: darrere el contingut, esvaït cap amunt */
+  .hero-field {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: min(78%, 680px);
+    z-index: 0;
+    pointer-events: none;
+    /* Esvaït cap amunt i cap a l'esquerra, perquè el text quedi net */
+    -webkit-mask-image: linear-gradient(to top, #000 50%, transparent), linear-gradient(to right, transparent 8%, #000 60%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to top, #000 50%, transparent), linear-gradient(to right, transparent 8%, #000 60%);
+    mask-composite: intersect;
+  }
+  .hero-field img,
+  .hero-field :global(canvas) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% 100%;
+  }
+  .hero-field[data-mode='3d'] img {
+    display: none;
+  }
+  .hero-field :global(canvas) {
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
+  }
+  .hero-field :global(canvas.is-ready) {
+    opacity: 1;
   }
   .hero-copy {
     display: grid;
@@ -432,6 +561,7 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     align-content: start;
   }
   .work-device {
+    transform-style: preserve-3d;
     aspect-ratio: 9 / 16;
     padding: 7px;
     border-radius: 34px;
@@ -624,10 +754,39 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     color: var(--ink-muted);
     font-weight: 600;
   }
+  .price-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin: 28px 0 0;
+    padding: 3px;
+    background: var(--joint-lime);
+  }
+  .price-facts > div {
+    display: grid;
+    gap: 4px;
+    padding: 16px 18px;
+    background: var(--face);
+  }
+  .price-facts dt {
+    font-family: var(--display);
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .price-facts dd {
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+  .price-num [data-count],
+  .price-facts [data-count] {
+    display: inline-block;
+  }
   .price-points {
     display: grid;
     gap: 10px;
-    margin: 28px 0 0;
+    margin: 24px 0 0;
     padding: 0;
     list-style: none;
     font-weight: 600;

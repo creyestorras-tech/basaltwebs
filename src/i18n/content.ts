@@ -102,7 +102,11 @@ const ca = {
   preu: {
     titol: 'Un sol pagament',
     iva: '+ IVA',
-    punts: ['Sense quotes mensuals', 'Sense permanència', 'Proposta gratis'],
+    punts: ['Sense permanència', 'Proposta gratis'],
+    xifres: [
+      { valor: 0, unitat: '€', text: 'al mes, sense quotes' },
+      { valor: 24, unitat: 'h', text: 'reserves en línia, cada dia' },
+    ],
     destacat: "La proposta és gratis i sense compromís: només pagues si t'agrada.",
     cta: 'Demana la teva proposta',
   },
@@ -224,7 +228,11 @@ const es: Dict = {
   preu: {
     titol: 'Un solo pago',
     iva: '+ IVA',
-    punts: ['Sin cuotas mensuales', 'Sin permanencia', 'Propuesta gratis'],
+    punts: ['Sin permanencia', 'Propuesta gratis'],
+    xifres: [
+      { valor: 0, unitat: '€', text: 'al mes, sin cuotas' },
+      { valor: 24, unitat: 'h', text: 'reservas online, cada día' },
+    ],
     destacat: 'La propuesta es gratis y sin compromiso: solo pagas si te gusta.',
     cta: 'Pide tu propuesta',
   },
