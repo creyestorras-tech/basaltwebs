@@ -5,15 +5,6 @@ export const rutes = {
   es: { home: '/es/', avis: '/es/aviso-legal', privacitat: '/es/politica-privacidad' },
 } as const;
 
-export const exemples = [
-  { nom: 'Sergi Moragas', tipus: { ca: 'Teràpia manual', es: 'Terapia manual' }, lloc: 'Camprodon', url: 'https://sergi-moragas.pages.dev' },
-  { nom: 'Celbellesa', tipus: { ca: "Centre d'estètica", es: 'Centro de estética' }, lloc: 'Banyoles', url: 'https://celbellesa.pages.dev' },
-  { nom: "Mima't", tipus: { ca: 'Estètica', es: 'Estética' }, lloc: 'Ripoll', url: 'https://mimat-ripoll.pages.dev' },
-  { nom: 'Latin barber', tipus: { ca: 'Barberia', es: 'Barbería' }, lloc: 'Olot', url: 'https://latin-barber-olot.pages.dev' },
-  { nom: 'Espai Essencial', tipus: { ca: 'Massatges', es: 'Masajes' }, lloc: 'Olot', url: 'https://espai-essencial.pages.dev' },
-  { nom: 'Maderonatur', tipus: { ca: 'Maderoteràpia', es: 'Maderoterapia' }, lloc: 'Banyoles', url: 'https://maderonatur.pages.dev' },
-];
-
 const ca = {
   meta: {
     title: 'Basalt Webs · Webs amb reserves per a negocis de proximitat',
@@ -23,7 +14,6 @@ const ca = {
   nav: {
     com: 'Com funciona',
     inclou: 'Què inclou',
-    exemples: 'Exemples',
     preus: 'Preus',
     faq: 'Preguntes',
     contacte: 'Contacte',
@@ -36,7 +26,7 @@ const ca = {
     subtitol:
       "Els teus clients demanen hora des del mòbil, a qualsevol hora, i tu ho gestiones tot des d'un panell.",
     cta: 'Parlem per WhatsApp',
-    secundari: 'Mira exemples',
+    secundari: 'Com funciona',
     nota: 'El primer mes és gratis',
   },
   problema: {
@@ -68,11 +58,6 @@ const ca = {
       { t: 'Avís legal i privacitat', d: 'Els textos legals preparats i enllaçats on toca.' },
       { t: 'Manteniment', d: 'Ens encarreguem que tot funcioni. Si cal canviar alguna cosa, ens ho dius.' },
     ],
-  },
-  exemples: {
-    etiqueta: 'Exemples',
-    titol: 'Negocis de la zona que ja reben reserves',
-    veure: 'Veure la web',
   },
   preus: {
     etiqueta: 'Preus',
@@ -132,7 +117,6 @@ const es: Dict = {
   nav: {
     com: 'Cómo funciona',
     inclou: 'Qué incluye',
-    exemples: 'Ejemplos',
     preus: 'Precios',
     faq: 'Preguntas',
     contacte: 'Contacto',
@@ -145,7 +129,7 @@ const es: Dict = {
     subtitol:
       'Tus clientes piden hora desde el móvil, a cualquier hora, y tú lo gestionas todo desde un panel.',
     cta: 'Hablemos por WhatsApp',
-    secundari: 'Ver ejemplos',
+    secundari: 'Cómo funciona',
     nota: 'El primer mes es gratis',
   },
   problema: {
@@ -177,11 +161,6 @@ const es: Dict = {
       { t: 'Aviso legal y privacidad', d: 'Los textos legales preparados y enlazados donde toca.' },
       { t: 'Mantenimiento', d: 'Nos encargamos de que todo funcione. Si hay que cambiar algo, nos lo dices.' },
     ],
-  },
-  exemples: {
-    etiqueta: 'Ejemplos',
-    titol: 'Negocios de la zona que ya reciben reservas',
-    veure: 'Ver la web',
   },
   preus: {
     etiqueta: 'Precios',
