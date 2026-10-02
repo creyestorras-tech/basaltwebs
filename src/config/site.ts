@@ -1,13 +1,13 @@
-// Dades de l'empresa. Omple els camps entre claudàtors abans de publicar.
+// Dades de l'empresa.
 export const site = {
   nom: 'Basalt Webs',
   url: 'https://basaltwebs.pages.dev',
-  persona: '[EL TEU NOM]',
+  persona: 'Jordi Reyes',
   // Mòbil amb prefix de país i sense espais ni signes, p. ex. 34612345678
-  mobil: '34623269620',
+  mobil: '34623202188',
   correu: 'basaltwebs@gmail.com',
-  titular: '[TITULAR]',
-  nif: '[NIF]',
+  titular: 'Jordi Reyes Fernández',
+  nif: '46673015N',
   preuPosada: '290',
   preuManteniment: '29',
   comarques: ['Garrotxa', 'Ripollès', "Pla de l'Estany"],

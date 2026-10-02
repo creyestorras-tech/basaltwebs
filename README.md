@@ -4,8 +4,7 @@ Web de Basalt Webs (https://basaltwebs.pages.dev). Astro estàtic, català (`/`)
 
 ## Abans de publicar
 
-Omple els camps entre claudàtors a `src/config/site.ts`: `[EL TEU NOM]`, `[MÒBIL]` (format `34612345678`),
-`[CORREU]`, `[TITULAR]`, `[NIF]` i els dos `[PREU]`. Tots els textos són a `src/i18n/content.ts`.
+Les dades de l'empresa (mòbil, correu, titular, NIF, preus) són a `src/config/site.ts`.
 
 ## Cloudflare Pages
 
