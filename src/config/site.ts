@@ -11,7 +11,6 @@ export const site = {
   domicili: 'Olot (Girona)',
   preuPosada: '290',
   preuManteniment: '29',
-  comarques: ['Garrotxa', 'Ripollès', "Pla de l'Estany"],
   foto: {
     autor: 'Jesús Esteban',
     url: 'https://unsplash.com/photos/KZPJbeCAwEU',
