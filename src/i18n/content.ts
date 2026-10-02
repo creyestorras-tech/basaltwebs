@@ -49,7 +49,7 @@ const ca = {
   },
   inclou: {
     etiqueta: 'Què inclou',
-    titol: 'Tot el que necessites, res que no facis servir',
+    titol: "Tot el que necessites per omplir l'agenda",
     llista: [
       { t: 'Web pròpia adaptada al mòbil', d: 'Amb el teu nom, els teus serveis, les teves fotos i com arribar-hi.' },
       { t: 'Reserves en línia les 24 hores', d: "Els clients demanen hora quan volen, fins i tot amb el negoci tancat." },
@@ -75,7 +75,7 @@ const ca = {
   quisom: {
     etiqueta: 'Qui som',
     titol: 'De la Garrotxa, per a la comarca',
-    text: "Basalt Webs neix a la Garrotxa per ajudar els negocis de la comarca a tenir una web senzilla i útil. T'atenem directament, sense intermediaris, i parlem el teu idioma.",
+    text: "Basalt Webs neix a la Garrotxa per ajudar els negocis de la comarca a tenir una web professional, a l'altura del seu ofici, que treballa per ells les 24 hores. T'atenem directament, sense intermediaris, i parlem el teu idioma.",
     signatura: `${site.persona}, de Basalt Webs`,
     peuFoto: 'Cingle de basalt de Castellfollit de la Roca',
     foto: 'Foto',
@@ -152,7 +152,7 @@ const es: Dict = {
   },
   inclou: {
     etiqueta: 'Qué incluye',
-    titol: 'Todo lo que necesitas, nada que no uses',
+    titol: 'Todo lo que necesitas para llenar la agenda',
     llista: [
       { t: 'Web propia adaptada al móvil', d: 'Con tu nombre, tus servicios, tus fotos y cómo llegar.' },
       { t: 'Reservas online 24 horas', d: 'Los clientes piden hora cuando quieren, incluso con el negocio cerrado.' },
@@ -178,7 +178,7 @@ const es: Dict = {
   quisom: {
     etiqueta: 'Quiénes somos',
     titol: 'De la Garrotxa, para la comarca',
-    text: 'Basalt Webs nace en la Garrotxa para ayudar a los negocios de la comarca a tener una web sencilla y útil. Te atendemos directamente, sin intermediarios, y hablamos tu idioma.',
+    text: 'Basalt Webs nace en la Garrotxa para ayudar a los negocios de la comarca a tener una web profesional, a la altura de su oficio, que trabaja para ellos las 24 horas. Te atendemos directamente, sin intermediarios, y hablamos tu idioma.',
     signatura: `${site.persona}, de Basalt Webs`,
     peuFoto: 'Acantilado de basalto de Castellfollit de la Roca',
     foto: 'Foto',
