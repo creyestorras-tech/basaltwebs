@@ -1,44 +1,44 @@
-@import '@fontsource-variable/inter';
-@import '@fontsource-variable/source-serif-4';
+@import '@fontsource/marcellus/latin.css';
+@import '@fontsource/marcellus/latin-ext.css';
+@import '@fontsource-variable/schibsted-grotesk';
 
 :root {
-  --basalt-950: #121314;
-  --basalt-900: #1a1c1e;
-  --basalt-800: #24272a;
-  --basalt-700: #34383c;
-  --basalt-600: #4a4f54;
-  --stone-500: #6f7377;
-  --stone-400: #8f9296;
-  --stone-300: #c4c1ba;
-  --stone-200: #dedad3;
-  --stone-100: #ebe8e2;
-  --paper: #f5f3ef;
-  --white: #fff;
+  /* Basalt: la pedra fosca, amb el seu llit de morter */
+  --basalt: #131517;
+  --basalt-2: #1b1e21;
+  --slate: #24282c;
+  --slate-2: #2e3337;
+  --bed: #0c0d0e;
+  --mist: #959a9e;
+  --mist-2: #bfc3c6;
+  --chalk: #f2f1ed;
 
-  /* Accent càlid: brasa de lava refredada */
-  --ember-700: #9a4418;
-  --ember-600: #b0501f;
-  --ember-500: #c4632f;
-  --ember-300: #e59a6a;
-  --ember-100: #f6e3d5;
+  /* Morter de calç: les filades clares */
+  --lime: #e8e6e0;
+  --lime-bed: #c9c5bb;
+  --joint-lime: #a8a397;
+  --face: #f3f1ec;
+  --missed: #a3361f;
+  --device: #0a0b0c;
+  --ink: #16181a;
+  --ink-muted: #4c5156;
 
-  --text: var(--basalt-900);
-  --text-muted: #55595d;
+  /* Liquen (Xanthoria): l'únic accent, només per a accions */
+  --lichen: #e3a12f;
+  --lichen-hi: #f0b54a;
+  --lichen-ink: #7f520c;
 
-  --serif: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
-  --sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --display: 'Marcellus', 'Palatino Linotype', Palatino, serif;
+  --text: 'Schibsted Grotesk Variable', 'Segoe UI', system-ui, sans-serif;
 
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-press: cubic-bezier(0.23, 1, 0.32, 1);
 
-  --radius: 14px;
-  --radius-sm: 10px;
-  --wrap: 1120px;
-  --gutter: clamp(16px, 4vw, 32px);
+  --wrap: 1200px;
+  --gutter: clamp(16px, 4.4vw, 40px);
   --header-h: 64px;
-
-  /* Soroll fi per donar textura de pedra a les seccions fosques */
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --course: clamp(88px, 12vw, 152px);
+  --r: 3px;
 }
 
 *,
@@ -51,21 +51,23 @@ html {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-h) + 12px);
+  scroll-padding-top: calc(var(--header-h) + 16px);
   interpolate-size: allow-keywords;
+  scrollbar-color: var(--slate-2) var(--basalt);
+  accent-color: var(--lichen);
 }
 
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--text);
-  font-family: var(--sans);
+  background: var(--basalt);
+  color: var(--chalk);
+  font-family: var(--text);
   font-size: 1.0625rem;
   line-height: 1.6;
-  font-feature-settings: 'ss01', 'cv11';
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  caret-color: var(--lichen);
 }
 
 img,
@@ -74,15 +76,26 @@ svg {
   max-width: 100%;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 h1,
 h2,
 h3 {
-  font-family: var(--serif);
-  font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -0.015em;
   margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.012em;
   text-wrap: balance;
+}
+
+h3 {
+  font-family: var(--text);
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  line-height: 1.25;
 }
 
 p {
@@ -91,6 +104,13 @@ p {
 }
 
 a {
+  color: inherit;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+
+button {
+  font: inherit;
   color: inherit;
 }
 
@@ -101,15 +121,14 @@ summary,
   touch-action: manipulation;
 }
 
-:focus-visible {
-  outline: 2px solid var(--ember-500);
-  outline-offset: 3px;
-  border-radius: 6px;
+::selection {
+  background: var(--lichen);
+  color: var(--ink);
 }
 
-::selection {
-  background: var(--ember-100);
-  color: var(--basalt-900);
+:focus-visible {
+  outline: 2px solid var(--lichen);
+  outline-offset: 3px;
 }
 
 .wrap {
@@ -119,86 +138,79 @@ summary,
   padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px));
 }
 
-.section {
-  padding-block: clamp(72px, 11vw, 128px);
+/* Filades: cada secció és una filada de pedra fosca o de calç */
+.course {
+  position: relative;
+  padding-block: var(--course);
 }
 
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ember-600);
+.course-dark {
+  background:
+    linear-gradient(rgb(19 21 23 / 0.8), rgb(19 21 23 / 0.8)),
+    url('/img/basalt.webp') center / cover no-repeat,
+    var(--basalt);
+  color: var(--chalk);
 }
 
-.eyebrow::before {
-  content: '';
-  width: 18px;
-  height: 2px;
-  border-radius: 2px;
-  background: currentColor;
+.course-lime {
+  --chalk: var(--ink);
+  background: var(--lime);
+  color: var(--ink);
 }
 
-.dark .eyebrow {
-  color: var(--ember-300);
+.course-lime ::selection {
+  background: var(--ink);
+  color: var(--lime);
+}
+
+/* Junt de morter entre filades del mateix to */
+.course-dark + .course-dark,
+.course-lime + .course-lime {
+  border-top: 2px solid var(--joint, var(--bed));
+}
+
+.course-lime + .course-lime {
+  --joint: var(--lime-bed);
 }
 
 .h2 {
-  font-size: clamp(2rem, 5.2vw, 3rem);
-  margin-top: 14px;
+  font-size: clamp(2.25rem, 5.4vw, 3.75rem);
 }
 
-.lead {
-  font-size: clamp(1.0625rem, 2vw, 1.1875rem);
-  color: var(--text-muted);
+.lede {
+  font-size: clamp(1.0625rem, 1.9vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--mist-2);
+  max-width: 38rem;
 }
 
-.dark {
-  --text: var(--stone-100);
-  --text-muted: #a9acaf;
-  position: relative;
-  isolation: isolate;
-  background: var(--basalt-900);
-  color: var(--text);
+.course-lime .lede {
+  color: var(--ink-muted);
 }
 
-/* Textura de basalt: gra fi sobre el fosc */
-.dark::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: var(--grain);
-  opacity: 0.07;
-  pointer-events: none;
-}
-
-/* Botons */
+/* Botons: blocs tallats, no pastilles */
 .btn {
-  --btn-bg: var(--basalt-900);
-  --btn-fg: var(--white);
+  --btn-bg: var(--lichen);
+  --btn-fg: var(--ink);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-height: 52px;
-  padding: 0 24px;
+  gap: 12px;
+  min-height: 54px;
+  padding: 0 26px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--r);
   background: var(--btn-bg);
   color: var(--btn-fg);
-  font: 600 1rem/1 var(--sans);
+  font: 650 1.0625rem/1.1 var(--text);
   text-decoration: none;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.28) inset, 0 -2px 0 rgb(0 0 0 / 0.16) inset;
   transition:
-    transform 160ms var(--ease-out),
-    background-color 200ms ease,
-    box-shadow 200ms ease;
+    transform 140ms var(--ease-press),
+    background-color 180ms ease;
 }
 
 .btn:active {
@@ -206,47 +218,55 @@ summary,
 }
 
 .btn svg {
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
   flex: none;
 }
 
-.btn-accent {
-  --btn-bg: var(--ember-600);
-  box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.18) inset,
-    0 8px 24px -10px rgb(176 80 31 / 0.7);
+.btn-line {
+  --btn-bg: transparent;
+  --btn-fg: currentColor;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, currentColor 34%, transparent);
 }
 
-.btn-ghost {
-  --btn-bg: transparent;
-  --btn-fg: var(--text);
-  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, currentColor 28%, transparent);
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link-arrow svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 200ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .btn-accent:hover {
-    --btn-bg: var(--ember-700);
+  .btn:hover {
+    --btn-bg: var(--lichen-hi);
   }
-  .btn-ghost:hover {
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, currentColor 55%, transparent);
+  .btn-line:hover {
+    --btn-bg: color-mix(in srgb, currentColor 7%, transparent);
   }
-  .btn:not(.btn-accent, .btn-ghost):hover {
-    --btn-bg: var(--basalt-700);
+  .link-arrow:hover svg {
+    transform: translateX(3px);
   }
 }
 
-/* Aparició en fer scroll: una sola vegada, discreta */
-.js [data-reveal] {
+/* Les pedres s'assenten una sola vegada en entrar a la vista */
+.js [data-set] {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(10px);
   transition:
-    opacity 700ms var(--ease-out),
-    transform 700ms var(--ease-out);
-  transition-delay: calc(var(--i, 0) * 60ms);
+    opacity 760ms var(--ease-out),
+    transform 760ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms);
 }
 
-.js [data-reveal].is-in {
+.js [data-set].is-set {
   opacity: 1;
   transform: none;
 }
@@ -255,9 +275,9 @@ summary,
   html {
     scroll-behavior: auto;
   }
-  .js [data-reveal] {
+  .js [data-set] {
     transform: none;
-    transition: opacity 400ms ease;
+    transition: opacity 300ms ease;
   }
 }
 

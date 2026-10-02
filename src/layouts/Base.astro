@@ -1,7 +1,7 @@
 ---
-import WhatsappIcon from '../components/WhatsappIcon.astro';
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
+import WhatsappIcon from '../components/WhatsappIcon.astro';
 import { site, whatsapp, type Lang } from '../config/site';
 import { dict, rutes } from '../i18n/content';
 
@@ -18,14 +18,30 @@ const { lang, title, description, alt, home = false } = Astro.props;
 const t = dict[lang];
 const r = rutes[lang];
 const canonical = new URL(alt[lang], site.url).href;
-const ogImage = new URL('/og.jpg', site.url).href;
+const ogImage = new URL(lang === 'ca' ? '/og.jpg' : '/og-es.jpg', site.url).href;
 const anchor = (id: string) => (home ? `#${id}` : `${r.home}#${id}`);
 const nav = [
+  { id: 'prova', label: t.nav.demo },
+  { id: 'exemples', label: t.nav.exemples },
   { id: 'com-funciona', label: t.nav.com },
-  { id: 'que-inclou', label: t.nav.inclou },
-  { id: 'preus', label: t.nav.preus },
+  { id: 'preu', label: t.nav.preu },
   { id: 'preguntes', label: t.nav.faq },
 ];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: site.nom,
+  url: site.url,
+  description: dict[lang].meta.description,
+  telephone: `+${site.mobil}`,
+  email: site.correu,
+  image: new URL('/og.jpg', site.url).href,
+  address: { '@type': 'PostalAddress', addressLocality: 'Olot', addressRegion: 'Girona', addressCountry: 'ES' },
+  areaServed: { '@type': 'AdministrativeArea', name: 'Catalunya' },
+  founder: { '@type': 'Person', name: site.persona },
+  knowsLanguage: ['ca', 'es'],
+};
 ---
 <!doctype html>
 <html lang={lang}>
@@ -40,8 +56,8 @@ const nav = [
     <link rel="alternate" hreflang="x-default" href={new URL(alt.ca, site.url).href} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta name="theme-color" content="#1a1c1e" />
-    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#131517" />
+    <meta name="color-scheme" content="dark light" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.nom} />
     <meta property="og:locale" content={lang === 'ca' ? 'ca_ES' : 'es_ES'} />
@@ -49,7 +65,10 @@ const nav = [
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    {home && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     <script is:inline>document.documentElement.classList.add('js');</script>
     <slot name="head" />
   </head>
@@ -58,19 +77,22 @@ const nav = [
 
     <header class="header" data-header>
       <div class="wrap header-in">
-        <a href={r.home} class="brand" aria-label={`${site.nom} — ${lang === 'ca' ? 'inici' : 'inicio'}`}>
+        <a href={r.home} class="brand" aria-label={`${site.nom}, ${t.nav.inici.toLowerCase()}`}>
           <Logo />
         </a>
-        <nav class="nav" aria-label={lang === 'ca' ? 'Principal' : 'Principal'}>
+        <nav class="nav" aria-label={lang === 'ca' ? 'Seccions' : 'Secciones'}>
           {nav.map((n) => <a href={anchor(n.id)}>{n.label}</a>)}
         </nav>
         <div class="header-end">
           <div class="lang" role="group" aria-label={t.nav.idioma}>
             <a href={alt.ca} hreflang="ca" lang="ca" aria-current={lang === 'ca' ? 'true' : undefined}>CA</a>
-            <span aria-hidden="true">|</span>
+            <span aria-hidden="true"></span>
             <a href={alt.es} hreflang="es" lang="es" aria-current={lang === 'es' ? 'true' : undefined}>ES</a>
           </div>
-          <a class="btn btn-accent header-cta" href={anchor('contacte')}>{t.nav.contacte}</a>
+          <a class="btn header-cta" href={whatsapp(lang)} target="_blank" rel="noopener">
+            <WhatsappIcon />
+            <span>{t.nav.contacte}</span>
+          </a>
         </div>
       </div>
     </header>
@@ -79,65 +101,66 @@ const nav = [
       <slot />
     </main>
 
-    <footer class="footer dark">
+    <footer class="footer">
       <div class="wrap footer-in">
         <div class="footer-brand">
           <Logo />
-          <p>{lang === 'ca' ? 'Fet a la Garrotxa, per a negocis de tot Catalunya' : 'Hecho en la Garrotxa, para negocios de toda Cataluña'}</p>
+          <p>{t.peu.origen}</p>
         </div>
         <nav class="footer-links" aria-label="Legal">
           <a href={r.avis}>{t.peu.avis}</a>
           <a href={r.privacitat}>{t.peu.privacitat}</a>
         </nav>
         <p class="footer-small">
-          © {new Date().getFullYear()} {site.nom}. {t.peu.foto}{' '}
-          <a href={site.foto.url} rel="noopener" target="_blank">{site.foto.autor}</a> {t.peu.a} Unsplash.
+          © {new Date().getFullYear()} {site.nom} · {site.titular}.{' '}
+          {t.peu.fotos}: <a href={site.foto.url} rel="noopener" target="_blank">{site.foto.autor}</a> i{' '}
+          <a href={site.textura.url} rel="noopener" target="_blank">{site.textura.autor}</a> {t.peu.a} Unsplash.
         </p>
       </div>
     </footer>
 
     {home && (
-      <a class="btn btn-accent fab" href={whatsapp(lang)} target="_blank" rel="noopener" data-fab aria-label={`${t.hero.cta}`}>
+      <a class="btn fab" href={whatsapp(lang)} target="_blank" rel="noopener" data-fab tabindex="-1" aria-hidden="true">
         <WhatsappIcon />
-        <span>{t.mobilCta}</span>
+        <span>WhatsApp</span>
       </a>
     )}
 
     <script>
-      // Aparicions en fer scroll (una sola vegada)
-      const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      const els = document.querySelectorAll<HTMLElement>('[data-set]');
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(
           (entries) => {
             for (const e of entries) {
               if (e.isIntersecting) {
-                e.target.classList.add('is-in');
+                e.target.classList.add('is-set');
                 io.unobserve(e.target);
               }
             }
           },
-          { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+          { rootMargin: '0px 0px -6% 0px', threshold: 0.08 },
         );
         els.forEach((el) => io.observe(el));
       } else {
-        els.forEach((el) => el.classList.add('is-in'));
+        els.forEach((el) => el.classList.add('is-set'));
       }
 
-      // Capçalera: vora quan hi ha scroll. Botó flotant de WhatsApp: visible
-      // un cop passada la portada i amagat a la secció de contacte.
-      const header = document.querySelector<HTMLElement>('[data-header]');
+      // Botó flotant de WhatsApp al mòbil: visible un cop passada la portada,
+      // amagat a la filada de contacte.
       const fab = document.querySelector<HTMLElement>('[data-fab]');
       const hero = document.querySelector<HTMLElement>('[data-hero]');
       const contact = document.querySelector<HTMLElement>('#contacte');
       let pastHero = false;
       let atContact = false;
-      const syncFab = () => fab?.classList.toggle('is-on', pastHero && !atContact);
-      const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
-      onScroll();
-      window.addEventListener('scroll', onScroll, { passive: true });
+      const sync = () => {
+        const on = pastHero && !atContact;
+        fab?.classList.toggle('is-on', on);
+        fab?.setAttribute('aria-hidden', String(!on));
+        fab?.setAttribute('tabindex', on ? '0' : '-1');
+      };
       if (fab && hero && contact) {
-        new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; syncFab(); }).observe(hero);
-        new IntersectionObserver(([e]) => { atContact = e.isIntersecting; syncFab(); }).observe(contact);
+        new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting; sync(); }).observe(hero);
+        new IntersectionObserver(([e]) => { atContact = e.isIntersecting; sync(); }).observe(contact);
       }
     </script>
   </body>
@@ -150,10 +173,10 @@ const nav = [
     left: 8px;
     z-index: 100;
     padding: 10px 16px;
-    border-radius: 999px;
-    background: var(--white);
-    color: var(--basalt-900);
-    font-weight: 600;
+    border-radius: var(--r);
+    background: var(--lichen);
+    color: var(--ink);
+    font-weight: 650;
     transform: translateY(-160%);
     transition: transform 200ms var(--ease-out);
   }
@@ -166,41 +189,39 @@ const nav = [
     top: 0;
     z-index: 50;
     padding-top: env(safe-area-inset-top, 0px);
-    background: rgb(26 28 30 / 0.86);
-    backdrop-filter: saturate(140%) blur(14px);
-    -webkit-backdrop-filter: saturate(140%) blur(14px);
-    color: var(--stone-100);
-    box-shadow: 0 1px 0 rgb(255 255 255 / 0);
-    transition: box-shadow 200ms ease;
+    background: rgb(19 21 23 / 0.94);
+    border-bottom: 2px solid var(--bed);
+    color: var(--chalk);
   }
-  .header:global(.is-scrolled) {
-    box-shadow: 0 1px 0 rgb(255 255 255 / 0.08);
+  @supports (backdrop-filter: blur(1px)) {
+    .header {
+      background: rgb(19 21 23 / 0.82);
+      backdrop-filter: blur(12px) saturate(120%);
+      -webkit-backdrop-filter: blur(12px) saturate(120%);
+    }
   }
   .header-in {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 28px;
     height: var(--header-h);
   }
   .brand {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--chalk);
     text-decoration: none;
-    color: var(--white);
-    --logo-facet: rgb(26 28 30 / 0.35);
     user-select: none;
     -webkit-user-select: none;
   }
-  .brand :global(svg path:first-child) {
-    fill: var(--stone-200);
-  }
   .nav {
     display: none;
-    gap: 4px;
-    margin-left: auto;
+    gap: 2px;
   }
   .nav a {
-    padding: 8px 12px;
-    border-radius: 999px;
-    color: #b9bbbd;
+    padding: 10px 12px;
+    color: var(--mist);
     font-size: 0.9375rem;
     font-weight: 500;
     text-decoration: none;
@@ -209,97 +230,96 @@ const nav = [
   .header-end {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     margin-left: auto;
   }
   .lang {
     display: flex;
     align-items: center;
-    gap: 2px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: var(--basalt-600);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+  }
+  .lang span {
+    width: 1px;
+    height: 14px;
+    background: var(--slate-2);
   }
   .lang a {
     display: grid;
     place-items: center;
-    min-width: 40px;
-    min-height: 40px;
-    border-radius: 999px;
-    color: var(--stone-400);
+    min-width: 44px;
+    min-height: 44px;
+    color: var(--mist);
     text-decoration: none;
     user-select: none;
     -webkit-user-select: none;
-    transition: color 150ms ease, background-color 150ms ease;
+    transition: color 150ms ease;
   }
   .lang a[aria-current] {
-    color: var(--white);
-    background: rgb(255 255 255 / 0.09);
+    color: var(--lichen);
   }
   .header-cta {
     display: none;
-    min-height: 40px;
-    padding: 0 18px;
+    min-height: 42px;
+    padding: 0 16px;
     font-size: 0.9375rem;
+    gap: 8px;
+  }
+  .header-cta :global(svg) {
+    width: 18px;
+    height: 18px;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .nav a:hover,
     .lang a:not([aria-current]):hover {
-      color: var(--white);
+      color: var(--chalk);
     }
   }
-
   @media (min-width: 640px) {
     .header-cta {
       display: inline-flex;
     }
   }
-  @media (min-width: 1000px) {
+  @media (min-width: 1040px) {
     .nav {
       display: flex;
-    }
-    .header-end {
-      margin-left: 8px;
     }
   }
 
   .footer {
-    padding-block: 48px calc(40px + env(safe-area-inset-bottom, 0px));
-    background: var(--basalt-950);
+    padding-block: 56px calc(40px + env(safe-area-inset-bottom, 0px));
+    background: var(--bed);
+    color: var(--mist);
   }
   .footer-in {
     display: grid;
-    gap: 24px;
+    gap: 28px;
   }
   .footer-brand {
     display: grid;
-    gap: 8px;
-    color: var(--white);
-    --logo-facet: rgb(18 19 20 / 0.4);
-  }
-  .footer-brand :global(svg path:first-child) {
-    fill: var(--stone-200);
+    gap: 10px;
+    color: var(--chalk);
   }
   .footer-brand p {
-    color: var(--stone-400);
+    color: var(--mist);
     font-size: 0.9375rem;
   }
   .footer-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 24px;
+    gap: 4px 24px;
   }
   .footer-links a {
-    color: var(--stone-200);
+    display: inline-block;
+    padding-block: 8px;
+    color: var(--mist-2);
     font-size: 0.9375rem;
-    text-underline-offset: 4px;
-    text-decoration-color: rgb(255 255 255 / 0.25);
   }
   .footer-small {
-    color: var(--stone-500);
     font-size: 0.8125rem;
+    line-height: 1.6;
   }
   @media (min-width: 760px) {
     .footer-in {
@@ -308,26 +328,26 @@ const nav = [
     }
     .footer-small {
       grid-column: 1 / -1;
-      padding-top: 20px;
-      border-top: 1px solid rgb(255 255 255 / 0.07);
+      padding-top: 24px;
+      border-top: 2px solid var(--basalt-2);
     }
   }
 
-  /* Botó flotant de WhatsApp (només mòbil) */
   .fab {
     position: fixed;
     right: max(16px, env(safe-area-inset-right, 0px));
     bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     z-index: 40;
-    min-height: 52px;
     padding: 0 20px 0 16px;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.28) inset,
+      0 10px 24px -8px rgb(0 0 0 / 0.55);
     opacity: 0;
     transform: translateY(calc(100% + 24px));
     pointer-events: none;
     transition:
-      transform 300ms var(--ease-out),
-      opacity 200ms ease,
-      background-color 200ms ease;
+      transform 320ms var(--ease-out),
+      opacity 200ms ease;
   }
   .fab:global(.is-on) {
     opacity: 1;

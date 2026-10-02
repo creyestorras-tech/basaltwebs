@@ -4,15 +4,14 @@ import { site } from '../config/site';
 ---
 <Base lang="ca" title={`Pàgina no trobada · ${site.nom}`} description="Pàgina no trobada" alt={{ ca: '/', es: '/es/' }}>
   <meta slot="head" name="robots" content="noindex" />
-  <section class="nf">
+  <section class="nf course-dark">
     <div class="wrap nf-in">
-      <p class="eyebrow">Error 404</p>
       <h1>Aquesta pàgina no existeix</h1>
-      <p class="lead">Potser l'enllaç és antic o hi ha alguna lletra canviada.</p>
-      <p class="lead es" lang="es">Esta página no existe. Puede que el enlace sea antiguo o tenga algún error.</p>
+      <p class="lede">Potser l'enllaç és antic o hi ha alguna lletra canviada.</p>
+      <p class="lede es" lang="es">Esta página no existe. Puede que el enlace sea antiguo o tenga algún error.</p>
       <div class="nf-actions">
-        <a class="btn btn-accent" href="/">Torna a l'inici</a>
-        <a class="btn btn-ghost" href="/es/">Ir al inicio</a>
+        <a class="btn" href="/">Torna a l'inici</a>
+        <a class="btn btn-line" href="/es/">Ir al inicio</a>
       </div>
     </div>
   </section>
@@ -29,13 +28,13 @@ import { site } from '../config/site';
     margin-top: 14px;
     font-size: clamp(2.25rem, 6vw, 3rem);
   }
-  .lead {
+  .lede {
     margin-top: 16px;
   }
-  .lead.es {
+  .lede.es {
     margin-top: 6px;
     font-size: 1rem;
-    color: var(--stone-500);
+    color: var(--mist);
   }
   .nf-actions {
     display: flex;

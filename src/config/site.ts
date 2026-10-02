@@ -9,11 +9,15 @@ export const site = {
   titular: 'Jordi Reyes Fernández',
   nif: '46673015N',
   domicili: 'Olot (Girona)',
-  preuPosada: '290',
-  preuManteniment: '29',
+  // Pagament únic, sense quotes mensuals
+  preu: '379',
   foto: {
     autor: 'Jesús Esteban',
     url: 'https://unsplash.com/photos/KZPJbeCAwEU',
+  },
+  textura: {
+    autor: 'David Jorre',
+    url: 'https://unsplash.com/photos/oQbLeq4nOek',
   },
 };
 

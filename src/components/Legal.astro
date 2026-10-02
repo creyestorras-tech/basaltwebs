@@ -19,7 +19,7 @@ const titol =
     : lang === 'ca' ? 'Política de privacitat' : 'Política de privacidad';
 ---
 <Base lang={lang} title={`${titol} · ${site.nom}`} description={titol} alt={alt}>
-  <article class="legal">
+  <article class="legal course-lime">
     <div class="wrap legal-in">
       <a class="back" href={r.home}>← {tornar}</a>
       <h1>{titol}</h1>
@@ -130,7 +130,7 @@ const titol =
 
 <style>
   .legal {
-    padding-block: clamp(48px, 8vw, 96px);
+    padding-block: clamp(56px, 9vw, 112px);
   }
   .legal-in {
     max-width: 46rem;
@@ -138,26 +138,27 @@ const titol =
   .back {
     display: inline-block;
     margin-bottom: 28px;
-    color: var(--text-muted);
+    padding-block: 6px;
+    color: var(--ink-muted);
     font-size: 0.9375rem;
     text-decoration: none;
   }
   h1 {
-    font-size: clamp(2.25rem, 6vw, 3rem);
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
   }
   .updated {
-    margin-top: 10px;
-    color: var(--stone-500);
+    margin-top: 12px;
+    color: var(--ink-muted);
     font-size: 0.9375rem;
   }
   h2 {
-    margin-top: 40px;
-    font-size: 1.375rem;
+    margin-top: 44px;
+    font-size: 1.625rem;
   }
   p,
   ul {
     margin-top: 12px;
-    color: var(--basalt-700);
+    color: #33373b;
   }
   ul {
     padding-left: 20px;
@@ -166,12 +167,11 @@ const titol =
     margin-top: 4px;
   }
   a {
-    text-underline-offset: 3px;
     word-break: break-word;
   }
   @media (hover: hover) and (pointer: fine) {
     .back:hover {
-      color: var(--text);
+      color: var(--ink);
     }
   }
 </style>

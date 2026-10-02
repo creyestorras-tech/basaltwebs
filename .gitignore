@@ -3,3 +3,9 @@ dist/
 .astro/
 .env
 .DS_Store
+.shots/
+.impeccable/review/
+.impeccable/direction-payload.json
+.claude/settings.local.json
+.claude/skills/impeccable/scripts/bin/
+.impeccable/questions/

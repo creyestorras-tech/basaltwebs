@@ -1,0 +1,717 @@
+---
+import { type Lang } from '../config/site';
+import { dict } from '../i18n/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = dict[lang].demo;
+
+// Franges del dia. Les ocupades varien segons el dia (dades de demostració).
+const hores = ['09:00', '09:30', '10:00', '10:30', '11:00', '12:00', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30'];
+const ocupades = [
+  [1, 4, 7, 10],
+  [0, 2, 6, 9, 11],
+  [3, 5, 8],
+  [1, 2, 6, 7, 10],
+  [0, 4, 9],
+];
+const config = {
+  lang,
+  hores,
+  ocupades,
+  serveis: t.serveis,
+  clients: t.clients,
+  textos: { client: t.client, nova: t.nova, reserves: t.reserves, novaArribada: t.novaArribada, ocupada: t.ocupada },
+};
+---
+<div class="demo" data-demo>
+  <script type="application/json" data-demo-config set:html={JSON.stringify(config)} />
+
+  <p class="demo-tag">
+    <span class="demo-tag-mark">{t.etiqueta}</span>
+    <span>{t.avis}</span>
+  </p>
+
+  <div class="demo-grid">
+    <!-- Mòbil del client -->
+    <div class="phone" data-set>
+      <div class="phone-screen">
+        <div class="ph-head">
+          <span class="ph-dot" aria-hidden="true"></span>
+          <span class="ph-biz">{t.negoci}</span>
+        </div>
+
+        <form class="ph-form" data-form>
+          <fieldset class="ph-step" data-step="1">
+            <legend><span class="n">1</span>{t.passos[0]}</legend>
+            <div class="ph-services">
+              {t.serveis.map((s, i) => (
+                <label class="ph-service">
+                  <input type="radio" name="servei" value={i} />
+                  <span class="ph-service-name">{s.nom}</span>
+                  <span class="ph-service-time">{s.durada}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset class="ph-step" data-step="2">
+            <legend><span class="n">2</span>{t.passos[1]}</legend>
+            <div class="ph-days" data-days>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <label class="ph-day">
+                  <input type="radio" name="dia" value={i} />
+                  <span class="ph-day-wd" data-wd>{['dl', 'dt', 'dc', 'dj', 'dv'][i]}</span>
+                  <span class="ph-day-n" data-dn>{i + 1}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset class="ph-step" data-step="3">
+            <legend><span class="n">3</span>{t.passos[2]}</legend>
+            <div class="ph-slots" data-slots>
+              {hores.map((h, i) => (
+                <label class="ph-slot">
+                  <input type="radio" name="hora" value={i} disabled />
+                  <span>{h}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <div class="ph-step ph-confirm-step">
+            <p class="ph-legend"><span class="n">4</span>{t.passos[3]}</p>
+            <button type="submit" class="ph-confirm" data-confirm data-ready={t.confirmar} disabled>
+              <span data-confirm-label>{t.triaAbans}</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="ph-done" data-done hidden>
+          <span class="ph-check" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </span>
+          <p class="ph-done-title">{t.confirmada}</p>
+          <p class="ph-done-summary" data-summary></p>
+          <p class="ph-done-note">{t.confirmadaText}</p>
+          <button type="button" class="ph-again" data-again>{t.altra}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panell del negoci -->
+    <section class="panel" data-panel data-set style="--i:1" aria-labelledby="panell-titol">
+      <header class="panel-head">
+        <div>
+          <p class="panel-kind" id="panell-titol">{t.panell}</p>
+          <p class="panel-biz">{t.negoci}</p>
+        </div>
+        <p class="panel-count"><strong data-count>0</strong> <span>{t.reserves}</span></p>
+      </header>
+      <p class="panel-day" data-panel-day></p>
+      <ol class="panel-list" data-list></ol>
+      <p class="sr-only" aria-live="polite" data-live></p>
+    </section>
+  </div>
+</div>
+
+<script>
+  type Config = {
+    lang: 'ca' | 'es';
+    hores: string[];
+    ocupades: number[][];
+    serveis: { nom: string; durada: string }[];
+    clients: string[];
+    textos: Record<string, string>;
+  };
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-demo]')) {
+    const cfg: Config = JSON.parse(root.querySelector('[data-demo-config]')!.textContent!);
+    const locale = cfg.lang === 'ca' ? 'ca-ES' : 'es-ES';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const form = root.querySelector<HTMLFormElement>('[data-form]')!;
+    const done = root.querySelector<HTMLElement>('[data-done]')!;
+    const confirm = root.querySelector<HTMLButtonElement>('[data-confirm]')!;
+    const confirmLabel = root.querySelector<HTMLElement>('[data-confirm-label]')!;
+    const initialLabel = confirmLabel.textContent!;
+    const summary = root.querySelector<HTMLElement>('[data-summary]')!;
+    const list = root.querySelector<HTMLOListElement>('[data-list]')!;
+    const count = root.querySelector<HTMLElement>('[data-count]')!;
+    const panel = root.querySelector<HTMLElement>('[data-panel]')!;
+    const panelDay = root.querySelector<HTMLElement>('[data-panel-day]')!;
+    const live = root.querySelector<HTMLElement>('[data-live]')!;
+    const slotInputs = [...root.querySelectorAll<HTMLInputElement>('input[name="hora"]')];
+
+    // Els cinc dies laborables següents (de dilluns a dissabte), en l'idioma de la pàgina
+    const days: Date[] = [];
+    const d = new Date();
+    while (days.length < 5) {
+      d.setDate(d.getDate() + 1);
+      if (d.getDay() !== 0) days.push(new Date(d));
+    }
+    const wd = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+    const long = new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long' });
+    root.querySelectorAll<HTMLElement>('.ph-day').forEach((el, i) => {
+      el.querySelector('[data-wd]')!.textContent = wd.format(days[i]).replace('.', '');
+      el.querySelector('[data-dn]')!.textContent = String(days[i].getDate());
+      el.querySelector('input')!.setAttribute('aria-label', long.format(days[i]));
+    });
+
+    // Reserves del dia al panell: les ocupades i les que hagi fet el visitant
+    const mine = new Map<number, { hora: number; servei: number }[]>();
+    let currentDay = 0;
+
+    const value = (name: string) => {
+      const el = form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`);
+      return el ? Number(el.value) : null;
+    };
+
+    function bookingsFor(day: number) {
+      const taken = cfg.ocupades[day].map((h, k) => ({
+        hora: h,
+        nom: cfg.clients[(h + day + k) % cfg.clients.length],
+        servei: (h + day) % cfg.serveis.length,
+        nova: false,
+      }));
+      const own = (mine.get(day) ?? []).map((b) => ({ hora: b.hora, nom: cfg.textos.client, servei: b.servei, nova: true }));
+      return [...taken, ...own].sort((a, b) => a.hora - b.hora);
+    }
+
+    function renderPanel(day: number, highlight?: number) {
+      currentDay = day;
+      const first = long.format(days[day]);
+      panelDay.textContent = first.charAt(0).toUpperCase() + first.slice(1);
+      const rows = bookingsFor(day);
+      count.textContent = String(rows.length);
+      list.replaceChildren(
+        ...rows.map((b) => {
+          const li = document.createElement('li');
+          li.className = 'panel-row' + (b.nova ? ' is-new' : '');
+          if (b.hora === highlight && b.nova) li.classList.add('is-arriving');
+          const time = document.createElement('span');
+          time.className = 'panel-time';
+          time.textContent = cfg.hores[b.hora];
+          const who = document.createElement('span');
+          who.className = 'panel-who';
+          who.textContent = b.nom;
+          const what = document.createElement('span');
+          what.className = 'panel-what';
+          what.textContent = cfg.serveis[b.servei].nom;
+          li.append(time, who, what);
+          if (b.nova) {
+            const tag = document.createElement('span');
+            tag.className = 'panel-tag';
+            tag.textContent = cfg.textos.nova;
+            li.append(tag);
+          }
+          return li;
+        }),
+      );
+      if (highlight !== undefined) {
+        requestAnimationFrame(() => requestAnimationFrame(() => list.querySelector('.is-arriving')?.classList.add('is-in')));
+      }
+    }
+
+    function syncSlots(day: number | null) {
+      slotInputs.forEach((input, i) => {
+        const taken = day !== null && (cfg.ocupades[day].includes(i) || (mine.get(day) ?? []).some((b) => b.hora === i));
+        input.disabled = day === null || taken;
+        input.parentElement!.classList.toggle('is-taken', taken);
+        input.setAttribute('aria-label', taken ? `${cfg.hores[i]}, ${cfg.textos.ocupada}` : cfg.hores[i]);
+        if (taken && input.checked) input.checked = false;
+      });
+    }
+
+    function syncConfirm() {
+      const s = value('servei');
+      const dIdx = value('dia');
+      const h = value('hora');
+      const ready = s !== null && dIdx !== null && h !== null;
+      confirm.disabled = !ready;
+      confirmLabel.textContent = ready ? confirm.dataset.ready ?? '' : initialLabel;
+      root.querySelectorAll<HTMLElement>('.ph-step[data-step]').forEach((step) => {
+        const n = Number(step.dataset.step);
+        const filled = [s, dIdx, h][n - 1] !== null;
+        step.classList.toggle('is-filled', filled);
+      });
+    }
+
+    form.addEventListener('change', (e) => {
+      const target = e.target as HTMLInputElement;
+      if (target.name === 'dia') {
+        syncSlots(Number(target.value));
+        renderPanel(Number(target.value));
+      }
+      syncConfirm();
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const s = value('servei');
+      const day = value('dia');
+      const h = value('hora');
+      if (s === null || day === null || h === null) return;
+      mine.set(day, [...(mine.get(day) ?? []), { hora: h, servei: s }]);
+      renderPanel(day, h);
+      const text = `${long.format(days[day])} · ${cfg.hores[h]} · ${cfg.serveis[s].nom}`;
+      summary.textContent = text.charAt(0).toUpperCase() + text.slice(1);
+      live.textContent = `${cfg.textos.novaArribada}: ${summary.textContent}`;
+      form.hidden = true;
+      done.hidden = false;
+      done.querySelector<HTMLButtonElement>('[data-again]')!.focus({ preventScroll: true });
+
+      // Al mòbil el panell queda a sota: el portem a la vista perquè es vegi arribar
+      const rect = panel.getBoundingClientRect();
+      if (rect.top > window.innerHeight * 0.6 || rect.bottom < 0) {
+        setTimeout(() => panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }), 280);
+      }
+    });
+
+    root.querySelector('[data-again]')!.addEventListener('click', () => {
+      form.reset();
+      syncSlots(null);
+      syncConfirm();
+      done.hidden = true;
+      form.hidden = false;
+      form.querySelector<HTMLInputElement>('input[name="servei"]')!.focus();
+    });
+
+    syncSlots(null);
+    syncConfirm();
+    renderPanel(currentDay);
+  }
+</script>
+
+<style>
+  .demo-tag {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-bottom: 28px;
+    color: var(--mist);
+    font-size: 0.9375rem;
+  }
+  .demo-tag-mark {
+    padding: 4px 10px;
+    border-radius: var(--r);
+    background: var(--lichen);
+    color: var(--ink);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .demo-grid {
+    display: grid;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .demo-grid {
+      grid-template-columns: minmax(320px, 360px) 1fr;
+      gap: clamp(32px, 5vw, 72px);
+    }
+  }
+
+  /* ---------- Mòbil ---------- */
+  .phone {
+    justify-self: center;
+    width: min(100%, 360px);
+    padding: 10px;
+    border-radius: 44px;
+    background: var(--device);
+    box-shadow:
+      0 0 0 1px var(--slate-2) inset,
+      0 30px 60px -24px rgb(0 0 0 / 0.7);
+  }
+  .phone-screen {
+    position: relative;
+    min-height: 620px;
+    padding: 18px 16px 20px;
+    border-radius: 35px;
+    background: #f7f6f3;
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .ph-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 4px 14px;
+    border-bottom: 1.5px solid #e2dfd8;
+  }
+  .ph-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: var(--ink);
+    box-shadow: inset 0 0 0 7px var(--ink), inset 0 0 0 30px var(--lichen);
+  }
+  .ph-biz {
+    font-family: var(--display);
+    font-size: 1.1875rem;
+  }
+
+  .ph-form {
+    display: grid;
+    gap: 16px;
+    padding-top: 14px;
+  }
+  .ph-step {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .ph-step legend,
+  .ph-legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 0;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    color: var(--ink-muted);
+  }
+  .n {
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e2dfd8;
+    color: var(--ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+  .ph-step.is-filled .n {
+    background: var(--ink);
+    color: var(--lichen);
+  }
+
+  .ph-step input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .ph-services {
+    display: grid;
+    gap: 6px;
+  }
+  .ph-service {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 0 0 1.5px #e2dfd8 inset;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: box-shadow 160ms ease, background-color 160ms ease, transform 140ms var(--ease-press);
+  }
+  .ph-service-time {
+    color: var(--ink-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ph-days {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+  .ph-day {
+    position: relative;
+    display: grid;
+    place-items: center;
+    gap: 0;
+    min-height: 56px;
+    padding: 6px 0;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 0 0 1.5px #e2dfd8 inset;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: box-shadow 160ms ease, background-color 160ms ease, transform 140ms var(--ease-press);
+  }
+  .ph-day-wd {
+    color: var(--ink-muted);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .ph-day-n {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ph-slots {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .ph-slot {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 44px;
+    border-radius: 9px;
+    background: #fff;
+    box-shadow: 0 0 0 1.5px #e2dfd8 inset;
+    font-family: var(--display);
+    font-size: 0.9375rem;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: box-shadow 160ms ease, background-color 160ms ease, color 160ms ease, transform 140ms var(--ease-press);
+  }
+  /* Les hores ocupades es dibuixen, no s'amaguen */
+  .ph-slot.is-taken {
+    background: repeating-linear-gradient(-45deg, transparent 0 5px, #e7e4dd 5px 6px);
+    box-shadow: 0 0 0 1.5px #ebe8e2 inset;
+    color: #9a9ea2;
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+  .ph-slot:not(.is-taken):has(input:disabled) {
+    color: #a7aaad;
+    cursor: default;
+  }
+
+  .ph-service:has(input:checked),
+  .ph-day:has(input:checked),
+  .ph-slot:has(input:checked) {
+    background: var(--ink);
+    color: #fff;
+    box-shadow: none;
+  }
+  .ph-service:has(input:checked) .ph-service-time,
+  .ph-day:has(input:checked) .ph-day-wd {
+    color: var(--lichen);
+  }
+  .ph-service:has(input:focus-visible),
+  .ph-day:has(input:focus-visible),
+  .ph-slot:has(input:focus-visible) {
+    outline: 2px solid var(--lichen);
+    outline-offset: 2px;
+  }
+  .ph-service:active,
+  .ph-day:active,
+  .ph-slot:not(.is-taken):active {
+    transform: scale(0.97);
+  }
+
+  .ph-confirm {
+    width: 100%;
+    min-height: 50px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--lichen);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 140ms var(--ease-press), background-color 180ms ease, color 180ms ease;
+  }
+  .ph-confirm:disabled {
+    background: #e7e4dd;
+    color: #7c8085;
+    cursor: not-allowed;
+  }
+  .ph-confirm:not(:disabled):active {
+    transform: scale(0.97);
+  }
+
+  .ph-done {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 72px 12px 20px;
+    text-align: center;
+  }
+  .ph-done:not([hidden]) {
+    animation: settle 420ms var(--ease-out) both;
+  }
+  .ph-check {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 8px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--lichen);
+  }
+  .ph-check svg {
+    width: 30px;
+    height: 30px;
+  }
+  .ph-done-title {
+    font-family: var(--display);
+    font-size: 1.625rem;
+  }
+  .ph-done-summary {
+    font-weight: 650;
+  }
+  .ph-done-note {
+    color: var(--ink-muted);
+    font-size: 0.9375rem;
+  }
+  .ph-again {
+    margin-top: 18px;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    box-shadow: 0 0 0 1.5px #d6d2ca inset;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  /* ---------- Panell ---------- */
+  .panel {
+    border-radius: 6px;
+    background: var(--slate);
+    box-shadow:
+      0 0 0 2px var(--bed),
+      0 30px 60px -30px rgb(0 0 0 / 0.6);
+    overflow: hidden;
+  }
+  .panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 20px 22px 18px;
+    background: var(--basalt-2);
+    border-bottom: 2px solid var(--bed);
+  }
+  .panel-kind {
+    color: var(--mist);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .panel-biz {
+    font-family: var(--display);
+    font-size: 1.375rem;
+  }
+  .panel-count {
+    color: var(--mist);
+    font-size: 0.875rem;
+    text-align: right;
+  }
+  .panel-count strong {
+    display: block;
+    color: var(--chalk);
+    font-family: var(--display);
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .panel-day {
+    padding: 14px 22px;
+    color: var(--mist-2);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--bed);
+  }
+  .panel-list {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--bed);
+  }
+  .panel-list :global(.panel-row) {
+    display: grid;
+    grid-template-columns: 4.25rem 1fr auto;
+    grid-template-areas: 'time who tag' 'time what tag';
+    align-items: center;
+    column-gap: 14px;
+    padding: 12px 22px;
+    background: var(--slate);
+  }
+  .panel-list :global(.panel-time) {
+    grid-area: time;
+    font-family: var(--display);
+    font-size: 1.25rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .panel-list :global(.panel-who) {
+    grid-area: who;
+    font-weight: 650;
+  }
+  .panel-list :global(.panel-what) {
+    grid-area: what;
+    color: var(--mist);
+    font-size: 0.875rem;
+  }
+  .panel-list :global(.panel-tag) {
+    grid-area: tag;
+    padding: 4px 9px;
+    border-radius: var(--r);
+    background: var(--lichen);
+    color: var(--ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .panel-list :global(.panel-row.is-new) {
+    background: #33352f;
+  }
+  .panel-list :global(.panel-row.is-arriving) {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition:
+      opacity 520ms var(--ease-out),
+      transform 520ms var(--ease-out),
+      background-color 1600ms ease;
+    background: #5a4a2a;
+  }
+  .panel-list :global(.panel-row.is-arriving.is-in) {
+    opacity: 1;
+    transform: none;
+    background: #33352f;
+  }
+
+  @keyframes settle {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ph-done:not([hidden]) {
+      animation-name: fade;
+    }
+    .panel-list :global(.panel-row.is-arriving) {
+      transform: none;
+    }
+    @keyframes fade {
+      from {
+        opacity: 0;
+      }
+    }
+  }
+</style>

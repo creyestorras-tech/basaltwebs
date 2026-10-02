@@ -1,0 +1,594 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-02T19:12:01.619Z",
+  "title": "Design System: Basalt Webs",
+  "extensions": {
+    "colorMeta": {
+      "basalt": {
+        "role": "neutral",
+        "displayName": "Olot Basalt",
+        "canonical": "#131517",
+        "oklch": "oklch(19.4% 0.005 248.1)",
+        "cssVar": "--basalt",
+        "tonalRamp": [
+          "#090b0d",
+          "#232527",
+          "#404245",
+          "#5f6164",
+          "#808385",
+          "#a3a5a8",
+          "#c7c9cc",
+          "#eceff2"
+        ]
+      },
+      "basalt-raised": {
+        "role": "neutral",
+        "displayName": "Raised Basalt",
+        "canonical": "#1b1e21",
+        "oklch": "oklch(23.3% 0.007 248.1)",
+        "cssVar": "--basalt-2",
+        "tonalRamp": [
+          "#090b0e",
+          "#222529",
+          "#3f4246",
+          "#5e6265",
+          "#7f8387",
+          "#a2a5a9",
+          "#c5cace",
+          "#ebeff3"
+        ]
+      },
+      "slate": {
+        "role": "neutral",
+        "displayName": "Slate Block",
+        "canonical": "#24282c",
+        "oklch": "oklch(27.4% 0.009 248.2)",
+        "cssVar": "--slate",
+        "tonalRamp": [
+          "#080c0f",
+          "#222629",
+          "#3e4347",
+          "#5d6266",
+          "#7e8388",
+          "#a1a6ab",
+          "#c4cacf",
+          "#eaeff5"
+        ]
+      },
+      "slate-edge": {
+        "role": "neutral",
+        "displayName": "Slate Edge",
+        "canonical": "#2e3337",
+        "oklch": "oklch(31.8% 0.010 242.0)",
+        "cssVar": "--slate-2",
+        "tonalRamp": [
+          "#080c0f",
+          "#21262a",
+          "#3e4347",
+          "#5c6266",
+          "#7d8388",
+          "#a0a6ab",
+          "#c4cacf",
+          "#e9eff5"
+        ]
+      },
+      "bed": {
+        "role": "neutral",
+        "displayName": "Mortar Bed",
+        "canonical": "#0c0d0e",
+        "oklch": "oklch(15.8% 0.003 248.0)",
+        "cssVar": "--bed",
+        "tonalRamp": [
+          "#0a0b0c",
+          "#242526",
+          "#414243",
+          "#606163",
+          "#818284",
+          "#a4a5a7",
+          "#c8c9cb",
+          "#edeff0"
+        ]
+      },
+      "mist": {
+        "role": "neutral",
+        "displayName": "Mist",
+        "canonical": "#959a9e",
+        "oklch": "oklch(68.3% 0.008 241.7)",
+        "cssVar": "--mist",
+        "tonalRamp": [
+          "#080c0e",
+          "#222629",
+          "#3e4346",
+          "#5d6266",
+          "#7e8387",
+          "#a1a6aa",
+          "#c5cace",
+          "#eaeff4"
+        ]
+      },
+      "mist-light": {
+        "role": "neutral",
+        "displayName": "Light Mist",
+        "canonical": "#bfc3c6",
+        "oklch": "oklch(81.5% 0.006 239.8)",
+        "cssVar": "--mist-2",
+        "tonalRamp": [
+          "#090c0d",
+          "#222528",
+          "#3f4245",
+          "#5e6264",
+          "#7f8386",
+          "#a2a6a8",
+          "#c6cacd",
+          "#ebeff2"
+        ]
+      },
+      "chalk": {
+        "role": "neutral",
+        "displayName": "Chalk",
+        "canonical": "#f2f1ed",
+        "oklch": "oklch(95.8% 0.005 95.1)",
+        "cssVar": "--chalk",
+        "tonalRamp": [
+          "#0c0b09",
+          "#262522",
+          "#43423f",
+          "#62615e",
+          "#83827f",
+          "#a6a5a1",
+          "#cac9c5",
+          "#efeeea"
+        ]
+      },
+      "lime": {
+        "role": "neutral",
+        "displayName": "Lime Mortar",
+        "canonical": "#e8e6e0",
+        "oklch": "oklch(92.5% 0.008 91.5)",
+        "cssVar": "--lime",
+        "tonalRamp": [
+          "#0c0b07",
+          "#262521",
+          "#43423d",
+          "#63615c",
+          "#84827d",
+          "#a7a59f",
+          "#cbc9c3",
+          "#f0eee8"
+        ]
+      },
+      "lime-face": {
+        "role": "neutral",
+        "displayName": "Lime Face",
+        "canonical": "#f3f1ec",
+        "oklch": "oklch(95.8% 0.007 88.6)",
+        "cssVar": null,
+        "tonalRamp": [
+          "#0c0b08",
+          "#262521",
+          "#43423e",
+          "#63615d",
+          "#84827e",
+          "#a7a5a0",
+          "#cbc9c4",
+          "#f0eee9"
+        ]
+      },
+      "lime-bed": {
+        "role": "neutral",
+        "displayName": "Lime Bed",
+        "canonical": "#c9c5bb",
+        "oklch": "oklch(82.4% 0.014 88.7)",
+        "cssVar": "--lime-bed",
+        "tonalRamp": [
+          "#0e0b05",
+          "#28251d",
+          "#454239",
+          "#646158",
+          "#868279",
+          "#a9a59b",
+          "#cdc9bf",
+          "#f2eee4"
+        ]
+      },
+      "joint-lime": {
+        "role": "neutral",
+        "displayName": "Lime Joint",
+        "canonical": "#a8a397",
+        "oklch": "oklch(71.6% 0.018 88.0)",
+        "cssVar": "--joint-lime",
+        "tonalRamp": [
+          "#0e0b04",
+          "#29251b",
+          "#464237",
+          "#656156",
+          "#878276",
+          "#aaa599",
+          "#cec9bc",
+          "#f3eee1"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#16181a",
+        "oklch": "oklch(20.8% 0.005 248.1)",
+        "cssVar": "--ink",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232527",
+          "#404245",
+          "#5f6164",
+          "#808385",
+          "#a3a5a8",
+          "#c7c9cc",
+          "#eceff2"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#4c5156",
+        "oklch": "oklch(43.2% 0.010 248.1)",
+        "cssVar": "--ink-muted",
+        "tonalRamp": [
+          "#080c0f",
+          "#21262a",
+          "#3e4347",
+          "#5d6267",
+          "#7e8388",
+          "#a0a6ab",
+          "#c4cad0",
+          "#e9eff5"
+        ]
+      },
+      "lichen": {
+        "role": "primary",
+        "displayName": "Xanthoria Lichen",
+        "canonical": "#e3a12f",
+        "oklch": "oklch(75.5% 0.144 76.0)",
+        "cssVar": "--lichen",
+        "tonalRamp": [
+          "#1b0400",
+          "#431600",
+          "#6b3000",
+          "#8e5100",
+          "#b37300",
+          "#d09a43",
+          "#e6c392",
+          "#faecd9"
+        ]
+      },
+      "lichen-hi": {
+        "role": "primary",
+        "displayName": "Sunlit Lichen",
+        "canonical": "#f0b54a",
+        "oklch": "oklch(80.9% 0.139 79.2)",
+        "cssVar": "--lichen-hi",
+        "tonalRamp": [
+          "#1a0500",
+          "#411800",
+          "#673300",
+          "#8a5400",
+          "#ae7600",
+          "#cd9b41",
+          "#e4c491",
+          "#faedd9"
+        ]
+      },
+      "lichen-ink": {
+        "role": "primary",
+        "displayName": "Lichen Ink",
+        "canonical": "#7f520c",
+        "oklch": "oklch(47.8% 0.098 71.0)",
+        "cssVar": "--lichen-ink",
+        "tonalRamp": [
+          "#1c0300",
+          "#411800",
+          "#613600",
+          "#845613",
+          "#a7783a",
+          "#cc9a5e",
+          "#e9c193",
+          "#fcecd9"
+        ]
+      },
+      "ember": {
+        "role": "tertiary",
+        "displayName": "Ember",
+        "canonical": "#a3361f",
+        "oklch": "oklch(48.9% 0.148 33.6)",
+        "cssVar": null,
+        "tonalRamp": [
+          "#210000",
+          "#4f0000",
+          "#7e0d00",
+          "#a43720",
+          "#cb5b43",
+          "#e78772",
+          "#f6b8a9",
+          "#ffe8e2"
+        ]
+      },
+      "bezel": {
+        "role": "neutral",
+        "displayName": "Device Bezel",
+        "canonical": "#0a0b0c",
+        "oklch": "oklch(14.9% 0.003 248.1)",
+        "cssVar": null,
+        "tonalRamp": [
+          "#0a0b0c",
+          "#242526",
+          "#414243",
+          "#606163",
+          "#818284",
+          "#a4a5a7",
+          "#c8c9cb",
+          "#edeff0"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero and contact headlines only, Marcellus 400, about 12-13ch."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings (h2), balanced wrap."
+      },
+      "title": {
+        "displayName": "Title (incised)",
+        "purpose": "Names cut into stones: wall stones, example sites, plaque quotes. Prices, times and counts also use Marcellus with tabular numerals."
+      },
+      "title-text": {
+        "displayName": "Title (text)",
+        "purpose": "Step and FAQ titles that read as instructions."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Section intros, max 38rem, light mist on dark, muted ink on lime."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text; legal pages capped at 46rem."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Small metadata, badges, language switch (tracked 0.06em)."
+      }
+    },
+    "materials": [
+      {
+        "name": "basalt-grain-plate",
+        "value": "url('/img/basalt.webp')",
+        "purpose": "Photographic basalt grain plate under every dark course and dark stone; each stone samples a different patch by offsetting background-position. Tile size not fixed by the system."
+      },
+      {
+        "name": "wash-course",
+        "value": "linear-gradient(rgb(19 21 23 / 0.8), rgb(19 21 23 / 0.8))",
+        "purpose": "Flat basalt wash over the plate on dark courses."
+      },
+      {
+        "name": "wash-stone",
+        "value": "linear-gradient(rgb(36 40 44 / 0.72), rgb(36 40 44 / 0.72))",
+        "purpose": "Flat slate wash over the plate on dark stones."
+      },
+      {
+        "name": "wash-plaque",
+        "value": "linear-gradient(rgb(19 21 23 / 0.88), rgb(19 21 23 / 0.88))",
+        "purpose": "Denser basalt wash on statement plaques."
+      }
+    ],
+    "shadows": [
+      {
+        "name": "block-bevel",
+        "value": "0 1px 0 rgb(255 255 255 / 0.28) inset, 0 -2px 0 rgb(0 0 0 / 0.16) inset",
+        "purpose": "Every solid button: a cut-block bevel, not a lift."
+      },
+      {
+        "name": "set-object",
+        "value": "0 0 0 1px #2e3337 inset, 0 40px 80px -30px rgb(0 0 0 / 0.75)",
+        "purpose": "Depicted phones set into the wall (demo phone and panel use a 30px/60px variant)."
+      },
+      {
+        "name": "floating-action",
+        "value": "0 1px 0 rgb(255 255 255 / 0.28) inset, 0 10px 24px -8px rgb(0 0 0 / 0.55)",
+        "purpose": "Mobile floating WhatsApp button only."
+      },
+      {
+        "name": "joint-ring",
+        "value": "0 0 0 2px var(--bed)",
+        "purpose": "A mortar joint drawn around a standalone block (demo panel; the price plaque uses lime-bed)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Long ease-out (quint-like) for setting blocks, disclosure height, arrow nudge, FAB entry."
+      },
+      {
+        "name": "ease-press",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Press feedback: scale(0.97) over 140ms."
+      },
+      {
+        "name": "set-block",
+        "value": "opacity 0 to 1, translateY(10px) to 0, 760ms ease-out, stagger 70ms per index",
+        "purpose": "Blocks set into the wall once when they enter the viewport; never replayed."
+      },
+      {
+        "name": "settle",
+        "value": "translateY(8px) + fade, 420-520ms ease-out",
+        "purpose": "Demo confirmation and the new booking row arriving in the panel."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "opacity only, 300ms ease",
+        "purpose": "prefers-reduced-motion: transforms removed, fade kept."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "actions-inline",
+        "value": "520px"
+      },
+      {
+        "name": "header-cta",
+        "value": "640px"
+      },
+      {
+        "name": "wall-bond",
+        "value": "720px"
+      },
+      {
+        "name": "footer-split",
+        "value": "760px"
+      },
+      {
+        "name": "steps-row",
+        "value": "820px"
+      },
+      {
+        "name": "split",
+        "value": "900px"
+      },
+      {
+        "name": "works-grid",
+        "value": "960px"
+      },
+      {
+        "name": "nav",
+        "value": "1040px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Lichen cut block for every primary action (WhatsApp, confirm).",
+      "html": "<button class=\"ds-btn\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/></svg>Escriu per WhatsApp</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:54px;padding:0 26px;border:0;border-radius:3px;background:var(--lichen,#e3a12f);color:var(--ink,#16181a);font:650 1.0625rem/1.1 var(--text,'Schibsted Grotesk Variable',system-ui,sans-serif);cursor:pointer;box-shadow:0 1px 0 rgb(255 255 255 / .28) inset,0 -2px 0 rgb(0 0 0 / .16) inset;transition:transform 140ms cubic-bezier(.23,1,.32,1),background-color 180ms ease}.ds-btn svg{width:21px;height:21px;flex:none}.ds-btn:hover{background:var(--lichen-hi,#f0b54a)}.ds-btn:focus-visible{outline:2px solid var(--lichen,#e3a12f);outline-offset:3px}.ds-btn:active{transform:scale(.97)}"
+    },
+    {
+      "name": "Line Button",
+      "kind": "button",
+      "refersTo": "button-line",
+      "description": "Quiet secondary block with an inset rule in currentColor; works on basalt and lime.",
+      "html": "<button class=\"ds-btn-line\">Veure exemples</button>",
+      "css": ".ds-btn-line{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 26px;border:0;border-radius:3px;background:var(--basalt,#131517);color:var(--chalk,#f2f1ed);font:650 1.0625rem/1.1 var(--text,'Schibsted Grotesk Variable',system-ui,sans-serif);cursor:pointer;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,currentColor 34%,transparent);transition:transform 140ms cubic-bezier(.23,1,.32,1),background-color 180ms ease}.ds-btn-line:hover{background:color-mix(in srgb,currentColor 7%,var(--basalt,#131517))}.ds-btn-line:focus-visible{outline:2px solid var(--lichen,#e3a12f);outline-offset:3px}.ds-btn-line:active{transform:scale(.97)}"
+    },
+    {
+      "name": "Stone Wall (dark)",
+      "kind": "card",
+      "refersTo": "stone-dark",
+      "description": "Stones on a mortar bed: 3px padding and gap in the bed colour, running bond 7/5 then 5/7, slate wash over the grain plate.",
+      "html": "<ul class=\"ds-wall\"><li class=\"ds-stone\"><h3>Reserves 24 hores</h3><p>Els clients reserven quan volen, des del mòbil.</p></li><li class=\"ds-stone\"><h3>Panell propi</h3><p>Horaris, serveis i festius.</p></li><li class=\"ds-stone\"><h3>Català i castellà</h3><p>El web en els dos idiomes.</p></li><li class=\"ds-stone\"><h3>Sense quotes</h3><p>Un sol pagament.</p></li></ul>",
+      "css": ".ds-wall{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin:0;padding:3px;list-style:none;background:var(--bed,#0c0d0e);border-radius:4px}.ds-stone{grid-column:span 7;display:grid;gap:8px;padding:clamp(24px,3.4vw,40px);background:linear-gradient(rgb(36 40 44 / .72),rgb(36 40 44 / .72)),url('/img/basalt.webp') 0 0 / 1200px,var(--slate,#24282c);border-radius:2px;color:var(--chalk,#f2f1ed)}.ds-stone:nth-child(2),.ds-stone:nth-child(3){grid-column:span 5}.ds-stone:nth-child(2){background-position:0 0,-220px -90px}.ds-stone:nth-child(3){background-position:0 0,-410px -300px}.ds-stone:nth-child(4){background-position:0 0,-120px -480px}.ds-stone h3{margin:0;font:400 clamp(1.375rem,2.2vw,1.75rem)/1.15 var(--display,Marcellus,Palatino,serif)}.ds-stone p{margin:0;color:var(--mist-2,#bfc3c6)}"
+    },
+    {
+      "name": "Lime Steps",
+      "kind": "card",
+      "refersTo": "stone-lime",
+      "description": "Lime-face stones on a 3px lime-joint bed, the middle stone wider (4/5/4) to break the joints.",
+      "html": "<ol class=\"ds-steps\"><li><span>1</span><h3>Proposta gratuïta</h3><p>Amb el nom i els serveis del teu negoci.</p></li><li><span>2</span><h3>La revisem junts</h3><p>Ho adaptem al teu gust.</p></li><li><span>3</span><h3>Publicat</h3><p>I comences a rebre reserves.</p></li></ol>",
+      "css": ".ds-steps{display:grid;grid-template-columns:4fr 5fr 4fr;gap:3px;margin:0;padding:3px;list-style:none;background:var(--joint-lime,#a8a397);color:var(--ink,#16181a)}.ds-steps li{display:grid;gap:10px;align-content:start;padding:clamp(28px,4vw,44px) clamp(22px,3vw,36px);background:#f3f1ec}.ds-steps span{font:400 clamp(3rem,6vw,4.5rem)/.9 var(--display,Marcellus,Palatino,serif);color:var(--lichen-ink,#7f520c)}.ds-steps h3{margin:14px 0 0;font:650 1.3125rem/1.25 var(--text,'Schibsted Grotesk Variable',system-ui,sans-serif)}.ds-steps p{margin:0;color:var(--ink-muted,#4c5156)}"
+    },
+    {
+      "name": "Header Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Sticky basalt slab on a 2px bed joint; mist links, lichen current language.",
+      "html": "<header class=\"ds-header\"><span class=\"ds-brand\">Basalt <span>Webs</span></span><nav class=\"ds-nav\"><a href=\"#\">Prova-ho</a><a href=\"#\">Exemples</a><a href=\"#\">Preu</a></nav><div class=\"ds-lang\"><a aria-current=\"true\" href=\"#\">CA</a><i></i><a href=\"#\">ES</a></div></header>",
+      "css": ".ds-header{display:flex;align-items:center;gap:28px;height:64px;padding:0 24px;background:var(--basalt,#131517);border-bottom:2px solid var(--bed,#0c0d0e);color:var(--chalk,#f2f1ed)}.ds-brand{font:400 1.25rem var(--display,Marcellus,Palatino,serif)}.ds-brand span{color:var(--mist,#959a9e)}.ds-nav{display:flex;gap:2px}.ds-nav a{padding:10px 12px;color:var(--mist,#959a9e);font-size:.9375rem;font-weight:500;text-decoration:none;transition:color 150ms ease}.ds-nav a:hover{color:var(--chalk,#f2f1ed)}.ds-nav a:focus-visible,.ds-lang a:focus-visible{outline:2px solid var(--lichen,#e3a12f);outline-offset:3px}.ds-lang{display:flex;align-items:center;margin-left:auto;font-size:.8125rem;font-weight:650;letter-spacing:.06em}.ds-lang i{width:1px;height:14px;background:var(--slate-2,#2e3337)}.ds-lang a{display:grid;place-items:center;min-width:44px;min-height:44px;color:var(--mist,#959a9e);text-decoration:none}.ds-lang a[aria-current]{color:var(--lichen,#e3a12f)}"
+    },
+    {
+      "name": "Price Plaque",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "A statement stone set into a lime course: dense basalt wash over the grain plate, 4px corners, 2px lime-bed rim.",
+      "html": "<div class=\"ds-plaque\"><p>Si no t’agrada, no pagues res.</p><button class=\"ds-plaque-btn\">Demana la proposta</button></div>",
+      "css": ".ds-plaque{display:grid;gap:28px;padding:clamp(28px,4.5vw,52px);border-radius:4px;background:linear-gradient(rgb(19 21 23 / .88),rgb(19 21 23 / .88)),url('/img/basalt.webp') center / 1200px,var(--basalt,#131517);color:#f2f1ed;box-shadow:0 0 0 2px var(--lime-bed,#c9c5bb)}.ds-plaque p{margin:0;font:400 clamp(1.625rem,3.2vw,2.375rem)/1.18 var(--display,Marcellus,Palatino,serif)}.ds-plaque-btn{justify-self:start;min-height:54px;padding:0 26px;border:0;border-radius:3px;background:var(--lichen,#e3a12f);color:var(--ink,#16181a);font:650 1.0625rem/1.1 var(--text,'Schibsted Grotesk Variable',system-ui,sans-serif);cursor:pointer;box-shadow:0 1px 0 rgb(255 255 255 / .28) inset,0 -2px 0 rgb(0 0 0 / .16) inset}.ds-plaque-btn:hover{background:var(--lichen-hi,#f0b54a)}.ds-plaque-btn:focus-visible{outline:2px solid var(--lichen,#e3a12f);outline-offset:3px}"
+    },
+    {
+      "name": "FAQ Disclosure",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Rows ruled by 3px lime joints; a square lime-face marker that rotates 45deg and turns lichen when open.",
+      "html": "<div class=\"ds-faq\"><details open><summary>Hi ha quotes mensuals?<span class=\"ds-mark\"></span></summary><p>No. Un sol pagament.</p></details><details><summary>Quant triga?<span class=\"ds-mark\"></span></summary><p>Unes setmanes.</p></details></div>",
+      "css": ".ds-faq{border-top:3px solid var(--joint-lime,#a8a397);background:var(--lime,#e8e6e0);color:var(--ink,#16181a);font-family:var(--text,'Schibsted Grotesk Variable',system-ui,sans-serif)}.ds-faq details{border-bottom:3px solid var(--joint-lime,#a8a397)}.ds-faq summary{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:72px;padding:18px 0;font-size:1.1875rem;font-weight:650;list-style:none;cursor:pointer}.ds-faq summary::-webkit-details-marker{display:none}.ds-faq summary:focus-visible{outline:2px solid var(--lichen,#e3a12f);outline-offset:3px}.ds-mark{position:relative;flex:none;width:34px;height:34px;background:#f3f1ec;box-shadow:inset 0 0 0 2px var(--joint-lime,#a8a397);transition:transform 260ms cubic-bezier(.22,1,.36,1),background-color 200ms ease}.ds-mark::before,.ds-mark::after{content:'';position:absolute;top:50%;left:50%;width:12px;height:1.75px;background:var(--ink,#16181a);translate:-50% -50%}.ds-mark::after{rotate:90deg}.ds-faq summary:hover .ds-mark{background:#fff}.ds-faq details[open] .ds-mark{transform:rotate(45deg);background:var(--lichen,#e3a12f);box-shadow:none}.ds-faq p{margin:0;padding:0 52px 26px 0;color:var(--ink-muted,#4c5156)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Pedra picada d'Olot",
+    "overview": "The site is a dressed basalt wall from La Garrotxa. Every section is a course of stone laid full width: dark basalt courses carry the claim, lime-mortar courses carry the reading. Inside a course, content is cut into stones separated by mortar joints of 2 to 3px, and those joints are the only grid the page has. Headlines are incised in a glyphic, stone-cut capital face; everything that is read at length is set in a sturdy grotesk. The wall is real material: dark stones show a photographic basalt grain plate under a flat wash, so no two stones read identical.\n\nThe palette is near-black stone, cool mist and warm lime, with one living colour on it: lichen (the Xanthoria that grows on old walls), which marks what the visitor can do and what just changed. The density is calm and large-type, tuned for a business owner reading on a phone between clients. Motion is one gesture: each block sets into the wall once, with a short rise and a fade, and stays.\n\nThe world refuses the SaaS split hero with a row of feature cards, colour gradients, glows, and pill-shaped controls on the wall.",
+    "keyCharacteristics": [
+      "Full-width courses alternating basalt (dark) and lime (light); same-tone neighbours are separated by a 2px mortar joint.",
+      "Mortar joints (2px on dark, 3px on lime) as the only grid: stones sit on a visible bed colour.",
+      "Running bond: stone widths and positions offset between rows (7/5 then 5/7 spans; wider middle stone; dropped middle column).",
+      "Square stones: corners of 2 to 4px, never pills.",
+      "Photographic basalt grain plate under a flat wash on dark stones, each stone sampling a different patch.",
+      "Lichen is the single accent, for actions and live state only.",
+      "Marcellus for incised headlines, figures and times; Schibsted Grotesk for everything read.",
+      "Blocks set in once: 10px rise + fade on a long ease-out; reduced motion keeps only the fade."
+    ],
+    "rules": [
+      {
+        "name": "The Lichen Rule",
+        "body": "Lichen marks what can be done or what just happened (actions, focus, current, new). It never fills a large surface, never decorates a heading, and never appears as a second accent beside another hue.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink-on-Lichen Rule",
+        "body": "Anything set on lichen is ink, never chalk or white.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Courses Rule",
+        "body": "A section is either a basalt course or a lime course. On a lime course the chalk token is remapped to ink, so components read correctly on either.",
+        "section": "colors"
+      },
+      {
+        "name": "The Incised Figure Rule",
+        "body": "Prices, times, counts and contact values are set in Marcellus with tabular numerals: numbers are inscriptions, not UI.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Weight Rule",
+        "body": "Marcellus has one weight (400). Hierarchy in the display face comes from size alone, never from faux bold.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mortar-Not-Shadow Rule",
+        "body": "Stones in a wall are separated by joints, never lifted by shadows. A shadow means the object is not part of the wall.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Flat Wash Rule",
+        "body": "The grain plate is always under a single-colour wash (basalt at 66 to 88%, slate at 72%); gradients are used only as that flat tint, never as a colour transition.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** build every section as a full-width basalt or lime course, separating same-tone courses with a 2px joint.",
+      "**Do** group content as stones on a visible mortar bed, joints of 2px on dark and 3px on lime.",
+      "**Do** offset stone widths between rows (7/5 then 5/7, 4/5/4) so joints never line up vertically.",
+      "**Do** put the photographic basalt grain plate under a flat wash on dark stones, and shift its position per stone.",
+      "**Do** keep lichen for actions and live state, with ink text on it, and use lichen ink for marks on lime.",
+      "**Do** set headlines, names and figures in Marcellus at 400; set everything read at length in Schibsted Grotesk.",
+      "**Do** set blocks in once with a 10px rise and fade; fade only under reduced motion."
+    ],
+    "donts": [
+      "**Don't** use a split hero with a row of feature cards.",
+      "**Don't** use colour gradients or glows; the only gradient is a single-colour wash over the stone plate.",
+      "**Don't** round stones, buttons or tags beyond 4px or make pill-shaped controls on the wall.",
+      "**Don't** lift stones with shadows; shadows belong only to objects set onto the wall.",
+      "**Don't** introduce a second accent hue; ember is reserved for depicting a lost customer.",
+      "**Don't** fake bold in Marcellus.",
+      "**Don't** use photos of people; imagery is basalt and landscape only."
+    ]
+  }
+}
