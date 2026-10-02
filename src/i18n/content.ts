@@ -9,7 +9,7 @@ const ca = {
   meta: {
     title: 'Basalt Webs · Webs amb reserves per a negocis de proximitat',
     description:
-      "Webs amb reserves en línia per a negocis de proximitat: barberies, centres d'estètica, teràpies, massatges i més. El primer mes és gratis.",
+      "Webs amb reserves en línia per a negocis de proximitat de tot Catalunya, fetes des de la Garrotxa: barberies, centres d'estètica, teràpies, massatges i més. El primer mes és gratis.",
   },
   nav: {
     com: 'Com funciona',
@@ -21,7 +21,7 @@ const ca = {
     idioma: 'Idioma',
   },
   hero: {
-    etiqueta: 'Barberies · Estètica · Teràpies · Massatges',
+    etiqueta: 'Des de la Garrotxa, per a tot Catalunya',
     titol: 'Webs amb reserves per a negocis de proximitat',
     subtitol:
       "Els teus clients demanen hora des del mòbil, a qualsevol hora, i tu ho gestiones tot des d'un panell.",
@@ -74,8 +74,8 @@ const ca = {
   },
   quisom: {
     etiqueta: 'Qui som',
-    titol: 'Tracte proper, siguis on siguis',
-    text: "Basalt Webs neix a la Garrotxa per ajudar els negocis de proximitat a tenir una web professional, a l'altura del seu ofici, que treballa per ells les 24 hores. Treballem amb negocis de tot arreu, en persona o per videotrucada. T'atenem directament, sense intermediaris, i parlem el teu idioma.",
+    titol: 'Arrels a la Garrotxa, clients a tot Catalunya',
+    text: "Basalt Webs neix a la Garrotxa, terra de volcans i de gent treballadora, per ajudar els negocis de proximitat de tot Catalunya a tenir una web professional, a l'altura del seu ofici, que treballa per ells les 24 hores. Com el basalt: sòlida i feta per durar. Treballem en persona o per videotrucada. T'atenem directament, sense intermediaris, i parlem el teu idioma.",
     signatura: `${site.persona}, de Basalt Webs`,
     peuFoto: 'Cingle de basalt de Castellfollit de la Roca',
     foto: 'Foto',
@@ -112,7 +112,7 @@ const es: Dict = {
   meta: {
     title: 'Basalt Webs · Webs con reservas para negocios de proximidad',
     description:
-      "Webs con reservas online para negocios de proximidad: barberías, centros de estética, terapias, masajes y más. El primer mes es gratis.",
+      "Webs con reservas online para negocios de proximidad de toda Cataluña, hechas desde la Garrotxa: barberías, centros de estética, terapias, masajes y más. El primer mes es gratis.",
   },
   nav: {
     com: 'Cómo funciona',
@@ -124,7 +124,7 @@ const es: Dict = {
     idioma: 'Idioma',
   },
   hero: {
-    etiqueta: 'Barberías · Estética · Terapias · Masajes',
+    etiqueta: 'Desde la Garrotxa, para toda Cataluña',
     titol: 'Webs con reservas para negocios de proximidad',
     subtitol:
       'Tus clientes piden hora desde el móvil, a cualquier hora, y tú lo gestionas todo desde un panel.',
@@ -177,8 +177,8 @@ const es: Dict = {
   },
   quisom: {
     etiqueta: 'Quiénes somos',
-    titol: 'Trato cercano, estés donde estés',
-    text: 'Basalt Webs nace en la Garrotxa para ayudar a los negocios de proximidad a tener una web profesional, a la altura de su oficio, que trabaja para ellos las 24 horas. Trabajamos con negocios de todas partes, en persona o por videollamada. Te atendemos directamente, sin intermediarios, y hablamos tu idioma.',
+    titol: 'Raíces en la Garrotxa, clientes en toda Cataluña',
+    text: 'Basalt Webs nace en la Garrotxa, tierra de volcanes y de gente trabajadora, para ayudar a los negocios de proximidad de toda Cataluña a tener una web profesional, a la altura de su oficio, que trabaja para ellos las 24 horas. Como el basalto: sólida y hecha para durar. Trabajamos en persona o por videollamada. Te atendemos directamente, sin intermediarios, y hablamos tu idioma.',
     signatura: `${site.persona}, de Basalt Webs`,
     peuFoto: 'Acantilado de basalto de Castellfollit de la Roca',
     foto: 'Foto',
