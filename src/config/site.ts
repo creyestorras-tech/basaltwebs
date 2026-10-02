@@ -8,6 +8,7 @@ export const site = {
   correu: 'basaltwebs@gmail.com',
   titular: 'Jordi Reyes Fernández',
   nif: '46673015N',
+  domicili: 'Olot (Girona)',
   preuPosada: '290',
   preuManteniment: '29',
   comarques: ['Garrotxa', 'Ripollès', "Pla de l'Estany"],

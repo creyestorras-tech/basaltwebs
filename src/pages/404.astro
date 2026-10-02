@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../config/site';
+---
+<Base lang="ca" title={`Pàgina no trobada · ${site.nom}`} description="Pàgina no trobada" alt={{ ca: '/', es: '/es/' }}>
+  <meta slot="head" name="robots" content="noindex" />
+  <section class="nf">
+    <div class="wrap nf-in">
+      <p class="eyebrow">Error 404</p>
+      <h1>Aquesta pàgina no existeix</h1>
+      <p class="lead">Potser l'enllaç és antic o hi ha alguna lletra canviada.</p>
+      <p class="lead es" lang="es">Esta página no existe. Puede que el enlace sea antiguo o tenga algún error.</p>
+      <div class="nf-actions">
+        <a class="btn btn-accent" href="/">Torna a l'inici</a>
+        <a class="btn btn-ghost" href="/es/">Ir al inicio</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding-block: clamp(80px, 14vw, 160px);
+  }
+  .nf-in {
+    max-width: 40rem;
+  }
+  h1 {
+    margin-top: 14px;
+    font-size: clamp(2.25rem, 6vw, 3rem);
+  }
+  .lead {
+    margin-top: 16px;
+  }
+  .lead.es {
+    margin-top: 6px;
+    font-size: 1rem;
+    color: var(--stone-500);
+  }
+  .nf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+</style>
