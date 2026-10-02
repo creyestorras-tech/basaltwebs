@@ -1,0 +1,18 @@
+---
+// Marca: la secció hexagonal d'una columna de basalt, amb un punt de brasa.
+interface Props { class?: string }
+const { class: cls } = Astro.props;
+---
+<span class:list={['logo', cls]}>
+  <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
+    <path d="M16 2.5 27.7 9.25v13.5L16 29.5 4.3 22.75V9.25Z" fill="currentColor" />
+    <path d="M16 9 21.6 12.25v6.5L16 22l-5.6-3.25v-6.5Z" fill="none" stroke="var(--logo-facet, rgb(255 255 255 / .22))" stroke-width="1.4" />
+    <path d="M16 2.5V9M27.7 9.25l-6.1 3M27.7 22.75l-6.1-4M16 29.5V22M4.3 22.75l6.1-4M4.3 9.25l6.1 3" stroke="var(--logo-facet, rgb(255 255 255 / .22))" stroke-width="1.2" />
+    <circle cx="16" cy="15.5" r="2.6" fill="var(--ember-500)" />
+  </svg>
+  <span class="logo-text">Basalt<span> Webs</span></span>
+</span>
+<style>
+  .logo { display: inline-flex; align-items: center; gap: 10px; font-family: var(--serif); font-weight: 650; font-size: 1.1875rem; letter-spacing: -0.01em; }
+  .logo-text span { font-weight: 400; opacity: .72; }
+</style>

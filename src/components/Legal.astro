@@ -1,0 +1,175 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, type Lang } from '../config/site';
+import { rutes } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+  tipus: 'avis' | 'privacitat';
+}
+const { lang, tipus } = Astro.props;
+const r = rutes[lang];
+const alt = { ca: rutes.ca[tipus], es: rutes.es[tipus] };
+const actualitzat = lang === 'ca' ? 'Darrera actualització: octubre de 2026' : 'Última actualización: octubre de 2026';
+const tornar = lang === 'ca' ? "Torna a l'inici" : 'Volver al inicio';
+
+const titol =
+  tipus === 'avis'
+    ? lang === 'ca' ? 'Avís legal' : 'Aviso legal'
+    : lang === 'ca' ? 'Política de privacitat' : 'Política de privacidad';
+---
+<Base lang={lang} title={`${titol} · ${site.nom}`} description={titol} alt={alt}>
+  <article class="legal">
+    <div class="wrap legal-in">
+      <a class="back" href={r.home}>← {tornar}</a>
+      <h1>{titol}</h1>
+      <p class="updated">{actualitzat}</p>
+
+      {tipus === 'avis' && lang === 'ca' && (
+        <Fragment>
+          <h2>1. Dades identificatives</h2>
+          <p>En compliment de l'article 10 de la Llei 34/2002, de serveis de la societat de la informació i de comerç electrònic (LSSI-CE), s'informa que aquest lloc web, {site.url}, és titularitat de:</p>
+          <ul>
+            <li><strong>Titular:</strong> {site.titular}</li>
+            <li><strong>NIF:</strong> {site.nif}</li>
+            <li><strong>Nom comercial:</strong> {site.nom}</li>
+            <li><strong>Correu electrònic:</strong> <a href={`mailto:${site.correu}`}>{site.correu}</a></li>
+            <li><strong>Telèfon:</strong> {site.mobil}</li>
+          </ul>
+          <h2>2. Objecte</h2>
+          <p>Aquest lloc web té per objecte informar sobre els serveis de disseny i manteniment de webs amb reserves en línia que ofereix {site.nom} a negocis de proximitat.</p>
+          <h2>3. Condicions d'ús</h2>
+          <p>L'accés a aquest lloc web és gratuït i no requereix registre. La persona usuària es compromet a fer-ne un ús adequat, d'acord amb la llei, la bona fe i aquest avís legal.</p>
+          <h2>4. Propietat intel·lectual i industrial</h2>
+          <p>Els continguts d'aquest lloc web (textos, disseny, logotip i codi) són titularitat de {site.titular} o s'utilitzen amb autorització. La fotografia de Castellfollit de la Roca és obra de {site.foto.autor} i s'utilitza sota la llicència d'Unsplash. No se'n permet la reproducció, distribució o transformació sense autorització expressa.</p>
+          <h2>5. Enllaços a altres webs</h2>
+          <p>Aquest lloc web conté enllaços a webs de clients i a serveis de tercers (com WhatsApp). {site.nom} no es fa responsable dels continguts ni de les polítiques de privacitat d'aquests llocs.</p>
+          <h2>6. Responsabilitat</h2>
+          <p>{site.nom} treballa perquè la informació d'aquest lloc web sigui correcta i estigui actualitzada, però no garanteix l'absència d'errors ni la disponibilitat ininterrompuda del servei.</p>
+          <h2>7. Legislació aplicable</h2>
+          <p>Aquest avís legal es regeix per la legislació espanyola. Per a qualsevol controvèrsia, les parts se sotmeten als jutjats i tribunals que corresponguin d'acord amb la normativa vigent.</p>
+        </Fragment>
+      )}
+
+      {tipus === 'avis' && lang === 'es' && (
+        <Fragment>
+          <h2>1. Datos identificativos</h2>
+          <p>En cumplimiento del artículo 10 de la Ley 34/2002, de servicios de la sociedad de la información y de comercio electrónico (LSSI-CE), se informa de que este sitio web, {site.url}, es titularidad de:</p>
+          <ul>
+            <li><strong>Titular:</strong> {site.titular}</li>
+            <li><strong>NIF:</strong> {site.nif}</li>
+            <li><strong>Nombre comercial:</strong> {site.nom}</li>
+            <li><strong>Correo electrónico:</strong> <a href={`mailto:${site.correu}`}>{site.correu}</a></li>
+            <li><strong>Teléfono:</strong> {site.mobil}</li>
+          </ul>
+          <h2>2. Objeto</h2>
+          <p>Este sitio web tiene por objeto informar sobre los servicios de diseño y mantenimiento de webs con reservas online que ofrece {site.nom} a negocios de proximidad.</p>
+          <h2>3. Condiciones de uso</h2>
+          <p>El acceso a este sitio web es gratuito y no requiere registro. La persona usuaria se compromete a hacer un uso adecuado del mismo, de acuerdo con la ley, la buena fe y este aviso legal.</p>
+          <h2>4. Propiedad intelectual e industrial</h2>
+          <p>Los contenidos de este sitio web (textos, diseño, logotipo y código) son titularidad de {site.titular} o se utilizan con autorización. La fotografía de Castellfollit de la Roca es obra de {site.foto.autor} y se utiliza bajo la licencia de Unsplash. No se permite su reproducción, distribución o transformación sin autorización expresa.</p>
+          <h2>5. Enlaces a otras webs</h2>
+          <p>Este sitio web contiene enlaces a webs de clientes y a servicios de terceros (como WhatsApp). {site.nom} no se hace responsable de sus contenidos ni de sus políticas de privacidad.</p>
+          <h2>6. Responsabilidad</h2>
+          <p>{site.nom} trabaja para que la información de este sitio web sea correcta y esté actualizada, pero no garantiza la ausencia de errores ni la disponibilidad ininterrumpida del servicio.</p>
+          <h2>7. Legislación aplicable</h2>
+          <p>Este aviso legal se rige por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales que correspondan de acuerdo con la normativa vigente.</p>
+        </Fragment>
+      )}
+
+      {tipus === 'privacitat' && lang === 'ca' && (
+        <Fragment>
+          <h2>1. Responsable del tractament</h2>
+          <ul>
+            <li><strong>Titular:</strong> {site.titular}</li>
+            <li><strong>NIF:</strong> {site.nif}</li>
+            <li><strong>Correu electrònic:</strong> <a href={`mailto:${site.correu}`}>{site.correu}</a></li>
+          </ul>
+          <h2>2. Quines dades tractem</h2>
+          <p>Aquest lloc web no té formularis ni registre d'usuaris. Només tractem les dades que ens facis arribar quan ens escrius per WhatsApp o per correu electrònic: nom, telèfon, correu, nom del negoci i el contingut del missatge.</p>
+          <h2>3. Finalitat i base legal</h2>
+          <p>Fem servir aquestes dades per respondre't i, si ho demanes, preparar-te una proposta. La base legal és el teu consentiment en contactar-nos i, si escau, l'aplicació de mesures precontractuals a petició teva (article 6.1.a i 6.1.b del RGPD).</p>
+          <h2>4. Conservació</h2>
+          <p>Conservem les dades mentre duri la relació o fins que en demanis la supressió. Si arribem a un acord comercial, les conservarem durant els terminis que exigeix la normativa fiscal i mercantil.</p>
+          <h2>5. Destinataris</h2>
+          <p>No cedim les teves dades a tercers, excepte per obligació legal. Per prestar el servei utilitzem proveïdors que poden tenir-hi accés com a encarregats del tractament: Cloudflare (allotjament del web, que pot registrar dades tècniques com l'adreça IP per motius de seguretat), WhatsApp (Meta) si ens hi escrius, i el proveïdor de correu electrònic.</p>
+          <h2>6. Galetes</h2>
+          <p>Aquest lloc web no utilitza galetes ni eines d'analítica o publicitat. Les tipografies i les imatges s'allotgen al mateix web.</p>
+          <h2>7. Els teus drets</h2>
+          <p>Pots exercir els drets d'accés, rectificació, supressió, oposició, limitació del tractament i portabilitat escrivint a <a href={`mailto:${site.correu}`}>{site.correu}</a>. Si consideres que no hem atès correctament la teva sol·licitud, pots presentar una reclamació davant l'Autoritat Catalana de Protecció de Dades (apdcat.gencat.cat) o l'Agència Espanyola de Protecció de Dades (aepd.es).</p>
+        </Fragment>
+      )}
+
+      {tipus === 'privacitat' && lang === 'es' && (
+        <Fragment>
+          <h2>1. Responsable del tratamiento</h2>
+          <ul>
+            <li><strong>Titular:</strong> {site.titular}</li>
+            <li><strong>NIF:</strong> {site.nif}</li>
+            <li><strong>Correo electrónico:</strong> <a href={`mailto:${site.correu}`}>{site.correu}</a></li>
+          </ul>
+          <h2>2. Qué datos tratamos</h2>
+          <p>Este sitio web no tiene formularios ni registro de usuarios. Solo tratamos los datos que nos hagas llegar cuando nos escribes por WhatsApp o por correo electrónico: nombre, teléfono, correo, nombre del negocio y el contenido del mensaje.</p>
+          <h2>3. Finalidad y base legal</h2>
+          <p>Usamos estos datos para responderte y, si lo pides, prepararte una propuesta. La base legal es tu consentimiento al contactarnos y, en su caso, la aplicación de medidas precontractuales a petición tuya (artículo 6.1.a y 6.1.b del RGPD).</p>
+          <h2>4. Conservación</h2>
+          <p>Conservamos los datos mientras dure la relación o hasta que solicites su supresión. Si llegamos a un acuerdo comercial, los conservaremos durante los plazos que exige la normativa fiscal y mercantil.</p>
+          <h2>5. Destinatarios</h2>
+          <p>No cedemos tus datos a terceros, salvo obligación legal. Para prestar el servicio utilizamos proveedores que pueden tener acceso a ellos como encargados del tratamiento: Cloudflare (alojamiento de la web, que puede registrar datos técnicos como la dirección IP por motivos de seguridad), WhatsApp (Meta) si nos escribes por ahí, y el proveedor de correo electrónico.</p>
+          <h2>6. Cookies</h2>
+          <p>Este sitio web no utiliza cookies ni herramientas de analítica o publicidad. Las tipografías y las imágenes se alojan en la propia web.</p>
+          <h2>7. Tus derechos</h2>
+          <p>Puedes ejercer los derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad escribiendo a <a href={`mailto:${site.correu}`}>{site.correu}</a>. Si consideras que no hemos atendido correctamente tu solicitud, puedes presentar una reclamación ante la Autoritat Catalana de Protecció de Dades (apdcat.gencat.cat) o la Agencia Española de Protección de Datos (aepd.es).</p>
+        </Fragment>
+      )}
+    </div>
+  </article>
+</Base>
+
+<style>
+  .legal {
+    padding-block: clamp(48px, 8vw, 96px);
+  }
+  .legal-in {
+    max-width: 46rem;
+  }
+  .back {
+    display: inline-block;
+    margin-bottom: 28px;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+  h1 {
+    font-size: clamp(2.25rem, 6vw, 3rem);
+  }
+  .updated {
+    margin-top: 10px;
+    color: var(--stone-500);
+    font-size: 0.9375rem;
+  }
+  h2 {
+    margin-top: 40px;
+    font-size: 1.375rem;
+  }
+  p,
+  ul {
+    margin-top: 12px;
+    color: var(--basalt-700);
+  }
+  ul {
+    padding-left: 20px;
+  }
+  li + li {
+    margin-top: 4px;
+  }
+  a {
+    text-underline-offset: 3px;
+    word-break: break-word;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .back:hover {
+      color: var(--text);
+    }
+  }
+</style>

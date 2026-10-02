@@ -1,0 +1,9 @@
+---
+import Base from '../../layouts/Base.astro';
+import Home from '../../components/Home.astro';
+import { dict, rutes } from '../../i18n/content';
+const t = dict.es;
+---
+<Base lang="es" title={t.meta.title} description={t.meta.description} alt={{ ca: rutes.ca.home, es: rutes.es.home }} home>
+  <Home lang="es" />
+</Base>

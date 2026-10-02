@@ -1,0 +1,1127 @@
+---
+import WhatsappIcon from './WhatsappIcon.astro';
+import { Image } from 'astro:assets';
+import foto from '../assets/castellfollit.jpg';
+import { site, whatsapp, mobilVisible, type Lang } from '../config/site';
+import { dict, exemples, rutes } from '../i18n/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = dict[lang];
+const wa = whatsapp(lang);
+
+const dies = lang === 'ca' ? ['dl', 'dt', 'dc', 'dj', 'dv'] : ['lu', 'ma', 'mi', 'ju', 'vi'];
+const hores = ['09:30', '10:15', '11:00', '16:45', '17:30', '18:15'];
+const mock =
+  lang === 'ca'
+    ? { titol: 'Demana hora', servei: 'Tall i barba · 45 min', confirma: 'Confirmar reserva' }
+    : { titol: 'Pide hora', servei: 'Corte y barba · 45 min', confirma: 'Confirmar reserva' };
+const trucades = ['09:12', '11:47', '13:05', '17:38'];
+
+// Columnes de basalt de fons (amplada, alçada relativa)
+const columnes = [62, 78, 54, 88, 70, 96, 66, 82, 58, 92, 74, 86, 60, 80];
+
+const icones = [
+  '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.5 18.5h3"/>',
+  '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  '<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v3M16 2.5v3M7.5 13h3M7.5 16.5h6"/>',
+  '<path d="M4 6h9M8.5 4v2M6 6c.6 3.6 3 6.4 6 7.5"/><path d="M11 6c-.7 3.6-3.4 6.7-7 8"/><path d="m12 20 4-9 4 9M13.4 17h5.2"/>',
+  '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 15.5h5"/>',
+  '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3.5 17.3a1.8 1.8 0 1 0 2.6 2.6l5.8-5.8a4 4 0 0 0 5.2-5.4l-2.4 2.4-2.2-.4-.4-2.2Z"/>',
+];
+---
+
+<!-- 1. Portada -->
+<section class="hero dark" data-hero>
+  <svg class="hero-cols" viewBox="0 0 1000 400" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    {columnes.map((h, i) => {
+      const w = 1000 / columnes.length;
+      const x = i * w;
+      const y = 400 - h * 3.6;
+      return (
+        <g>
+          <rect x={x} y={y} width={w * 0.34} height={400 - y} fill="rgb(255 255 255 / .035)" />
+          <rect x={x + w * 0.34} y={y} width={w * 0.4} height={400 - y} fill="rgb(255 255 255 / .02)" />
+          <rect x={x + w * 0.74} y={y} width={w * 0.26} height={400 - y} fill="rgb(0 0 0 / .18)" />
+        </g>
+      );
+    })}
+  </svg>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <p class="eyebrow hero-stagger" style="--i:0">{t.hero.etiqueta}</p>
+      <h1 class="hero-stagger" style="--i:1">{t.hero.titol}</h1>
+      <p class="lead hero-stagger" style="--i:2">{t.hero.subtitol}</p>
+      <div class="hero-actions hero-stagger" style="--i:3">
+        <a class="btn btn-accent" href={wa} target="_blank" rel="noopener">
+          <WhatsappIcon />
+          {t.hero.cta}
+        </a>
+        <a class="btn btn-ghost" href="#exemples">{t.hero.secundari}</a>
+      </div>
+      <p class="hero-note hero-stagger" style="--i:4">
+        <span class="dot" aria-hidden="true"></span>{t.hero.nota}
+      </p>
+    </div>
+
+    <div class="phone-wrap hero-stagger" style="--i:2" aria-hidden="true">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <p class="ph-title">{mock.titol}</p>
+          <p class="ph-service">{mock.servei}</p>
+          <div class="ph-days">
+            {dies.map((d, i) => (
+              <span class:list={['ph-day', { on: i === 3 }]}>
+                <small>{d}</small>{14 + i}
+              </span>
+            ))}
+          </div>
+          <div class="ph-slots">
+            {hores.map((h, i) => (
+              <span class:list={['ph-slot', { on: i === 4, off: i === 1 }]}>{h}</span>
+            ))}
+          </div>
+          <span class="ph-confirm">{mock.confirma}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. El problema -->
+<section class="section problem">
+  <div class="wrap problem-in">
+    <div data-reveal>
+      <p class="eyebrow">{t.problema.etiqueta}</p>
+      <h2 class="h2">{t.problema.titol}</h2>
+      <p class="lead problem-text">{t.problema.text}</p>
+    </div>
+    <div class="notif-stack" data-reveal style="--i:2" aria-hidden="true">
+      <div class="notif">
+        <div class="notif-head">
+          <span class="notif-icon missed">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 16 8M16 2l6 6"/><path d="M21 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 1.1 4.2 2 2 0 0 1 3.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L7 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+          </span>
+          <strong>{t.problema.trucades}</strong>
+          <span class="notif-count">{trucades.length}</span>
+        </div>
+        <ul>
+          {trucades.map((h) => (
+            <li><span>+34 6•• ••• •••</span><time>{t.problema.avui} · {h}</time></li>
+          ))}
+        </ul>
+      </div>
+      <div class="notif notif-ok">
+        <span class="notif-icon ok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+        </span>
+        <div>
+          <strong>{t.problema.reserva}</strong>
+          <p>{t.problema.reservaDetall}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Com funciona -->
+<section class="section steps-sec" id="com-funciona">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <p class="eyebrow">{t.passos.etiqueta}</p>
+      <h2 class="h2">{t.passos.titol}</h2>
+    </div>
+    <ol class="steps">
+      {t.passos.llista.map((p, i) => (
+        <li class="step" data-reveal style={`--i:${i}`}>
+          <span class="step-n">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{p.t}</h3>
+          <p>{p.d}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<!-- 4. Què inclou -->
+<section class="section dark features-sec" id="que-inclou">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <p class="eyebrow">{t.inclou.etiqueta}</p>
+      <h2 class="h2">{t.inclou.titol}</h2>
+    </div>
+    <ul class="features">
+      {t.inclou.llista.map((f, i) => (
+        <li class="feature" data-reveal style={`--i:${i % 3}`}>
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={icones[i]} />
+          </span>
+          <h3>{f.t}</h3>
+          <p>{f.d}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- 5. Exemples -->
+<section class="section" id="exemples">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <p class="eyebrow">{t.exemples.etiqueta}</p>
+      <h2 class="h2">{t.exemples.titol}</h2>
+    </div>
+    <ul class="examples">
+      {exemples.map((e, i) => (
+        <li data-reveal style={`--i:${i % 3}`}>
+          <a class="example" href={e.url} target="_blank" rel="noopener">
+            <span class="ex-bar" aria-hidden="true">
+              <span class="ex-dots"><i></i><i></i><i></i></span>
+              <span class="ex-url">{e.url.replace('https://', '')}</span>
+            </span>
+            <span class="ex-body">
+              <span class="ex-place">{e.lloc}</span>
+              <span class="ex-name">{e.nom}</span>
+              <span class="ex-type">{e.tipus[lang]}</span>
+              <span class="ex-link">
+                {t.exemples.veure}
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- 6. Preus -->
+<section class="section pricing-sec" id="preus">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <p class="eyebrow">{t.preus.etiqueta}</p>
+      <h2 class="h2">{t.preus.titol}</h2>
+    </div>
+    <div class="pricing dark" data-reveal style="--i:1">
+      <div class="price-rows">
+        <div class="price">
+          <p class="price-label">{t.preus.posada}</p>
+          <p class="price-num">{site.preuPosada}<span> €</span></p>
+          <p class="price-note">{t.preus.posadaNota}</p>
+        </div>
+        <div class="price">
+          <p class="price-label">{t.preus.manteniment}</p>
+          <p class="price-num">{site.preuManteniment}<span> € {t.preus.mes}</span></p>
+          <p class="price-note">{t.preus.mantenimentNota}</p>
+        </div>
+      </div>
+      <div class="promise">
+        <p class="promise-main">{t.preus.destacat}</p>
+        <p class="promise-sub">{t.preus.destacat2}</p>
+        <p class="promise-tag">{t.preus.sensePermanencia}</p>
+        <a class="btn btn-accent" href={wa} target="_blank" rel="noopener">{t.preus.cta}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Qui som -->
+<section class="section about-sec">
+  <div class="wrap about">
+    <figure class="about-photo" data-reveal>
+      <Image
+        src={foto}
+        alt={t.quisom.peuFoto}
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 900px) 540px, 100vw"
+        loading="lazy"
+        decoding="async"
+        format="webp"
+      />
+      <figcaption>
+        {t.quisom.peuFoto} · {t.quisom.foto}: <a href={site.foto.url} target="_blank" rel="noopener">{site.foto.autor}</a> / Unsplash
+      </figcaption>
+    </figure>
+    <div class="about-copy" data-reveal style="--i:1">
+      <p class="eyebrow">{t.quisom.etiqueta}</p>
+      <h2 class="h2">{t.quisom.titol}</h2>
+      <p class="about-text">{t.quisom.text}</p>
+      <p class="signature">— {t.quisom.signatura}</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Preguntes freqüents -->
+<section class="section faq-sec" id="preguntes">
+  <div class="wrap faq-in">
+    <div class="sec-head" data-reveal>
+      <p class="eyebrow">{t.faq.etiqueta}</p>
+      <h2 class="h2">{t.faq.titol}</h2>
+    </div>
+    <div class="faq" data-reveal style="--i:1">
+      {t.faq.llista.map((f) => (
+        <details>
+          <summary>
+            {f.q}
+            <span class="faq-plus" aria-hidden="true"></span>
+          </summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- 9. Contacte -->
+<section class="section dark contact-sec" id="contacte">
+  <div class="wrap contact" data-reveal>
+    <p class="eyebrow">{t.contacte.etiqueta}</p>
+    <h2 class="h2">{t.contacte.titol}</h2>
+    <p class="lead">{t.contacte.text}</p>
+    <div class="contact-actions">
+      <a class="btn btn-accent" href={wa} target="_blank" rel="noopener">
+        <WhatsappIcon />
+        {t.contacte.cta} · {mobilVisible()}
+      </a>
+      <p class="contact-mail">
+        {t.contacte.correu}: <a href={`mailto:${site.correu}`}>{site.correu}</a>
+      </p>
+    </div>
+    <p class="contact-legal">
+      <a href={rutes[lang].privacitat}>{dict[lang].peu.privacitat}</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  /* ---------- Portada ---------- */
+  .hero {
+    overflow: hidden;
+    background:
+      radial-gradient(120% 80% at 85% 0%, rgb(196 99 47 / 0.12), transparent 55%),
+      linear-gradient(180deg, var(--basalt-900), var(--basalt-950));
+    padding-block: clamp(48px, 9vw, 104px) 0;
+  }
+  .hero-cols {
+    position: absolute;
+    inset: auto 0 0 0;
+    width: 100%;
+    height: 72%;
+    z-index: -1;
+  }
+  .hero-in {
+    display: grid;
+    gap: 48px;
+    align-items: end;
+  }
+  .hero-copy {
+    padding-bottom: 8px;
+  }
+  .hero h1 {
+    margin-top: 18px;
+    font-size: clamp(2.375rem, 7.4vw, 4.25rem);
+    color: var(--white);
+    max-width: 16ch;
+  }
+  .hero .lead {
+    margin-top: 20px;
+    max-width: 34rem;
+    color: #b6b8ba;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .hero-actions .btn {
+    flex: 1 1 auto;
+  }
+  @media (min-width: 520px) {
+    .hero-actions .btn {
+      flex: 0 0 auto;
+    }
+  }
+  .hero-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 22px;
+    font-size: 0.9375rem;
+    color: var(--stone-300);
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ember-500);
+    box-shadow: 0 0 0 4px rgb(196 99 47 / 0.2);
+  }
+
+  /* Entrada esglaonada de la portada (només una vegada, en carregar) */
+  .hero-stagger {
+    animation: rise 800ms var(--ease-out) both;
+    animation-delay: calc(80ms + var(--i, 0) * 70ms);
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+  }
+
+  /* Mòbil de mostra */
+  .phone-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: -150px;
+  }
+  .phone {
+    position: relative;
+    width: min(300px, 78vw);
+    padding: 12px;
+    border-radius: 44px;
+    background: linear-gradient(160deg, #3a3e42, #1d1f21);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.08) inset,
+      0 40px 80px -20px rgb(0 0 0 / 0.6),
+      0 18px 36px -18px rgb(0 0 0 / 0.5);
+  }
+  .phone-notch {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    width: 84px;
+    height: 24px;
+    border-radius: 20px;
+    background: #0d0e0f;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+  .phone-screen {
+    padding: 58px 18px 120px;
+    border-radius: 33px;
+    background: var(--paper);
+    color: var(--basalt-900);
+  }
+  .ph-title {
+    font-family: var(--serif);
+    font-size: 1.375rem;
+    font-weight: 600;
+  }
+  .ph-service {
+    margin-top: 4px;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+  .ph-days {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-top: 18px;
+  }
+  .ph-day {
+    display: grid;
+    place-items: center;
+    padding: 8px 0;
+    border-radius: 12px;
+    background: var(--white);
+    box-shadow: 0 0 0 1px var(--stone-200) inset;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .ph-day small {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--stone-500);
+    text-transform: uppercase;
+  }
+  .ph-day.on {
+    background: var(--basalt-900);
+    color: var(--white);
+    box-shadow: none;
+  }
+  .ph-day.on small {
+    color: var(--stone-300);
+  }
+  .ph-slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .ph-slot {
+    padding: 9px 0;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 0 0 1px var(--stone-200) inset;
+    background: var(--white);
+  }
+  .ph-slot.off {
+    color: var(--stone-400);
+    text-decoration: line-through;
+    background: transparent;
+  }
+  .ph-slot.on {
+    background: var(--ember-100);
+    color: var(--ember-700);
+    box-shadow: 0 0 0 1.5px var(--ember-500) inset;
+  }
+  .ph-confirm {
+    display: block;
+    margin-top: 18px;
+    padding: 13px 0;
+    border-radius: 999px;
+    background: var(--ember-600);
+    color: var(--white);
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  @media (min-width: 900px) {
+    .hero-in {
+      grid-template-columns: 1.25fr 1fr;
+      gap: 32px;
+    }
+    .hero-copy {
+      padding-bottom: clamp(72px, 9vw, 112px);
+    }
+    .phone-wrap {
+      margin-bottom: -110px;
+    }
+  }
+
+  /* ---------- Problema ---------- */
+  .problem-in {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+  .problem .h2 {
+    max-width: 16ch;
+  }
+  .problem-text {
+    margin-top: 20px;
+    max-width: 34rem;
+  }
+  .notif-stack {
+    display: grid;
+    gap: 12px;
+    max-width: 420px;
+    width: 100%;
+    justify-self: center;
+  }
+  .notif {
+    padding: 18px 20px;
+    border-radius: 20px;
+    background: var(--white);
+    box-shadow:
+      0 0 0 1px rgb(26 28 30 / 0.06),
+      0 12px 32px -16px rgb(26 28 30 / 0.25);
+  }
+  .notif-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .notif-head strong {
+    font-size: 0.9375rem;
+  }
+  .notif-count {
+    margin-left: auto;
+    min-width: 24px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #f3dcd6;
+    color: #a1361e;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-align: center;
+  }
+  .notif-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border-radius: 10px;
+  }
+  .notif-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+  .notif-icon.missed {
+    background: #f3dcd6;
+    color: #a1361e;
+  }
+  .notif-icon.ok {
+    background: #dde9df;
+    color: #2f6b3c;
+  }
+  .notif ul {
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .notif li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-top: 1px solid var(--stone-100);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .notif li span {
+    color: var(--basalt-700);
+  }
+  .notif li time {
+    color: var(--stone-500);
+  }
+  .notif-ok {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: 24px;
+  }
+  .notif-ok strong {
+    font-size: 0.9375rem;
+  }
+  .notif-ok p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  @media (min-width: 900px) {
+    .problem-in {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 64px;
+    }
+  }
+
+  /* ---------- Capçaleres de secció ---------- */
+  .sec-head {
+    max-width: 40rem;
+    margin-bottom: clamp(36px, 6vw, 56px);
+  }
+
+  /* ---------- Passos ---------- */
+  .steps-sec {
+    background: var(--stone-100);
+  }
+  .steps {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: none;
+  }
+  .step {
+    position: relative;
+    padding: 28px 24px 30px;
+    border-radius: var(--radius);
+    background: var(--paper);
+    box-shadow: 0 0 0 1px rgb(26 28 30 / 0.06);
+  }
+  .step-n {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--basalt-900);
+    color: var(--ember-300);
+    font-family: var(--serif);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .step h3 {
+    margin-top: 20px;
+    font-size: 1.375rem;
+  }
+  .step p {
+    margin-top: 8px;
+    color: var(--text-muted);
+  }
+  @media (min-width: 820px) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+  }
+
+  /* ---------- Què inclou ---------- */
+  .features {
+    display: grid;
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: rgb(255 255 255 / 0.07);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.07);
+  }
+  .feature {
+    padding: 28px 24px;
+    background: var(--basalt-900);
+  }
+  .feature-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgb(196 99 47 / 0.12);
+    color: var(--ember-300);
+  }
+  .feature-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+  .feature h3 {
+    margin-top: 18px;
+    font-size: 1.25rem;
+    color: var(--white);
+  }
+  .feature p {
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+  @media (min-width: 640px) {
+    .features {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 960px) {
+    .features {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .feature {
+      padding: 32px 28px 36px;
+    }
+  }
+
+  /* ---------- Exemples ---------- */
+  .examples {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .example {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: var(--radius);
+    background: var(--white);
+    text-decoration: none;
+    box-shadow:
+      0 0 0 1px rgb(26 28 30 / 0.08),
+      0 1px 2px rgb(26 28 30 / 0.04);
+    transition:
+      transform 200ms var(--ease-out),
+      box-shadow 200ms ease;
+  }
+  .example:active {
+    transform: scale(0.985);
+  }
+  .ex-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--stone-100);
+  }
+  .ex-dots {
+    display: flex;
+    gap: 5px;
+  }
+  .ex-dots i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--stone-200);
+  }
+  .ex-url {
+    overflow: hidden;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--paper);
+    color: var(--stone-500);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .ex-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 22px 20px 20px;
+  }
+  .ex-place {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ember-600);
+  }
+  .ex-name {
+    margin-top: 6px;
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .ex-type {
+    margin-top: 2px;
+    color: var(--text-muted);
+  }
+  .ex-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 22px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .ex-link svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 200ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .example:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 0 0 1px rgb(26 28 30 / 0.1),
+        0 16px 32px -18px rgb(26 28 30 / 0.35);
+    }
+    .example:hover .ex-link svg {
+      transform: translate(2px, -2px);
+    }
+  }
+  @media (min-width: 640px) {
+    .examples {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 960px) {
+    .examples {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+  }
+
+  /* ---------- Preus ---------- */
+  .pricing-sec {
+    background: var(--stone-100);
+  }
+  .pricing {
+    display: grid;
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--basalt-900);
+  }
+  .price-rows {
+    display: grid;
+  }
+  .price {
+    padding: 28px 24px;
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  }
+  .price-label {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--stone-300);
+  }
+  .price-num {
+    margin-top: 6px;
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 7vw, 3.25rem);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+  }
+  .price-num span {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--stone-400);
+  }
+  .price-note {
+    margin-top: 6px;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+  }
+  .promise {
+    position: relative;
+    padding: 32px 24px 28px;
+    background:
+      radial-gradient(120% 100% at 100% 0%, rgb(196 99 47 / 0.28), transparent 60%),
+      var(--basalt-800);
+  }
+  .promise-main {
+    font-family: var(--serif);
+    font-size: clamp(1.75rem, 4.6vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--white);
+  }
+  .promise-sub {
+    margin-top: 8px;
+    font-size: 1.125rem;
+    color: var(--ember-300);
+  }
+  .promise-tag {
+    display: inline-block;
+    align-self: flex-start;
+    margin-top: 18px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.07);
+    color: var(--stone-200);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .promise .btn {
+    display: flex;
+    width: 100%;
+    margin-top: 24px;
+  }
+  @media (min-width: 860px) {
+    .pricing {
+      grid-template-columns: 1fr 1.05fr;
+    }
+    .price {
+      padding: 36px 40px;
+    }
+    .price:last-child {
+      border-bottom: 0;
+    }
+    .price-rows {
+      border-right: 1px solid rgb(255 255 255 / 0.08);
+    }
+    .promise {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px;
+    }
+    .promise .btn {
+      display: inline-flex;
+      width: auto;
+      align-self: flex-start;
+    }
+  }
+
+  /* ---------- Qui som ---------- */
+  .about {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+  }
+  .about-photo {
+    margin: 0;
+  }
+  .about-photo img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 18px;
+    filter: saturate(0.85);
+    box-shadow: 0 24px 48px -28px rgb(26 28 30 / 0.5);
+  }
+  .about-photo figcaption {
+    margin-top: 10px;
+    font-size: 0.8125rem;
+    color: var(--stone-500);
+  }
+  .about-photo figcaption a {
+    text-underline-offset: 3px;
+  }
+  .about-text {
+    margin-top: 20px;
+    font-family: var(--serif);
+    font-size: clamp(1.25rem, 2.6vw, 1.5rem);
+    line-height: 1.5;
+    color: var(--basalt-800);
+  }
+  .signature {
+    margin-top: 24px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  @media (min-width: 900px) {
+    .about {
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+    }
+  }
+
+  /* ---------- Preguntes ---------- */
+  .faq-sec {
+    background: var(--stone-100);
+  }
+  .faq-in {
+    display: grid;
+    gap: 0;
+  }
+  .faq {
+    border-top: 1px solid var(--stone-300);
+  }
+  .faq details {
+    border-bottom: 1px solid var(--stone-300);
+  }
+  .faq summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 64px;
+    padding: 18px 0;
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-plus {
+    position: relative;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1.5px var(--stone-300);
+    transition:
+      transform 250ms var(--ease-out),
+      background-color 200ms ease;
+  }
+  .faq-plus::before,
+  .faq-plus::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: var(--basalt-900);
+    translate: -50% -50%;
+  }
+  .faq-plus::after {
+    rotate: 90deg;
+  }
+  .faq details[open] .faq-plus {
+    transform: rotate(45deg);
+    background: var(--white);
+  }
+  .faq details p {
+    padding: 0 48px 24px 0;
+    color: var(--text-muted);
+  }
+  /* Obertura suau on el navegador ho suporta */
+  .faq details::details-content {
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition:
+      block-size 300ms var(--ease-out),
+      opacity 250ms ease,
+      content-visibility 300ms allow-discrete;
+  }
+  .faq details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+  @media (min-width: 900px) {
+    .faq-in {
+      grid-template-columns: 1fr 1.4fr;
+      gap: 64px;
+      align-items: start;
+    }
+  }
+
+  /* ---------- Contacte ---------- */
+  .contact-sec {
+    background:
+      radial-gradient(80% 100% at 50% 100%, rgb(196 99 47 / 0.14), transparent 70%),
+      var(--basalt-900);
+    text-align: center;
+  }
+  .contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 44rem;
+  }
+  .contact .h2 {
+    color: var(--white);
+  }
+  .contact .lead {
+    margin-top: 18px;
+    max-width: 34rem;
+  }
+  .contact-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    margin-top: 32px;
+    width: 100%;
+  }
+  .contact-actions .btn {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+  .contact-mail {
+    color: var(--text-muted);
+  }
+  .contact-mail a {
+    color: var(--white);
+    text-underline-offset: 4px;
+    text-decoration-color: rgb(255 255 255 / 0.3);
+    word-break: break-word;
+  }
+  .contact-legal {
+    margin-top: 28px;
+    font-size: 0.875rem;
+  }
+  .contact-legal a {
+    color: var(--stone-400);
+    text-underline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-stagger {
+      animation-name: fade;
+    }
+    @keyframes fade {
+      from {
+        opacity: 0;
+      }
+    }
+    .faq-plus,
+    .faq details::details-content {
+      transition-duration: 0ms;
+    }
+  }
+</style>
