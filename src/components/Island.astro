@@ -1,0 +1,177 @@
+---
+import Icon from './Icon.astro';
+import { type Lang } from '../config/site';
+import { dict } from '../i18n/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = dict[lang].illa;
+---
+<figure class="island-stage">
+  <div class="island" data-island data-state="missed" aria-hidden="true">
+    <div class="island-shape"></div>
+    <div class="island-face island-missed">
+      <span class="island-icon is-red"><Icon name="phone-x" /></span>
+      <span class="island-text">
+        <strong>{t.perduda}</strong>
+        <span>{t.hora}</span>
+      </span>
+      <span class="island-dots"><i></i><i></i><i></i></span>
+    </div>
+    <div class="island-face island-booked">
+      <span class="island-icon is-ok"><Icon name="check" /></span>
+      <span class="island-text">
+        <strong>{t.nova}</strong>
+        <span>{t.detall}</span>
+      </span>
+    </div>
+  </div>
+  <figcaption class="sr-only">{t.descripcio}</figcaption>
+</figure>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-island]').forEach((pill) => {
+    if (reduce) {
+      pill.dataset.state = 'booked';
+      return;
+    }
+    let timer = 0;
+    // Trucada perduda (2,4 s) → es transforma en reserva (3,6 s) → torna a començar
+    const cycle = () => {
+      pill.dataset.state = 'missed';
+      timer = window.setTimeout(() => {
+        pill.dataset.state = 'booked';
+        timer = window.setTimeout(cycle, 3600);
+      }, 2400);
+    };
+    new IntersectionObserver(
+      ([e]) => {
+        clearTimeout(timer);
+        if (e.isIntersecting) cycle();
+      },
+      { threshold: 0.6 },
+    ).observe(pill);
+  });
+</script>
+
+<style>
+  .island-stage {
+    display: grid;
+    place-items: center;
+    min-height: 220px;
+    margin: 0;
+    padding: 40px 0;
+  }
+  /* La caixa té sempre la mida gran; la forma negra es retalla amb clip-path */
+  .island {
+    --wb: min(420px, 90vw);
+    --wm: min(300px, 82vw);
+    position: relative;
+    width: var(--wb);
+    height: 92px;
+    color: #f2f1ed;
+    filter: drop-shadow(0 18px 22px rgb(22 24 26 / 0.32));
+  }
+  .island-shape {
+    position: absolute;
+    inset: 0;
+    background: #0b0c0d;
+    clip-path: inset(0 round 30px);
+    transition: clip-path 560ms var(--ease-drawer);
+  }
+  .island[data-state='missed'] .island-shape {
+    clip-path: inset(14px calc((var(--wb) - var(--wm)) / 2) round 32px);
+  }
+  .island-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 22px 0 12px;
+    transition:
+      opacity 320ms ease,
+      filter 320ms ease,
+      transform 420ms var(--ease-drawer);
+  }
+  .island-missed {
+    inset: 14px calc((var(--wb) - var(--wm)) / 2);
+  }
+  .island-booked {
+    padding-left: 18px;
+  }
+  .island[data-state='missed'] .island-booked,
+  .island[data-state='booked'] .island-missed {
+    opacity: 0;
+    filter: blur(6px);
+    transform: scale(0.94);
+    pointer-events: none;
+  }
+  .island-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+  }
+  .island-icon :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+  .island-icon.is-red {
+    background: #a3361f;
+  }
+  .island-icon.is-ok {
+    width: 52px;
+    height: 52px;
+    background: var(--lichen);
+    color: var(--ink);
+  }
+  .island-text {
+    display: grid;
+    min-width: 0;
+    line-height: 1.25;
+  }
+  .island-text strong {
+    font-weight: 650;
+    font-size: 1rem;
+  }
+  .island-text span {
+    color: #a9adb1;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .island-booked .island-text strong {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 1.25rem;
+  }
+  .island-dots {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+  }
+  .island-dots i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #a3361f;
+    animation: ring 1.2s ease-in-out infinite;
+  }
+  .island-dots i:nth-child(2) {
+    animation-delay: 160ms;
+  }
+  .island-dots i:nth-child(3) {
+    animation-delay: 320ms;
+  }
+  @keyframes ring {
+    50% {
+      opacity: 0.25;
+    }
+  }
+</style>

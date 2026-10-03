@@ -1,0 +1,267 @@
+---
+import Icon from './Icon.astro';
+import { type Lang } from '../config/site';
+import { dict } from '../i18n/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = dict[lang].demo;
+const dies = lang === 'ca' ? ['dl', 'dt', 'dc', 'dj', 'dv'] : ['lu', 'ma', 'mi', 'ju', 'vi'];
+const hores = ['09:30', '11:00', '12:30', '16:00', '17:00', '18:30'];
+---
+<div class="hp" data-howphone aria-hidden="true">
+  <div class="hp-float">
+    <div class="hp-device">
+      <div class="hp-screen" data-step="0">
+        <p class="hp-biz">{d.negoci}</p>
+        <ol class="hp-progress"><li></li><li></li><li></li><li></li></ol>
+
+        <div class="hp-view">
+          <p class="hp-label">{d.passos[0]}</p>
+          {d.serveis.map((s, i) => (
+            <span class:list={['hp-row', { on: i === 1 }]}>{s.nom}<small>{s.durada}</small></span>
+          ))}
+        </div>
+
+        <div class="hp-view">
+          <p class="hp-label">{d.passos[1]}</p>
+          <div class="hp-days">
+            {dies.map((w, i) => <span class:list={{ on: i === 1 }}><small>{w}</small>{7 + i}</span>)}
+          </div>
+        </div>
+
+        <div class="hp-view">
+          <p class="hp-label">{d.passos[2]}</p>
+          <div class="hp-slots">
+            {hores.map((h, i) => <span class:list={{ on: i === 4 }}>{h}</span>)}
+          </div>
+        </div>
+
+        <div class="hp-view hp-done">
+          <span class="hp-check"><Icon name="check" /></span>
+          <p class="hp-done-title">{d.confirmada}</p>
+          <p class="hp-done-sub">{d.serveis[1].nom} · 17:00</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-howphone]').forEach((root) => {
+    const screen = root.querySelector<HTMLElement>('.hp-screen')!;
+    if (reduce) {
+      screen.dataset.step = '3';
+      return;
+    }
+    let step = 0;
+    let timer = 0;
+    const tick = () => {
+      step = (step + 1) % 4;
+      screen.dataset.step = String(step);
+      timer = window.setTimeout(tick, step === 3 ? 2600 : 1500);
+    };
+    new IntersectionObserver(
+      ([e]) => {
+        clearTimeout(timer);
+        if (e.isIntersecting) timer = window.setTimeout(tick, 1200);
+      },
+      { threshold: 0.4 },
+    ).observe(root);
+  });
+</script>
+
+<style>
+  .hp {
+    perspective: 1100px;
+    display: grid;
+    place-items: center;
+    padding-block: 12px;
+  }
+  .hp-float {
+    transform-style: preserve-3d;
+    transform: rotateX(8deg) rotateY(-16deg);
+    animation: hp-bob 6s ease-in-out infinite;
+  }
+  /* Amb scroll: el mòbil gira suaument mentre la secció passa per la pantalla */
+  @supports (animation-timeline: view()) {
+    .hp-float {
+      animation:
+        hp-turn linear both,
+        hp-bob 6s ease-in-out infinite;
+      animation-timeline: view(), auto;
+      animation-range: cover 0% cover 100%, normal;
+    }
+  }
+  @keyframes hp-turn {
+    from {
+      transform: rotateX(10deg) rotateY(-28deg) rotateZ(-2deg);
+    }
+    to {
+      transform: rotateX(4deg) rotateY(22deg) rotateZ(2deg);
+    }
+  }
+  @keyframes hp-bob {
+    50% {
+      translate: 0 -10px;
+    }
+  }
+  .hp-device {
+    width: 250px;
+    padding: 9px;
+    border-radius: 40px;
+    background: var(--device);
+    box-shadow:
+      0 0 0 1px var(--slate-2) inset,
+      -14px 30px 50px -24px rgb(22 24 26 / 0.55);
+  }
+  .hp-screen {
+    position: relative;
+    height: 470px;
+    padding: 40px 16px 18px;
+    border-radius: 31px;
+    background: #f7f6f3;
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .hp-biz {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 1.125rem;
+  }
+  .hp-progress {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .hp-progress li {
+    height: 3px;
+    border-radius: 2px;
+    background: #e2dfd8;
+    transition: background-color 300ms ease;
+  }
+  .hp-screen[data-step='0'] .hp-progress li:nth-child(-n + 1),
+  .hp-screen[data-step='1'] .hp-progress li:nth-child(-n + 2),
+  .hp-screen[data-step='2'] .hp-progress li:nth-child(-n + 3),
+  .hp-screen[data-step='3'] .hp-progress li {
+    background: var(--ink);
+  }
+  .hp-view {
+    position: absolute;
+    inset: 96px 16px auto;
+    display: grid;
+    gap: 7px;
+    opacity: 0;
+    transform: translateX(24px);
+    transition:
+      opacity 360ms ease,
+      transform 460ms var(--ease-out);
+  }
+  .hp-screen[data-step='0'] .hp-view:nth-of-type(1),
+  .hp-screen[data-step='1'] .hp-view:nth-of-type(2),
+  .hp-screen[data-step='2'] .hp-view:nth-of-type(3),
+  .hp-screen[data-step='3'] .hp-view:nth-of-type(4) {
+    opacity: 1;
+    transform: none;
+  }
+  .hp-label {
+    margin: 0 0 4px;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    color: var(--ink-muted);
+  }
+  .hp-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: #fcfbf8;
+    box-shadow: 0 0 0 1.5px #e2dfd8 inset;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .hp-row small {
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+  .hp-row.on,
+  .hp-days .on,
+  .hp-slots .on {
+    background: var(--ink);
+    color: #fcfbf8;
+    box-shadow: none;
+  }
+  .hp-row.on small,
+  .hp-days .on small {
+    color: var(--lichen);
+  }
+  .hp-days {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+  }
+  .hp-days span {
+    display: grid;
+    place-items: center;
+    padding: 8px 0;
+    border-radius: 10px;
+    background: #fcfbf8;
+    box-shadow: 0 0 0 1.5px #e2dfd8 inset;
+    font-weight: 700;
+  }
+  .hp-days small {
+    color: var(--ink-muted);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+  }
+  .hp-slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .hp-slots span {
+    padding: 10px 0;
+    border-radius: 9px;
+    background: #fcfbf8;
+    box-shadow: 0 0 0 1.5px #e2dfd8 inset;
+    text-align: center;
+    font-family: var(--display);
+  }
+  .hp-done {
+    justify-items: center;
+    padding-top: 60px;
+    text-align: center;
+  }
+  .hp-check {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--lichen);
+    transform: scale(0.8);
+    transition: transform 500ms var(--ease-out);
+  }
+  .hp-screen[data-step='3'] .hp-check {
+    transform: none;
+  }
+  .hp-check :global(svg) {
+    width: 28px;
+    height: 28px;
+  }
+  .hp-done-title {
+    margin: 10px 0 0;
+    font-family: var(--display);
+    font-size: 1.375rem;
+  }
+  .hp-done-sub {
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: 0.875rem;
+  }
+</style>

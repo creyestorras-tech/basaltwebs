@@ -1,0 +1,72 @@
+---
+import { type Lang } from '../config/site';
+import { dict } from '../i18n/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const items = dict[lang].cinta;
+// Dues còpies idèntiques: la cinta torna a començar sense salt
+const loop = [...items, ...items];
+---
+<div class="marquee" aria-label={items.join(', ')} role="note">
+  <div class="marquee-track" aria-hidden="true">
+    {[0, 1].map(() => (
+      <ul>
+        {loop.map((w) => (
+          <li>
+            {w}
+            <span class="star">✦</span>
+          </li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    position: relative;
+    overflow: hidden;
+    padding-block: 18px;
+    background: var(--bed);
+    border-block: 2px solid var(--basalt-2);
+    color: var(--chalk);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: slide 46s linear infinite;
+  }
+  .marquee ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .marquee li {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding-right: 28px;
+    font-family: var(--display);
+    font-size: clamp(1.375rem, 2.6vw, 2rem);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .star {
+    color: var(--lichen);
+    font-size: 0.6em;
+  }
+  @keyframes slide {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .marquee:hover .marquee-track {
+      animation-play-state: paused;
+    }
+  }
+</style>

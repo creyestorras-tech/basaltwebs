@@ -1,0 +1,329 @@
+---
+import Icon from './Icon.astro';
+import { whatsapp, type Lang } from '../config/site';
+import { dict } from '../i18n/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = dict[lang];
+---
+<section class="course course-dark hero" data-hero>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <h1>
+        <span class="sr-only">{t.hero.titol}</span>
+        <span class="h1-visual" aria-hidden="true">
+          {t.hero.prefix}
+          <span class="scramble" data-scramble={JSON.stringify(t.hero.paraules)}>{t.hero.paraules[0]}</span>
+        </span>
+      </h1>
+      <p class="lede">{t.hero.subtitol}</p>
+      <div class="hero-actions">
+        <a class="btn" href={whatsapp(lang)} target="_blank" rel="noopener">
+          <Icon name="whatsapp" />
+          {t.hero.cta}
+        </a>
+        <a class="link-arrow hero-link" href="#exemples">
+          {t.hero.secundari}
+          <Icon name="arrow" />
+        </a>
+      </div>
+    </div>
+
+    <div class="ring" data-ring role="img" aria-label={t.hero.objecte}>
+      <img class="ring-still" src="/img/anella-basalt.webp" alt="" width="800" height="800" fetchpriority="low" decoding="async" />
+    </div>
+
+    <dl class="stats">
+      {t.hero.xifres.map((x) => (
+        <div class="stat">
+          <dt><span data-countup={x.valor}>{x.valor}</span><span class="stat-unit">{x.unitat}</span></dt>
+          <dd>{x.text}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- Paraula final que es desxifra: les lletres es barregen i es resolen ----
+  const el = document.querySelector<HTMLElement>('[data-scramble]');
+  if (el && !reduce) {
+    const words: string[] = JSON.parse(el.dataset.scramble!);
+    const glyphs = 'abcdefghilmnoprstuvxàèéíòóú';
+    let i = 0;
+    let timer = 0;
+    let running = true;
+    const scramble = (to: string) => {
+      const from = el.textContent ?? '';
+      const len = Math.max(from.length, to.length);
+      const queue = Array.from({ length: len }, (_, k) => ({
+        from: from[k] ?? '',
+        to: to[k] ?? '',
+        start: Math.floor(Math.random() * 10),
+        end: 10 + k * 2 + Math.floor(Math.random() * 8),
+        ch: '',
+      }));
+      let frame = 0;
+      const step = () => {
+        let out = '';
+        let done = 0;
+        for (const q of queue) {
+          if (frame >= q.end) {
+            done++;
+            out += q.to;
+          } else if (frame >= q.start) {
+            if (!q.ch || Math.random() < 0.3) q.ch = glyphs[Math.floor(Math.random() * glyphs.length)];
+            out += q.to === ' ' || q.to === "'" ? q.to : `<span class="glyph">${q.ch}</span>`;
+          } else {
+            out += q.from;
+          }
+        }
+        el.innerHTML = out;
+        if (done < queue.length) {
+          frame++;
+          requestAnimationFrame(step);
+        }
+      };
+      step();
+    };
+    const next = () => {
+      if (!running) return;
+      i = (i + 1) % words.length;
+      scramble(words[i]);
+      timer = window.setTimeout(next, 3200);
+    };
+    const hero = document.querySelector('[data-hero]')!;
+    new IntersectionObserver(([e]) => {
+      const was = running;
+      running = e.isIntersecting && !document.hidden;
+      if (running && !was) timer = window.setTimeout(next, 1800);
+      if (!running) clearTimeout(timer);
+    }).observe(hero);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        running = false;
+        clearTimeout(timer);
+      }
+    });
+    timer = window.setTimeout(next, 2600);
+  }
+
+  // ---- Xifres que compten fins al seu valor quan apareixen ----
+  const countUp = (node: HTMLElement) => {
+    const to = Number(node.dataset.countup);
+    if (!to || reduce) return;
+    node.style.minWidth = node.getBoundingClientRect().width + 'px';
+    const t0 = performance.now();
+    const dur = 900 + to * 8;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - t0) / dur);
+      node.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 4))));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    node.textContent = '0';
+    requestAnimationFrame(tick);
+  };
+  const cio = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        countUp(e.target as HTMLElement);
+        cio.unobserve(e.target);
+      }
+    },
+    { threshold: 0.5 },
+  );
+  document.querySelectorAll<HTMLElement>('[data-countup]').forEach((n) => cio.observe(n));
+
+  // ---- Anella 3D: three.js només quan el navegador està lliure ----
+  const ring = document.querySelector<HTMLElement>('[data-ring]');
+  if (ring) {
+    const params = location.search;
+    const still = /[?&]anella=still/.test(params);
+    const forced = /[?&]anella=(3d|still)/.test(params);
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+    const strong = (navigator.hardwareConcurrency || 4) >= 6 && (nav.deviceMemory ?? 4) >= 4;
+    const ok = forced || (!reduce && !nav.connection?.saveData && !!window.WebGLRenderingContext && (fine || strong));
+
+    const start = () =>
+      import('../scripts/basalt-ring')
+        .then(({ mountBasaltRing }) => {
+          const { canvas } = mountBasaltRing(ring, { still });
+          // Força un càlcul d'estil perquè la transició d'opacitat s'executi
+          void canvas.getBoundingClientRect();
+          canvas.classList.add('is-ready');
+          ring.dataset.live = '';
+        })
+        .catch(() => {});
+
+    if (ok) {
+      // La imatge estàtica ja és a lloc; el 3D arriba després del primer gest,
+      // perquè la càrrega inicial de la pàgina no es ressenti
+      const events = ['pointermove', 'touchstart', 'scroll', 'keydown'] as const;
+      const go = () => {
+        events.forEach((ev) => removeEventListener(ev, go));
+        const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1200 }) : setTimeout(start, 200));
+        idle();
+      };
+      if (forced) go();
+      else events.forEach((ev) => addEventListener(ev, go, { passive: true }));
+    }
+
+    // Versió simplificada (imatge): s'inclina una mica amb el giroscopi
+    if (!reduce) {
+      const img = ring.querySelector<HTMLElement>('.ring-still')!;
+      addEventListener(
+        'deviceorientation',
+        (ev: DeviceOrientationEvent) => {
+          if (ring.dataset.live !== undefined || ev.gamma == null || ev.beta == null) return;
+          const x = Math.max(-1, Math.min(1, ev.gamma / 30));
+          const y = Math.max(-1, Math.min(1, (ev.beta - 45) / 30));
+          img.style.transform = `perspective(800px) rotateY(${(x * 8).toFixed(2)}deg) rotateX(${(-y * 6).toFixed(2)}deg)`;
+        },
+        { passive: true },
+      );
+    }
+  }
+</script>
+
+<style>
+  .hero {
+    padding-block: clamp(40px, 6vw, 88px) clamp(64px, 8vw, 104px);
+    overflow: hidden;
+  }
+  .hero-in {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+  }
+  .hero-copy {
+    display: grid;
+    gap: 24px;
+  }
+  h1 {
+    font-size: clamp(2.1rem, 3.9vw, 3.1rem);
+    line-height: 1.06;
+  }
+  .h1-visual {
+    display: block;
+    /* Tres línies reservades: la paraula que canvia mai fa saltar el text */
+    min-height: 3.18em;
+  }
+  .scramble {
+    display: block;
+    white-space: nowrap;
+    color: var(--chalk);
+  }
+  .scramble :global(.glyph) {
+    color: var(--lichen);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 28px;
+    margin-top: 4px;
+  }
+  .hero-actions .btn {
+    flex: 1 1 100%;
+  }
+  .hero-link {
+    color: var(--chalk);
+  }
+
+  /* L'anella: canvas 3D a sobre de la imatge estàtica */
+  .ring {
+    position: relative;
+    width: min(100%, 420px);
+    aspect-ratio: 1;
+    justify-self: center;
+  }
+  .ring img,
+  .ring :global(canvas) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .ring img {
+    animation: float 7s ease-in-out infinite;
+    transition: opacity 600ms ease;
+  }
+  .ring[data-live] img {
+    opacity: 0;
+  }
+  .ring :global(canvas) {
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out);
+  }
+  .ring :global(canvas.is-ready) {
+    opacity: 1;
+  }
+  @keyframes float {
+    50% {
+      translate: 0 -8px;
+    }
+  }
+
+  /* Xifres */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin: 0;
+    padding: 2px;
+    background: var(--bed);
+    border-radius: 4px;
+  }
+  .stat {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    padding: 16px 14px;
+    background: rgb(36 40 44 / 0.86);
+    border-radius: 2px;
+  }
+  .stat dt {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .stat [data-countup] {
+    display: inline-block;
+  }
+  .stat-unit {
+    margin-left: 0.12em;
+    font-size: 0.5em;
+    color: var(--lichen);
+  }
+  .stat dd {
+    margin: 0;
+    color: var(--mist);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+  }
+
+  @media (min-width: 520px) {
+    .hero-actions .btn {
+      flex: 0 0 auto;
+    }
+  }
+  @media (min-width: 1000px) {
+    .hero-in {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 168px;
+      gap: 32px;
+    }
+    .stats {
+      grid-template-columns: 1fr;
+      align-self: center;
+    }
+    .stat {
+      padding: 20px 18px;
+    }
+  }
+</style>

@@ -1,0 +1,315 @@
+---
+import Icon from './Icon.astro';
+import { type Lang } from '../config/site';
+import { dict } from '../i18n/content';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = dict[lang].compara;
+const hores = ['10:30', '12:00', '16:45', '17:30', '18:15', '19:00'];
+---
+<div class="compare" data-compare>
+  <!-- Sense web: fitxa de Google sense enllaç, el telèfon sona i ningú respon -->
+  <div class="side side-before" aria-hidden="true">
+    <span class="tag">{t.sense}</span>
+    <div class="gcard">
+      <div class="gcard-map"></div>
+      <p class="gcard-name">{t.negoci}</p>
+      <p class="gcard-meta">{t.tipus} · {t.obert}</p>
+      <div class="gcard-body">
+        <p class="gcard-noweb">{t.senseWeb}</p>
+        <span class="gcall"><span class="gcall-icon"><Icon name="phone-x" /></span>{t.trucant}</span>
+        <p class="gcard-miss">{t.senseResposta}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Amb Basalt Webs: la web amb el botó de reservar -->
+  <div class="side side-after" aria-hidden="true">
+    <span class="tag tag-after">{t.amb}</span>
+    <div class="gcard">
+      <div class="gcard-map"></div>
+      <p class="gcard-name">{t.negoci}</p>
+      <p class="gcard-meta">{t.tipus} · {t.obert}</p>
+      <div class="gcard-body">
+        <p class="site-label">{t.lliures}</p>
+        <div class="site-slots">
+          {hores.map((h) => <span>{h}</span>)}
+        </div>
+        <span class="site-cta">{t.reservar}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider" aria-hidden="true"><span class="knob"><i></i><i></i></span></div>
+  <input class="range" type="range" min="0" max="100" value="50" aria-label={t.rang} data-range />
+</div>
+<p class="compare-help">{t.ajuda}. {t.nota}</p>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-compare]').forEach((box) => {
+    const range = box.querySelector<HTMLInputElement>('[data-range]')!;
+    const after = box.querySelector<HTMLElement>('.side-after')!;
+    const line = box.querySelector<HTMLElement>('.divider')!;
+    const set = (v: number) => {
+      after.style.clipPath = `inset(0 0 0 ${v}%)`;
+      line.style.transform = `translateX(${(v / 100) * box.clientWidth}px)`;
+    };
+    new ResizeObserver(() => set(Number(range.value))).observe(box);
+    range.addEventListener('input', () => {
+      box.dataset.touched = '';
+      set(Number(range.value));
+    });
+    // Una pista, una sola vegada: la línia es mou una mica per mostrar que s'arrossega
+    if (!reduce) {
+      const io = new IntersectionObserver(
+        ([e]) => {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          if (box.dataset.touched !== undefined) return;
+          const keys = [50, 38, 62, 50];
+          const t0 = performance.now();
+          const dur = 1600;
+          const step = (now: number) => {
+            if (box.dataset.touched !== undefined) return;
+            const p = Math.min(1, (now - t0) / dur);
+            const seg = Math.min(keys.length - 2, Math.floor(p * (keys.length - 1)));
+            const local = p * (keys.length - 1) - seg;
+            const ease = local < 0.5 ? 4 * local ** 3 : 1 - (-2 * local + 2) ** 3 / 2;
+            const v = keys[seg] + (keys[seg + 1] - keys[seg]) * ease;
+            set(v);
+            range.value = String(Math.round(v));
+            if (p < 1) requestAnimationFrame(step);
+          };
+          setTimeout(() => requestAnimationFrame(step), 400);
+        },
+        { threshold: 0.6 },
+      );
+      io.observe(box);
+    }
+  });
+</script>
+
+<style>
+  .compare {
+    position: relative;
+    display: grid;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 0 0 3px var(--joint-lime);
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .side {
+    grid-area: 1 / 1;
+    display: grid;
+    place-items: center;
+    min-height: clamp(440px, 46vw, 470px);
+    padding: 68px 20px 28px;
+  }
+  .side-before {
+    background: #dad7cf;
+  }
+  .side-after {
+    background:
+      linear-gradient(rgb(19 21 23 / 0.82), rgb(19 21 23 / 0.82)),
+      url('/img/basalt.webp') center / cover;
+    clip-path: inset(0 0 0 50%);
+  }
+  .tag {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    padding: 5px 10px;
+    border-radius: var(--r);
+    background: var(--ink);
+    color: var(--lime);
+    font-size: 0.8125rem;
+    font-weight: 650;
+  }
+  .tag-after {
+    left: auto;
+    right: 16px;
+    background: var(--lichen);
+    color: var(--ink);
+  }
+
+  /* Fitxa de Google, versió il·lustrativa */
+  .gcard {
+    width: min(300px, 100%);
+    padding: 0 0 18px;
+    border-radius: 14px;
+    background: #fcfbf8;
+    color: #202124;
+    box-shadow: 0 18px 40px -24px rgb(22 24 26 / 0.5);
+    overflow: hidden;
+    font-size: 0.875rem;
+  }
+  .gcard-map {
+    height: 70px;
+    background:
+      repeating-linear-gradient(32deg, transparent 0 22px, rgb(255 255 255 / 0.55) 22px 25px),
+      repeating-linear-gradient(-58deg, transparent 0 30px, rgb(255 255 255 / 0.4) 30px 32px),
+      #c7d3c0;
+  }
+  .gcard p {
+    margin: 0;
+    padding-inline: 16px;
+  }
+  .gcard-name {
+    margin-top: 12px !important;
+    font-size: 1.125rem;
+    font-weight: 650;
+  }
+  .gcard-meta {
+    color: #5f6368;
+  }
+  .gcard-body {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 10px;
+    height: 176px;
+    margin-top: 12px;
+    padding: 12px 16px 0;
+    border-top: 1px solid #e3e1dc;
+  }
+  .gcard-body p {
+    padding: 0;
+  }
+  .gcard-noweb {
+    color: #5f6368;
+    text-decoration: line-through;
+  }
+  .gcall {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px 8px 8px;
+    border-radius: 999px;
+    background: #e8eaed;
+    font-weight: 600;
+  }
+  .gcall-icon {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--missed);
+    color: #fcfbf8;
+    animation: shake 1.6s ease-in-out infinite;
+  }
+  .gcall-icon :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+  .gcard-miss {
+    color: var(--missed);
+    font-weight: 600;
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  @keyframes shake {
+    0%, 40%, 100% { transform: rotate(0); }
+    8% { transform: rotate(-14deg); }
+    16% { transform: rotate(12deg); }
+    24% { transform: rotate(-10deg); }
+    32% { transform: rotate(8deg); }
+  }
+  @keyframes blink {
+    50% { opacity: 0.35; }
+  }
+
+  /* La mateixa fitxa, ara amb reserves */
+  .site-label {
+    font-size: 0.75rem;
+    font-weight: 650;
+    color: var(--ink-muted);
+  }
+  .site-slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    width: 100%;
+  }
+  .site-slots span {
+    padding: 7px 0;
+    border-radius: 8px;
+    box-shadow: 0 0 0 1.5px #e2dfd8 inset;
+    text-align: center;
+    font-family: var(--display);
+    font-size: 0.875rem;
+  }
+  .site-slots span:nth-child(4) {
+    background: var(--ink);
+    color: var(--lichen);
+    box-shadow: none;
+  }
+  .site-cta {
+    display: block;
+    width: 100%;
+    padding: 11px 0;
+    border-radius: 10px;
+    background: var(--lichen);
+    text-align: center;
+    font-weight: 700;
+  }
+
+  /* Línia i nansa */
+  .divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    margin-left: -1.5px;
+    background: var(--lichen);
+    pointer-events: none;
+  }
+  .knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--lichen);
+    box-shadow: 0 8px 20px -6px rgb(0 0 0 / 0.5);
+    translate: -50% -50%;
+    transition: scale 160ms var(--ease-out);
+  }
+  .knob i {
+    width: 2px;
+    height: 16px;
+    border-radius: 2px;
+    background: var(--ink);
+  }
+  .range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+    touch-action: pan-y;
+  }
+  .compare:has(.range:active) .knob {
+    scale: 1.08;
+  }
+  .compare:has(.range:focus-visible) .knob {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .compare-help {
+    margin-top: 14px;
+    color: var(--ink-muted);
+    font-size: 0.875rem;
+  }
+</style>

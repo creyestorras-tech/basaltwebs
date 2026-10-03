@@ -2,6 +2,11 @@
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import Demo from './Demo.astro';
+import Hero from './Hero.astro';
+import Marquee from './Marquee.astro';
+import Island from './Island.astro';
+import Compare from './Compare.astro';
+import HowPhone from './HowPhone.astro';
 import foto from '../assets/castellfollit.jpg';
 import { site, whatsapp, mobilVisible, type Lang } from '../config/site';
 import { dict, exemples, rutes } from '../i18n/content';
@@ -13,72 +18,31 @@ const wa = whatsapp(lang);
 
 const captures = import.meta.glob<{ default: ImageMetadata }>('../assets/exemples/*.webp', { eager: true });
 const captura = (id: string) => captures[`../assets/exemples/${id}.webp`]?.default;
-const heroShot = captura('celbellesa-reserva')!;
-
-const trucades = ['09:12', '10:47', '12:05', '17:38'];
 ---
 
-<!-- Portada -->
-<section class="course course-dark hero" data-hero>
-  <div class="hero-field" data-field aria-hidden="true">
-    <img class="hero-field-still" src="/img/camp-basalt.webp" alt="" width="1600" height="561" loading="lazy" decoding="async" />
-  </div>
-  <script is:inline>
-    (function () {
-      var f = document.currentScript.previousElementSibling;
-      var mq = function (q) { return window.matchMedia(q).matches; };
-      var c = navigator.connection || {};
-      var ok = mq('(hover: hover) and (pointer: fine)') && !mq('(prefers-reduced-motion: reduce)') &&
-        !c.saveData && (navigator.hardwareConcurrency || 4) >= 4 && !!window.WebGLRenderingContext;
-      if (/[?&]camp=(3d|still)/.test(location.search)) ok = true;
-      f.dataset.mode = ok ? '3d' : 'still';
-    })();
-  </script>
-  <div class="wrap hero-in">
-    <div class="hero-copy">
-      <h1 class="rise" style="--i:0">{t.hero.titol}</h1>
-      <p class="lede rise" style="--i:1">{t.hero.subtitol}</p>
-      <div class="hero-actions rise" style="--i:2">
-        <a class="btn" href={wa} target="_blank" rel="noopener">
-          <Icon name="whatsapp" />
-          {t.hero.cta}
-        </a>
-        <a class="link-arrow hero-link" href="#exemples">
-          {t.hero.secundari}
-          <Icon name="arrow" />
-        </a>
-      </div>
-    </div>
+<Hero lang={lang} />
 
-    <div class="plaque rise" style="--i:1">
-      <div class="plaque-device">
-        <Image src={heroShot} alt={t.hero.peuMobil} widths={[320, 640]} sizes="320px" loading="eager" fetchpriority="high" />
-      </div>
-    </div>
-  </div>
-</section>
+<Marquee lang={lang} />
 
-<!-- El problema -->
+<!-- El problema: la trucada perduda es transforma en reserva -->
 <section class="course course-lime problem">
   <div class="wrap problem-in">
     <div data-set>
       <h2 class="h2">{t.problema.titol}</h2>
       <p class="lede problem-text">{t.problema.text}</p>
     </div>
-    <div class="ledger" data-set style="--i:1">
-      <p class="ledger-head">
-        <span>{t.problema.trucades}</span>
-        <strong>{trucades.length}</strong>
-      </p>
-      <ol>
-        {trucades.map((h) => (
-          <li>
-            <Icon name="phone-x" />
-            <time>{h}</time>
-            <span>{t.problema.perduda}</span>
-          </li>
-        ))}
-      </ol>
+    <div data-set style="--i:1">
+      <Island lang={lang} />
+    </div>
+  </div>
+</section>
+
+<!-- Abans / després -->
+<section class="course course-lime compare-course">
+  <div class="wrap">
+    <h2 class="h2 head" data-set>{t.compara.titol}</h2>
+    <div data-set style="--i:1">
+      <Compare lang={lang} />
     </div>
   </div>
 </section>
@@ -94,18 +58,20 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   </div>
 </section>
 
-<!-- Exemples -->
-<section class="course course-lime" id="exemples">
-  <div class="wrap">
-    <div class="head" data-set>
-      <h2 class="h2">{t.exemples.titol}</h2>
-      <p class="lede">{t.exemples.text}</p>
+<!-- Exemples: a l'escriptori, la secció es fixa i els exemples passen en horitzontal -->
+<section class="course course-lime works-course" id="exemples">
+  <div class="works-pin">
+    <div class="wrap works-head">
+      <div class="head" data-set>
+        <h2 class="h2">{t.exemples.titol}</h2>
+        <p class="lede">{t.exemples.text}</p>
+      </div>
     </div>
-    <ul class="works">
+    <ul class="works" data-works>
       {exemples.map((e, i) => {
         const img = captura(e.id);
         return (
-          <li class="work" data-set style={`--i:${i % 3}`}>
+          <li class="work" style={`--i:${i}`}>
             <div class="work-device" data-tilt>
               {e.enLinia && img ? (
                 <Image src={img} alt={`${t.exemples.alt} ${e.nom}`} widths={[260, 420, 560]} sizes="(min-width: 960px) 280px, min(68vw, 260px)" loading="lazy" />
@@ -132,19 +98,24 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   </div>
 </section>
 
-<!-- Com funciona -->
+<!-- Com funciona: passos a l'esquerra, mòbil en 3D a la dreta -->
 <section class="course course-lime" id="com-funciona">
-  <div class="wrap">
-    <h2 class="h2 head" data-set>{t.passos.titol}</h2>
-    <ol class="steps">
-      {t.passos.llista.map((p, i) => (
-        <li class="step" data-set style={`--i:${i}`}>
-          <span class="step-n" aria-hidden="true">{i + 1}</span>
-          <h3>{p.t}</h3>
-          <p>{p.d}</p>
-        </li>
-      ))}
-    </ol>
+  <div class="wrap how">
+    <div>
+      <h2 class="h2 head" data-set>{t.passos.titol}</h2>
+      <ol class="steps">
+        {t.passos.llista.map((p, i) => (
+          <li class="step" data-set style={`--i:${i}`}>
+            <span class="step-n" aria-hidden="true">{i + 1}</span>
+            <div>
+              <h3>{p.t}</h3>
+              <p>{p.d}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+    <HowPhone lang={lang} />
   </div>
 </section>
 
@@ -168,16 +139,8 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   <div class="wrap price">
     <div class="price-figure" data-set>
       <h2 class="price-title">{t.preu.titol}</h2>
-      <p class="price-num"><span data-count={site.preu}>{site.preu}</span><span class="price-eur">€</span></p>
+      <p class="price-num"><span data-countup={site.preu}>{site.preu}</span><span class="price-eur">€</span></p>
       <p class="price-iva">{t.preu.iva}</p>
-      <dl class="price-facts">
-        {t.preu.xifres.map((x) => (
-          <div>
-            <dt><span data-count={x.valor}>{x.valor}</span> {x.unitat}</dt>
-            <dd>{x.text}</dd>
-          </div>
-        ))}
-      </dl>
       <ul class="price-points">
         {t.preu.punts.map((p) => (
           <li>
@@ -236,8 +199,9 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   </div>
 </section>
 
-<!-- Contacte -->
-<section class="course course-dark" id="contacte">
+<!-- Contacte, amb fibres de llum al fons -->
+<section class="course course-dark contact-course" id="contacte">
+  <div class="fibres" data-fibres aria-hidden="true"></div>
   <div class="wrap contact">
     <div class="contact-copy" data-set>
       <h2 class="contact-title">{t.contacte.titol}</h2>
@@ -262,56 +226,24 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
 </section>
 
 <script>
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  // ---- Columnes de basalt: three.js només quan el navegador està lliure ----
-  const field = document.querySelector<HTMLElement>('[data-field]');
-  if (field?.dataset.mode === '3d') {
-    const still = /[?&]camp=still/.test(location.search);
-    const start = () =>
-      import('../scripts/basalt-field')
-        .then(({ mountBasaltField }) => {
-          const { canvas } = mountBasaltField(field, { still });
-          requestAnimationFrame(() => canvas.classList.add('is-ready'));
-          field.dataset.ready = '';
-        })
-        .catch(() => (field.dataset.mode = 'still'));
-    const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 2500 }) : setTimeout(start, 600));
-    if (document.readyState === 'complete') idle();
-    else window.addEventListener('load', idle, { once: true });
+  // ---- Fibres de llum: el canvas només es crea quan el contacte s'acosta ----
+  const fibres = document.querySelector<HTMLElement>('[data-fibres]');
+  if (fibres) {
+    const fio = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        fio.disconnect();
+        import('../scripts/fibres').then(({ mountFibres }) => mountFibres(fibres));
+      },
+      { rootMargin: '400px 0px' },
+    );
+    fio.observe(fibres);
   }
 
-  // ---- Xifres que compten fins al seu valor quan apareixen ----
-  const counters = document.querySelectorAll<HTMLElement>('[data-count]');
-  const countUp = (el: HTMLElement) => {
-    const to = Number(el.dataset.count);
-    if (!to || reduce.matches) return;
-    el.style.minWidth = el.offsetWidth + 'px';
-    const t0 = performance.now();
-    const dur = 1100;
-    const tick = (now: number) => {
-      const p = Math.min(1, (now - t0) / dur);
-      el.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 4))));
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    el.textContent = '0';
-    requestAnimationFrame(tick);
-  };
-  const cio = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          countUp(e.target as HTMLElement);
-          cio.unobserve(e.target);
-        }
-      }
-    },
-    { threshold: 0.6 },
-  );
-  counters.forEach((el) => cio.observe(el));
-
   // ---- Mòbils dels exemples: inclinació 3D seguint el ratolí ----
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduce.matches) {
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduceMq.matches) {
     document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((el) => {
       let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
       const loop = () => {
@@ -321,14 +253,20 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
         raf = Math.abs(tx - x) > 0.01 || Math.abs(ty - y) > 0.01 ? requestAnimationFrame(loop) : 0;
         if (!raf && tx === 0 && ty === 0) el.style.transform = '';
       };
-      const go = () => { if (!raf) raf = requestAnimationFrame(loop); };
+      const go = () => {
+        if (!raf) raf = requestAnimationFrame(loop);
+      };
       el.addEventListener('pointermove', (e) => {
         const r = el.getBoundingClientRect();
         tx = ((e.clientX - r.left) / r.width - 0.5) * 10;
         ty = -((e.clientY - r.top) / r.height - 0.5) * 8;
         go();
       });
-      el.addEventListener('pointerleave', () => { tx = 0; ty = 0; go(); });
+      el.addEventListener('pointerleave', () => {
+        tx = 0;
+        ty = 0;
+        go();
+      });
     });
   }
 </script>
@@ -341,132 +279,6 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     margin-bottom: clamp(40px, 6vw, 72px);
   }
 
-  /* ---------- Portada ---------- */
-  .hero {
-    padding-block: clamp(48px, 7vw, 96px) 0;
-    overflow: hidden;
-  }
-  .hero-in {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    gap: 48px;
-    align-items: end;
-  }
-
-  /* Camp de columnes de basalt: darrere el contingut, esvaït cap amunt */
-  .hero-field {
-    position: absolute;
-    inset: auto 0 0 0;
-    height: min(78%, 680px);
-    z-index: 0;
-    pointer-events: none;
-    /* Esvaït cap amunt i cap a l'esquerra, perquè el text quedi net */
-    -webkit-mask-image: linear-gradient(to top, #000 50%, transparent), linear-gradient(to right, transparent 8%, #000 60%);
-    -webkit-mask-composite: source-in;
-    mask-image: linear-gradient(to top, #000 50%, transparent), linear-gradient(to right, transparent 8%, #000 60%);
-    mask-composite: intersect;
-  }
-  .hero-field img,
-  .hero-field :global(canvas) {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 70% 100%;
-  }
-  .hero-field[data-mode='3d'] img {
-    display: none;
-  }
-  .hero-field :global(canvas) {
-    opacity: 0;
-    transition: opacity 900ms var(--ease-out);
-  }
-  .hero-field :global(canvas.is-ready) {
-    opacity: 1;
-  }
-  .hero-copy {
-    display: grid;
-    gap: 26px;
-    padding-bottom: 8px;
-  }
-  .hero h1 {
-    font-size: clamp(2.5rem, 5vw, 3.75rem);
-    line-height: 1.04;
-    max-width: 22ch;
-  }
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px 28px;
-    margin-top: 6px;
-  }
-  .hero-actions .btn {
-    flex: 1 1 100%;
-  }
-  .hero-link {
-    color: var(--chalk);
-  }
-  @media (min-width: 520px) {
-    .hero-actions .btn {
-      flex: 0 0 auto;
-    }
-  }
-
-  .rise {
-    animation: rise 900ms var(--ease-out) both;
-    animation-delay: calc(60ms + var(--i, 0) * 90ms);
-  }
-  h1.rise {
-    animation-name: settle-in;
-    animation-delay: 0ms;
-  }
-  @keyframes settle-in {
-    from {
-      transform: translateY(10px);
-    }
-  }
-  @keyframes rise {
-    from {
-      opacity: 0;
-      transform: translateY(14px);
-    }
-  }
-
-  /* El mòbil encastat a la paret: la filada el talla per sota */
-  .plaque {
-    justify-self: center;
-    width: min(300px, 76vw);
-    margin-bottom: -64px;
-  }
-  .plaque-device {
-    padding: 9px;
-    border-radius: 42px;
-    background: var(--device);
-    box-shadow:
-      0 0 0 1px var(--slate-2) inset,
-      0 40px 80px -30px rgb(0 0 0 / 0.75);
-  }
-  .plaque-device :global(img) {
-    width: 100%;
-    height: auto;
-    border-radius: 33px;
-  }
-  @media (min-width: 900px) {
-    .hero-in {
-      grid-template-columns: 1.6fr 1fr;
-      gap: 40px;
-    }
-    .hero-copy {
-      padding-bottom: clamp(88px, 10vw, 136px);
-    }
-    .plaque {
-      width: 320px;
-      margin-bottom: -120px;
-    }
-  }
 
   /* ---------- Problema ---------- */
   .problem-in {
@@ -480,62 +292,17 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   .problem-text {
     margin-top: 22px;
   }
-  .ledger {
-    width: 100%;
-    max-width: 440px;
-    justify-self: center;
-    padding: 3px;
-    background: var(--joint-lime);
-  }
-  .ledger-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 16px 20px;
-    background: var(--face);
-    font-weight: 650;
-  }
-  .ledger-head strong {
-    font-family: var(--display);
-    font-size: 1.75rem;
-    font-weight: 400;
-    line-height: 1;
-    color: var(--missed);
-  }
-  .ledger ol {
-    display: grid;
-    gap: 3px;
-    margin: 3px 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .ledger li {
-    display: grid;
-    grid-template-columns: 20px 3.5rem 1fr;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 20px;
-    background: var(--face);
-  }
-  .ledger :global(svg) {
-    width: 18px;
-    height: 18px;
-    color: var(--missed);
-  }
-  .ledger time {
-    font-family: var(--display);
-    font-size: 1.1875rem;
-    font-variant-numeric: tabular-nums;
-  }
-  .ledger li span {
-    color: var(--ink-muted);
-    font-size: 0.9375rem;
-  }
   @media (min-width: 900px) {
     .problem-in {
       grid-template-columns: 1.2fr 1fr;
       gap: 80px;
     }
+  }
+
+
+  /* ---------- Abans / després ---------- */
+  .compare-course .h2 {
+    max-width: 22ch;
   }
 
   /* ---------- Exemples ---------- */
@@ -619,28 +386,76 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     font-size: 0.8125rem;
     font-weight: 650;
   }
+
+  /* ---------- Exemples: secció fixada amb desplaçament horitzontal ---------- */
+  /* Retalla sense crear contenidor de scroll: el «sticky» continua funcionant */
+  .works-course {
+    overflow-x: clip;
+  }
+  .works-head .head {
+    margin-bottom: 40px;
+  }
+  .works {
+    margin: 0;
+    padding-inline: var(--gutter);
+    scroll-padding-inline: var(--gutter);
+  }
   @media (min-width: 960px) {
-    .works {
-      grid-auto-flow: row;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 56px clamp(32px, 4vw, 64px);
-      margin: 0;
-      padding: 0;
-      overflow: visible;
-    }
-    /* Trencajunts: la columna central baixa mitja pedra */
-    .work:nth-child(3n + 2) {
-      margin-top: 64px;
-    }
-    .work:nth-child(3n + 2) + .work {
-      margin-top: 0;
-    }
     .work-device {
       max-width: 300px;
+    }
+    .works {
+      grid-auto-columns: 300px;
+      gap: 56px;
+      margin: 0;
+      padding: 8px max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter))) 24px;
+    }
+    /* Trencajunts: un sí, un no, la pedra baixa */
+    .work:nth-child(even) {
+      margin-top: 56px;
+    }
+  }
+  @supports (animation-timeline: view()) {
+    @media (min-width: 960px) and (prefers-reduced-motion: no-preference) {
+      .works-course {
+        height: 260vh;
+        padding-block: 0;
+        view-timeline-name: --works;
+      }
+      .works-pin {
+        position: sticky;
+        top: var(--header-h);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-content: center;
+        min-height: calc(100vh - var(--header-h));
+        overflow: hidden;
+      }
+      .works {
+        overflow: visible;
+        scroll-snap-type: none;
+        width: max-content;
+        animation: works-pan linear both;
+        animation-timeline: --works;
+        animation-range: contain 0% contain 100%;
+      }
+      @keyframes works-pan {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(calc(-100% + 100vw));
+        }
+      }
     }
   }
 
   /* ---------- Com funciona ---------- */
+  .how {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
   .steps {
     display: grid;
     gap: 3px;
@@ -651,28 +466,30 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   }
   .step {
     display: grid;
-    gap: 10px;
-    align-content: start;
-    padding: clamp(28px, 4vw, 44px) clamp(22px, 3vw, 36px);
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: clamp(22px, 3vw, 32px) clamp(20px, 3vw, 30px);
     background: var(--face);
   }
   .step-n {
     font-family: var(--display);
-    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-size: clamp(2.75rem, 5vw, 3.75rem);
     line-height: 0.9;
     color: var(--lichen-ink);
+    min-width: 1ch;
   }
   .step h3 {
-    margin-top: 14px;
     font-size: 1.3125rem;
   }
   .step p {
+    margin-top: 6px;
     color: var(--ink-muted);
   }
-  @media (min-width: 820px) {
-    /* Trencajunts: la pedra del mig és més ampla i desplaça els junts */
-    .steps {
-      grid-template-columns: 4fr 5fr 4fr;
+  @media (min-width: 900px) {
+    .how {
+      grid-template-columns: 1.15fr 1fr;
+      gap: 64px;
     }
   }
 
@@ -753,35 +570,6 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
     margin-top: 6px;
     color: var(--ink-muted);
     font-weight: 600;
-  }
-  .price-facts {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3px;
-    margin: 28px 0 0;
-    padding: 3px;
-    background: var(--joint-lime);
-  }
-  .price-facts > div {
-    display: grid;
-    gap: 4px;
-    padding: 16px 18px;
-    background: var(--face);
-  }
-  .price-facts dt {
-    font-family: var(--display);
-    font-size: 2rem;
-    line-height: 1;
-  }
-  .price-facts dd {
-    margin: 0;
-    color: var(--ink-muted);
-    font-size: 0.875rem;
-    line-height: 1.35;
-  }
-  .price-num [data-count],
-  .price-facts [data-count] {
-    display: inline-block;
   }
   .price-points {
     display: grid;
@@ -987,18 +775,26 @@ const trucades = ['09:12', '10:47', '12:05', '17:38'];
   @media (min-width: 900px) {
     .contact {
       grid-template-columns: 1.1fr 1fr;
-      gap: 72px;
-    }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    .rise {
-      animation-name: fade;
-    }
-    @keyframes fade {
-      from {
-        opacity: 0;
-      }
-    }
+  /* Fibres de llum darrere el contacte */
+  .contact-course {
+    overflow: hidden;
+  }
+  .fibres {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 35%, #000 80%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 35%, #000 80%, transparent);
+  }
+  .fibres :global(canvas) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .contact {
+    position: relative;
+    z-index: 1;
   }
 </style>

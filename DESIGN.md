@@ -247,7 +247,18 @@ All answers are visible: no accordion to tap open. Each question and answer is a
 A depicted phone beside a slate panel. Choosing service, day and hour fills each step; confirming drops a new row into the panel's day list with a short settle (8px, 520ms) and a warm highlight that cools to its resting tone. Taken slots are drawn hatched and struck through, not hidden.
 
 ### Motion
-One grammar: blocks set into the wall once as they enter view, rising 10px and fading in over 760ms on cubic-bezier(0.22, 1, 0.36, 1), staggered 70ms per stone. Press feedback uses cubic-bezier(0.23, 1, 0.32, 1) over 140ms. With reduced motion, the rise is dropped and only a 300ms fade remains.
+Every animation explains the product or makes the page memorable; with reduced motion nothing moves (everything renders in its final state).
+- **Basalt ring (hero):** three.js ring of instanced hexagonal columns, dark polished stone with soft environment reflections and a lichen rim light. Spins slowly, tilts with the pointer or the phone's gyroscope, renders only while visible. A pre-rendered still (public/img/anella-basalt.webp) shows first; the 3D chunk loads only after the first user gesture.
+- **Scrambled word (hero):** the last line of the headline cycles barberies → centres d'estètica → massatges → perruqueries every 3.2s, letters scrambling in lichen before resolving. The real headline stays in an sr-only span for SEO and screen readers.
+- **Counters:** hero figures (24 h, 0 €, 3 min) and the price count up once when they enter view (ease-out quart, ~1s).
+- **Marquee:** one band of trades under the hero, linear 46s loop, paused on hover.
+- **Island (problem):** a black Dynamic Island pill morphs from a missed call into a new booking via clip-path on the drawer curve, faces crossfading with a 6px blur.
+- **Before/after (compare):** draggable divider (accessible range input) over the same business card in two states; a one-time nudge hints that it drags.
+- **Booking demo:** selection tick fades and scales in; on confirm the booking chip flies (WAAPI, 820ms ease-in-out) from the phone to its row in the panel, which settles in.
+- **Examples:** on desktop the section pins and the phones pan horizontally with scroll (CSS scroll-driven animation; falls back to a swipeable row on phones); phones tilt in 3D under the pointer.
+- **How it works:** a CSS 3D phone turns with scroll (view timeline) and plays the booking steps: service, day, hour, confirmed.
+- **Contact:** lichen light fibres flow behind the close (2D canvas, fewer fibres at 30fps on phones, created only near view).
+- **Blocks:** set in once, 10px rise + fade over 760ms on cubic-bezier(0.22, 1, 0.36, 1), staggered 70ms. Press feedback scale 0.97 over 140ms.
 
 ## Do's and Don'ts
 
