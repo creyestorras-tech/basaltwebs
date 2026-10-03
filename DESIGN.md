@@ -20,7 +20,6 @@ colors:
   lichen-hi: "#f0b54a"
   lichen-ink: "#7f520c"
   ember: "#a3361f"
-  bezel: "#0a0b0c"
 typography:
   display:
     fontFamily: "Marcellus, 'Palatino Linotype', Palatino, serif"
@@ -149,7 +148,7 @@ Cold volcanic stone and warm lime mortar, punctured by a single lichen yellow.
 - **Olot Basalt** (basalt): page ground and dark courses; also the theme colour and the wash tint over the grain plate.
 - **Raised Basalt** (basalt-raised): panel headers and the footer rule; one step lighter than the ground.
 - **Slate Block** (slate): stone faces in dark walls (under the grain plate) and demo panel rows.
-- **Slate Edge** (slate-edge): hairline device rims, language divider, scrollbar thumb.
+- **Slate Edge** (slate-edge): language divider, scrollbar thumb.
 - **Mortar Bed** (bed): the darkest stone; shows through joints between dark stones and courses, under the header, and as the footer ground.
 - **Mist** (mist): secondary text on dark: nav links, captions, labels, origin line.
 - **Light Mist** (mist-light): lede and body copy on dark where chalk would be too loud.
@@ -160,7 +159,6 @@ Cold volcanic stone and warm lime mortar, punctured by a single lichen yellow.
 - **Lime Joint** (joint-lime): visible mortar between stones on lime courses and the FAQ course lines.
 - **Ink** (ink): text on lime and on lichen.
 - **Muted Ink** (ink-muted): secondary text on lime.
-- **Device Bezel** (bezel): the black frame of depicted phones.
 
 ### Named Rules
 **The Lichen Rule.** Lichen marks what can be done or what just happened (actions, focus, current, new). It never fills a large surface, never decorates a heading, and never appears as a second accent beside another hue.
@@ -202,7 +200,7 @@ On phones every split stacks, walls become one stone per row, and the example si
 
 ## Elevation & Depth
 
-The wall itself is flat: depth comes from the mortar bed showing between stones and from the tone step between basalt, slate and bed, not from shadows. Buttons carry a stone bevel (a light inset top edge and a dark inset bottom edge) so they read as cut blocks. Real cast shadows are reserved for objects set into or onto the wall: the depicted phones, the demo panel, and the floating WhatsApp button on mobile. The sticky header is a basalt slab sitting on a 2px bed joint.
+The wall itself is flat: depth comes from the mortar bed showing between stones and from the tone step between basalt, slate and bed, not from shadows. Buttons carry a stone bevel (a light inset top edge and a dark inset bottom edge) so they read as cut blocks. Real cast shadows are reserved for objects set onto the wall: floating interface cards (the booking card, the demo panel, the how-it-works pieces), the example panels, and the floating WhatsApp button on mobile. No device frames are ever drawn. The sticky header is a basalt slab sitting on a 2px bed joint.
 
 ### Shadow Vocabulary
 - **Block bevel** (`box-shadow: 0 1px 0 rgb(255 255 255 / 0.28) inset, 0 -2px 0 rgb(0 0 0 / 0.16) inset`): every solid button.
@@ -216,7 +214,7 @@ The wall itself is flat: depth comes from the mortar bed showing between stones 
 
 ## Shapes
 
-Square-cut. Stones round to 2px, buttons and tags to 3px, wall containers, plaques and photographs to 4px, the demo panel to 6px. Nothing on the wall is a pill or a circle. The single exception is depiction: phones drawn on the page keep device geometry (outer radius 34 to 44px, screen 27 to 35px), and the booking UI inside them is the client's product, with its own softer controls (9 to 12px). The brand mark is a hexagonal basalt column section with a lichen dot.
+Square-cut. Stones round to 2px, buttons and tags to 3px, wall containers, plaques and photographs to 4px, the demo panel to 6px. Nothing on the wall is a pill or a circle. The exception is depicted product: floating booking cards and example panels are a client's interface, with softer corners (cards 16 to 20px, example panels 18px, controls 9 to 12px). No phone or browser frame is ever drawn around them. The brand mark is a hexagonal basalt column section with a lichen dot.
 
 ## Components
 
@@ -244,7 +242,7 @@ Sticky basalt header, 64px, on a 2px bed joint. Links are mist at 0.9375rem/500,
 All answers are visible: no accordion to tap open. Each question and answer is a lime-face stone in a lime-joint wall (3px joints), two columns from 760px, one on phones. Question in Schibsted 650, answer in muted ink.
 
 ### Booking demo (signature)
-A depicted phone beside a slate panel. Choosing service, day and hour fills each step; confirming drops a new row into the panel's day list with a short settle (8px, 520ms) and a warm highlight that cools to its resting tone. Taken slots are drawn hatched and struck through, not hidden.
+A floating booking card (no device frame) beside a slate panel. Choosing service, day and hour fills each step; confirming drops a new row into the panel's day list with a short settle (8px, 520ms) and a warm highlight that cools to its resting tone. Taken slots are drawn hatched and struck through, not hidden.
 
 ### Motion
 Every animation explains the product or makes the page memorable; with reduced motion nothing moves (everything renders in its final state).
@@ -255,8 +253,8 @@ Every animation explains the product or makes the page memorable; with reduced m
 - **Island (problem):** a black Dynamic Island pill morphs from a missed call into a new booking via clip-path on the drawer curve, faces crossfading with a 6px blur.
 - **Before/after (compare):** draggable divider (accessible range input) over the same business card in two states; a one-time nudge hints that it drags.
 - **Booking demo:** selection tick fades and scales in; on confirm the booking chip flies (WAAPI, 820ms ease-in-out) from the phone to its row in the panel, which settles in.
-- **Examples:** on desktop the section pins and the phones pan horizontally with scroll (CSS scroll-driven animation; falls back to a swipeable row on phones); phones tilt in 3D under the pointer.
-- **How it works:** a CSS 3D phone turns with scroll (view timeline) and plays the booking steps: service, day, hour, confirmed.
+- **Examples:** three invented businesses (Tramuntana barber: black and gold, Oswald; Alba aesthetics: pale pink, Bodoni Moda italic; Serena massage: wood and green, Young Serif) shown as large frameless panels with 18px corners and a soft shadow, each tagged «Exemple». On desktop the section pins and the panels pan horizontally with scroll; on phones they swipe.
+- **How it works:** floating interface pieces (service, calendar, times, confirmation) with no device around them, turning gently with scroll (view timeline) and lighting up step by step.
 - **Contact:** lichen light fibres flow behind the close (2D canvas, fewer fibres at 30fps on phones, created only near view).
 - **Blocks:** set in once, 10px rise + fade over 760ms on cubic-bezier(0.22, 1, 0.36, 1), staggered 70ms. Press feedback scale 0.97 over 140ms.
 

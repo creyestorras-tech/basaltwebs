@@ -5,15 +5,11 @@ export const rutes = {
   es: { home: '/es/', avis: '/es/aviso-legal', privacitat: '/es/politica-privacidad' },
 } as const;
 
-// `enLinia: false` mentre la web del client no estigui publicada:
-// es mostra com a «aviat en línia» i sense enllaç.
+// Negocis inventats per mostrar estils. No són clients reals: cada panell porta l'etiqueta «Exemple».
 export const exemples = [
-  { id: 'sergi-moragas', nom: 'Sergi Moragas', tipus: { ca: 'Teràpia manual', es: 'Terapia manual' }, lloc: 'Camprodon', url: 'https://sergi-moragas.pages.dev', enLinia: true },
-  { id: 'celbellesa', nom: 'Celbellesa', tipus: { ca: "Centre d'estètica", es: 'Centro de estética' }, lloc: 'Banyoles', url: 'https://celbellesa.pages.dev', enLinia: true },
-  { id: 'mimat-ripoll', nom: "Mima't", tipus: { ca: 'Estètica', es: 'Estética' }, lloc: 'Ripoll', url: 'https://mimat-ripoll.pages.dev', enLinia: true },
-  { id: 'latin-barber-olot', nom: 'Latin barber', tipus: { ca: 'Barberia', es: 'Barbería' }, lloc: 'Olot', url: 'https://latin-barber-olot.pages.dev', enLinia: false },
-  { id: 'espai-essencial', nom: 'Espai Essencial', tipus: { ca: 'Massatges', es: 'Masajes' }, lloc: 'Olot', url: 'https://espai-essencial.pages.dev', enLinia: false },
-  { id: 'maderonatur', nom: 'Maderonatur', tipus: { ca: 'Maderoteràpia', es: 'Maderoterapia' }, lloc: 'Banyoles', url: 'https://maderonatur.pages.dev', enLinia: true },
+  { id: 'tramuntana', nom: 'Barberia Tramuntana', tipus: { ca: 'Barberia', es: 'Barbería' } },
+  { id: 'alba', nom: "Centre d'estètica Alba", tipus: { ca: "Centre d'estètica", es: 'Centro de estética' } },
+  { id: 'serena', nom: 'Massatges Serena', tipus: { ca: 'Massatges', es: 'Masajes' } },
 ];
 
 const ca = {
@@ -40,7 +36,6 @@ const ca = {
     cta: 'Parlem per WhatsApp',
     secundari: 'Veure exemples',
     origen: 'Des de la Garrotxa, per a tot Catalunya',
-    peuMobil: 'Pàgina de reserva de Celbellesa, Banyoles, amb les hores lliures',
     prefix: 'Webs amb reserves per a',
     paraules: ['barberies', "centres d'estètica", 'massatges', 'perruqueries'],
     xifres: [
@@ -83,7 +78,7 @@ const ca = {
   },
   demo: {
     titol: 'Prova-ho tu mateix',
-    text: 'Fes una reserva al mòbil i mira com arriba al panell del negoci. Són deu segons.',
+    text: 'Fes una reserva i mira com arriba al panell del negoci. Són deu segons.',
     etiqueta: 'Demostració',
     avis: "No es desa ni s'envia cap dada.",
     negoci: 'Barberia del Firal',
@@ -107,11 +102,42 @@ const ca = {
     clients: ['Marc P.', 'Laia R.', 'Jordi C.', 'Pere V.', 'Núria S.', 'Àlex M.', 'Toni G.'],
   },
   exemples: {
-    titol: 'Webs que ja reben reserves',
-    text: 'Negocis de Camprodon, Banyoles i Ripoll.',
-    veure: 'Obrir la web',
-    aviat: 'Aviat en línia',
-    alt: 'Captura de la web de',
+    titol: 'Cada negoci, el seu estil',
+    text: "Tres negocis inventats per mostrar com la web s'adapta a cada ofici.",
+    etiqueta: 'Exemple',
+    alt: 'Exemple de web per a',
+    tramuntana: {
+      nav: ['Serveis', 'Equip', 'On som'],
+      cta: 'Reserva hora',
+      titol: 'Talls amb caràcter',
+      text: 'Tall, barba i afaitat amb navalla. Tria hora i et rebem sense esperes.',
+      serveis: [
+        ['Tall', '30 min'],
+        ['Tall + barba', '45 min'],
+        ['Afaitat', '25 min'],
+      ],
+    },
+    alba: {
+      nav: ['Tractaments', 'Carta', 'Contacte'],
+      titol: 'La teva pausa',
+      text: 'Un espai tranquil per cuidar-te.',
+      carta: 'Carta de serveis',
+      serveis: [
+        ['Higiene facial', '50 min'],
+        ['Manicura semipermanent', '45 min'],
+        ['Depilació amb cera', '30 min'],
+        ['Tractament antiedat', '60 min'],
+      ],
+      cta: 'Demana hora',
+    },
+    serena: {
+      nav: ['Massatges', 'Bons', 'Reserva'],
+      titol: 'Respira. Tria el teu moment.',
+      servei: 'Massatge relaxant · 60 min',
+      pas: 'Tria dia i hora',
+      dies: ['dl', 'dt', 'dc', 'dj', 'dv'],
+      cta: 'Confirmar',
+    },
   },
   passos: {
     titol: 'Com funciona',
@@ -195,7 +221,6 @@ const es: Dict = {
     cta: 'Hablemos por WhatsApp',
     secundari: 'Ver ejemplos',
     origen: 'Desde la Garrotxa, para toda Cataluña',
-    peuMobil: 'Página de reserva de Celbellesa, Banyoles, con las horas libres',
     prefix: 'Webs con reservas para',
     paraules: ['barberías', 'centros de estética', 'masajes', 'peluquerías'],
     xifres: [
@@ -238,7 +263,7 @@ const es: Dict = {
   },
   demo: {
     titol: 'Pruébalo tú mismo',
-    text: 'Haz una reserva en el móvil y mira cómo llega al panel del negocio. Son diez segundos.',
+    text: 'Haz una reserva y mira cómo llega al panel del negocio. Son diez segundos.',
     etiqueta: 'Demostración',
     avis: 'No se guarda ni se envía ningún dato.',
     negoci: 'Barbería del Firal',
@@ -262,11 +287,42 @@ const es: Dict = {
     clients: ['Marc P.', 'Laia R.', 'Jordi C.', 'Pere V.', 'Núria S.', 'Àlex M.', 'Toni G.'],
   },
   exemples: {
-    titol: 'Webs que ya reciben reservas',
-    text: 'Negocios de Camprodon, Banyoles y Ripoll.',
-    veure: 'Abrir la web',
-    aviat: 'Pronto en línea',
-    alt: 'Captura de la web de',
+    titol: 'Cada negocio, su estilo',
+    text: 'Tres negocios inventados para mostrar cómo la web se adapta a cada oficio.',
+    etiqueta: 'Ejemplo',
+    alt: 'Ejemplo de web para',
+    tramuntana: {
+      nav: ['Servicios', 'Equipo', 'Dónde estamos'],
+      cta: 'Reserva hora',
+      titol: 'Cortes con carácter',
+      text: 'Corte, barba y afeitado a navaja. Elige hora y te recibimos sin esperas.',
+      serveis: [
+        ['Corte', '30 min'],
+        ['Corte + barba', '45 min'],
+        ['Afeitado', '25 min'],
+      ],
+    },
+    alba: {
+      nav: ['Tratamientos', 'Carta', 'Contacto'],
+      titol: 'Tu pausa',
+      text: 'Un espacio tranquilo para cuidarte.',
+      carta: 'Carta de servicios',
+      serveis: [
+        ['Higiene facial', '50 min'],
+        ['Manicura semipermanente', '45 min'],
+        ['Depilación con cera', '30 min'],
+        ['Tratamiento antiedad', '60 min'],
+      ],
+      cta: 'Pide hora',
+    },
+    serena: {
+      nav: ['Masajes', 'Bonos', 'Reserva'],
+      titol: 'Respira. Elige tu momento.',
+      servei: 'Masaje relajante · 60 min',
+      pas: 'Elige día y hora',
+      dies: ['lu', 'ma', 'mi', 'ju', 'vi'],
+      cta: 'Confirmar',
+    },
   },
   passos: {
     titol: 'Cómo funciona',

@@ -9,40 +9,36 @@ const d = dict[lang].demo;
 const dies = lang === 'ca' ? ['dl', 'dt', 'dc', 'dj', 'dv'] : ['lu', 'ma', 'mi', 'ju', 'vi'];
 const hores = ['09:30', '11:00', '12:30', '16:00', '17:00', '18:30'];
 ---
+<!-- Peces de la interfície de reserva, flotant sense cap dispositiu al voltant -->
 <div class="hp" data-howphone aria-hidden="true">
-  <div class="hp-float">
-    <div class="hp-device">
-      <div class="hp-screen" data-step="0">
-        <p class="hp-biz">{d.negoci}</p>
-        <ol class="hp-progress"><li></li><li></li><li></li><li></li></ol>
+  <div class="hp-stage" data-step="0">
+    <div class="piece piece-service">
+      <p class="piece-label"><span class="n">1</span>{d.passos[0]}</p>
+      {d.serveis.map((s, i) => (
+        <span class:list={['hp-row', { on: i === 1 }]}>{s.nom}<small>{s.durada}</small></span>
+      ))}
+    </div>
 
-        <div class="hp-view">
-          <p class="hp-label">{d.passos[0]}</p>
-          {d.serveis.map((s, i) => (
-            <span class:list={['hp-row', { on: i === 1 }]}>{s.nom}<small>{s.durada}</small></span>
-          ))}
-        </div>
-
-        <div class="hp-view">
-          <p class="hp-label">{d.passos[1]}</p>
-          <div class="hp-days">
-            {dies.map((w, i) => <span class:list={{ on: i === 1 }}><small>{w}</small>{7 + i}</span>)}
-          </div>
-        </div>
-
-        <div class="hp-view">
-          <p class="hp-label">{d.passos[2]}</p>
-          <div class="hp-slots">
-            {hores.map((h, i) => <span class:list={{ on: i === 4 }}>{h}</span>)}
-          </div>
-        </div>
-
-        <div class="hp-view hp-done">
-          <span class="hp-check"><Icon name="check" /></span>
-          <p class="hp-done-title">{d.confirmada}</p>
-          <p class="hp-done-sub">{d.serveis[1].nom} · 17:00</p>
-        </div>
+    <div class="piece piece-days">
+      <p class="piece-label"><span class="n">2</span>{d.passos[1]}</p>
+      <div class="hp-days">
+        {dies.map((w, i) => <span class:list={{ on: i === 1 }}><small>{w}</small>{7 + i}</span>)}
       </div>
+    </div>
+
+    <div class="piece piece-slots">
+      <p class="piece-label"><span class="n">3</span>{d.passos[2]}</p>
+      <div class="hp-slots">
+        {hores.map((h, i) => <span class:list={{ on: i === 4 }}>{h}</span>)}
+      </div>
+    </div>
+
+    <div class="piece piece-done">
+      <span class="hp-check"><Icon name="check" /></span>
+      <span>
+        <strong>{d.confirmada}</strong>
+        <small>{d.serveis[1].nom} · 17:00</small>
+      </span>
     </div>
   </div>
 </div>
@@ -50,16 +46,17 @@ const hores = ['09:30', '11:00', '12:30', '16:00', '17:00', '18:30'];
 <script>
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll<HTMLElement>('[data-howphone]').forEach((root) => {
-    const screen = root.querySelector<HTMLElement>('.hp-screen')!;
+    const stage = root.querySelector<HTMLElement>('.hp-stage')!;
     if (reduce) {
-      screen.dataset.step = '3';
+      stage.dataset.step = '3';
       return;
     }
     let step = 0;
     let timer = 0;
+    // Servei → dia → hora → confirmat, i torna a començar
     const tick = () => {
       step = (step + 1) % 4;
-      screen.dataset.step = String(step);
+      stage.dataset.step = String(step);
       timer = window.setTimeout(tick, step === 3 ? 2600 : 1500);
     };
     new IntersectionObserver(
@@ -74,113 +71,136 @@ const hores = ['09:30', '11:00', '12:30', '16:00', '17:00', '18:30'];
 
 <style>
   .hp {
-    perspective: 1100px;
+    perspective: 1200px;
     display: grid;
     place-items: center;
     padding-block: 12px;
   }
-  .hp-float {
+  .hp-stage {
+    position: relative;
+    width: min(100%, 440px);
+    height: 470px;
     transform-style: preserve-3d;
-    transform: rotateX(8deg) rotateY(-16deg);
-    animation: hp-bob 6s ease-in-out infinite;
+    transform: rotateX(8deg) rotateY(-14deg);
   }
-  /* Amb scroll: el mòbil gira suaument mentre la secció passa per la pantalla */
+  /* Amb scroll: el conjunt gira suaument mentre la secció passa per la pantalla */
   @supports (animation-timeline: view()) {
-    .hp-float {
-      animation:
-        hp-turn linear both,
-        hp-bob 6s ease-in-out infinite;
-      animation-timeline: view(), auto;
-      animation-range: cover 0% cover 100%, normal;
+    .hp-stage {
+      --tl: view();
+      animation: hp-turn linear both;
+      animation-timeline: var(--tl);
+      animation-range: cover 0% cover 100%;
     }
   }
   @keyframes hp-turn {
     from {
-      transform: rotateX(10deg) rotateY(-28deg) rotateZ(-2deg);
+      transform: rotateX(12deg) rotateY(-24deg);
     }
     to {
-      transform: rotateX(4deg) rotateY(22deg) rotateZ(2deg);
+      transform: rotateX(4deg) rotateY(16deg);
     }
   }
-  @keyframes hp-bob {
-    50% {
-      translate: 0 -10px;
-    }
-  }
-  .hp-device {
-    width: 250px;
-    padding: 9px;
-    border-radius: 40px;
-    background: var(--device);
-    box-shadow:
-      0 0 0 1px var(--slate-2) inset,
-      -14px 30px 50px -24px rgb(22 24 26 / 0.55);
-  }
-  .hp-screen {
-    position: relative;
-    height: 470px;
-    padding: 40px 16px 18px;
-    border-radius: 31px;
-    background: #f7f6f3;
-    color: var(--ink);
-    overflow: hidden;
-  }
-  .hp-biz {
-    margin: 0;
-    font-family: var(--display);
-    font-size: 1.125rem;
-  }
-  .hp-progress {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 4px;
-    margin: 12px 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .hp-progress li {
-    height: 3px;
-    border-radius: 2px;
-    background: #e2dfd8;
-    transition: background-color 300ms ease;
-  }
-  .hp-screen[data-step='0'] .hp-progress li:nth-child(-n + 1),
-  .hp-screen[data-step='1'] .hp-progress li:nth-child(-n + 2),
-  .hp-screen[data-step='2'] .hp-progress li:nth-child(-n + 3),
-  .hp-screen[data-step='3'] .hp-progress li {
-    background: var(--ink);
-  }
-  .hp-view {
+
+  /* Cada peça és una targeta que flota a una profunditat diferent */
+  .piece {
     position: absolute;
-    inset: 96px 16px auto;
     display: grid;
     gap: 7px;
-    opacity: 0;
-    transform: translateX(24px);
+    padding: 16px;
+    border-radius: 16px;
+    background: #fcfbf8;
+    color: var(--ink);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.8) inset,
+      0 22px 44px -22px rgb(22 24 26 / 0.45);
+    opacity: 0.82;
+    transform: translateZ(0);
     transition:
       opacity 360ms ease,
-      transform 460ms var(--ease-out);
+      transform 520ms var(--ease-out),
+      box-shadow 520ms var(--ease-out);
   }
-  .hp-screen[data-step='0'] .hp-view:nth-of-type(1),
-  .hp-screen[data-step='1'] .hp-view:nth-of-type(2),
-  .hp-screen[data-step='2'] .hp-view:nth-of-type(3),
-  .hp-screen[data-step='3'] .hp-view:nth-of-type(4) {
+  .piece-service {
+    top: 0;
+    left: 0;
+    width: 62%;
+  }
+  .piece-days {
+    top: 150px;
+    right: 0;
+    width: 64%;
+  }
+  .piece-slots {
+    top: 268px;
+    left: 4%;
+    width: 60%;
+  }
+  .piece-done {
+    right: 2%;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px 14px 14px;
+    background: var(--ink);
+    color: #f2f1ed;
+    opacity: 0;
+    transform: translateZ(40px) translateY(10px) scale(0.96);
+  }
+  .piece-done strong {
+    display: block;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 1.125rem;
+  }
+  .piece-done small {
+    color: #a9adb1;
+    font-size: 0.8125rem;
+  }
+
+  /* Pas actiu: la peça s'acosta i s'il·lumina */
+  .hp-stage[data-step='0'] .piece-service,
+  .hp-stage[data-step='1'] .piece-days,
+  .hp-stage[data-step='2'] .piece-slots {
     opacity: 1;
-    transform: none;
+    transform: translateZ(56px);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.8) inset,
+      0 34px 60px -24px rgb(22 24 26 / 0.55);
   }
-  .hp-label {
+  .hp-stage[data-step='3'] .piece {
+    opacity: 1;
+  }
+  .hp-stage[data-step='3'] .piece-done {
+    transform: translateZ(80px);
+  }
+
+  .piece-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin: 0 0 4px;
     font-size: 0.8125rem;
     font-weight: 650;
     color: var(--ink-muted);
   }
+  .n {
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--lichen);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
   .hp-row {
     display: flex;
     justify-content: space-between;
-    padding: 11px 12px;
+    padding: 10px 12px;
     border-radius: 10px;
-    background: #fcfbf8;
-    box-shadow: 0 0 0 1.5px #e2dfd8 inset;
+    background: #f4f2ee;
     font-size: 0.875rem;
     font-weight: 600;
   }
@@ -193,11 +213,12 @@ const hores = ['09:30', '11:00', '12:30', '16:00', '17:00', '18:30'];
   .hp-slots .on {
     background: var(--ink);
     color: #fcfbf8;
-    box-shadow: none;
   }
-  .hp-row.on small,
-  .hp-days .on small {
+  .hp-row.on small {
     color: var(--lichen);
+  }
+  .hp-days .on small {
+    color: #e9e7e2;
   }
   .hp-days {
     display: grid;
@@ -209,8 +230,7 @@ const hores = ['09:30', '11:00', '12:30', '16:00', '17:00', '18:30'];
     place-items: center;
     padding: 8px 0;
     border-radius: 10px;
-    background: #fcfbf8;
-    box-shadow: 0 0 0 1.5px #e2dfd8 inset;
+    background: #f4f2ee;
     font-weight: 700;
   }
   .hp-days small {
@@ -224,44 +244,23 @@ const hores = ['09:30', '11:00', '12:30', '16:00', '17:00', '18:30'];
     gap: 6px;
   }
   .hp-slots span {
-    padding: 10px 0;
+    padding: 9px 0;
     border-radius: 9px;
-    background: #fcfbf8;
-    box-shadow: 0 0 0 1.5px #e2dfd8 inset;
+    background: #f4f2ee;
     text-align: center;
     font-family: var(--display);
-  }
-  .hp-done {
-    justify-items: center;
-    padding-top: 60px;
-    text-align: center;
   }
   .hp-check {
     display: grid;
     place-items: center;
-    width: 60px;
-    height: 60px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
-    background: var(--ink);
-    color: var(--lichen);
-    transform: scale(0.8);
-    transition: transform 500ms var(--ease-out);
-  }
-  .hp-screen[data-step='3'] .hp-check {
-    transform: none;
+    background: var(--lichen);
+    color: var(--ink);
   }
   .hp-check :global(svg) {
-    width: 28px;
-    height: 28px;
-  }
-  .hp-done-title {
-    margin: 10px 0 0;
-    font-family: var(--display);
-    font-size: 1.375rem;
-  }
-  .hp-done-sub {
-    margin: 0;
-    color: var(--ink-muted);
-    font-size: 0.875rem;
+    width: 22px;
+    height: 22px;
   }
 </style>

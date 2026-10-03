@@ -309,23 +309,6 @@
           "#f6b8a9",
           "#ffe8e2"
         ]
-      },
-      "bezel": {
-        "role": "neutral",
-        "displayName": "Device Bezel",
-        "canonical": "#0a0b0c",
-        "oklch": "oklch(14.9% 0.003 248.1)",
-        "cssVar": null,
-        "tonalRamp": [
-          "#0a0b0c",
-          "#242526",
-          "#414243",
-          "#606163",
-          "#818284",
-          "#a4a5a7",
-          "#c8c9cb",
-          "#edeff0"
-        ]
       }
     },
     "typographyMeta": {
@@ -389,7 +372,7 @@
       {
         "name": "set-object",
         "value": "0 0 0 1px #2e3337 inset, 0 40px 80px -30px rgb(0 0 0 / 0.75)",
-        "purpose": "Depicted phones set into the wall (demo phone and panel use a 30px/60px variant)."
+        "purpose": "Floating interface cards and example panels set onto the wall; no device frames are drawn."
       },
       {
         "name": "floating-action",

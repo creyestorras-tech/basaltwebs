@@ -18,7 +18,7 @@ Basalt Webs builds each business its own website with 24/7 online booking and a 
 
 ## Positioning
 
-A one-person studio born in La Garrotxa (Olot) that works for neighbourhood businesses across Catalonia: direct treatment without intermediaries, Catalan first (and Spanish), a free tailored proposal before any commitment, and a single payment with no monthly fees or lock-in. Proof is local and real: six live client sites in Camprodon, Banyoles, Ripoll and Olot.
+A one-person studio born in La Garrotxa (Olot) that works for neighbourhood businesses across Catalonia: direct treatment without intermediaries, Catalan first (and Spanish), a free tailored proposal before any commitment, and a single payment with no monthly fees or lock-in. Proof is the product itself: an interactive booking demo and three clearly labelled example sites in different styles.
 
 ## Operating Context
 
@@ -43,9 +43,10 @@ A one-person studio born in La Garrotxa (Olot) that works for neighbourhood busi
 
 ## Evidence on Hand
 
-- Six live client sites (names, type, town, URL): Sergi Moragas, teràpia manual, Camprodon — https://sergi-moragas.pages.dev · Celbellesa, centre d'estètica, Banyoles — https://celbellesa.pages.dev · Mima't, estètica, Ripoll — https://mimat-ripoll.pages.dev · Latin barber, barberia, Olot — https://latin-barber-olot.pages.dev · Espai Essencial, massatges, Olot — https://espai-essencial.pages.dev · Maderonatur, maderoteràpia, Banyoles — https://maderonatur.pages.dev
+- Example sites: three invented businesses (Barberia Tramuntana, Centre d'estètica Alba, Massatges Serena), each tagged «Exemple». They are not clients. No real business may appear on the site unless it is a confirmed client who agreed to it.
 - Photo: Castellfollit de la Roca by Jesús Esteban (Unsplash), `src/assets/castellfollit.jpg`.
 - No testimonials, ratings, client counts or booking statistics exist: never fabricate them.
+- No device frames: no drawn phones or browsers anywhere; interface pieces float on their own.
 
 ## Product Principles
 
