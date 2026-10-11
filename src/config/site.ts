@@ -5,7 +5,7 @@ export const site = {
   persona: 'Jordi Reyes',
   // Mòbil amb prefix de país i sense espais ni signes, p. ex. 34612345678
   mobil: '34623202188',
-  correu: 'basaltwebs@gmail.com',
+  correu: 'info@basaltwebs.cat',
   titular: 'Jordi Reyes Fernández',
   nif: '46673015N',
   domicili: 'Olot (Girona)',

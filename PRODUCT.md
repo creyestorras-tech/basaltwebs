@@ -22,7 +22,7 @@ A one-person studio born in La Garrotxa (Olot) that works for neighbourhood busi
 
 ## Operating Context
 
-- First contact is WhatsApp (+34 623 202 188) or email (basaltwebs@gmail.com).
+- First contact is WhatsApp (+34 623 202 188) or email (info@basaltwebs.cat).
 - Process: free proposal with the business name and services → review together and adapt → publish and start receiving bookings.
 - Client sites are deployed on `*.pages.dev`; the booking panel lets the owner change hours, services, holidays and reserve capacity for walk-in customers, and handle several customers at once.
 
