@@ -16,7 +16,7 @@ const ca = {
   meta: {
     title: 'Basalt Webs · Webs amb reserves per a negocis de proximitat',
     description:
-      'Webs amb reserves en línia per a negocis de proximitat de tot Catalunya, fetes des de la Garrotxa. Proposta gratis i un sol pagament, sense quotes mensuals.',
+      'Webs amb reserves en línia per a negocis de proximitat de tot Catalunya, fetes des de la Garrotxa. Proposta gratis, alta gratuïta i sense permanència.',
   },
   nav: {
     demo: 'Prova-ho',
@@ -40,7 +40,7 @@ const ca = {
     paraules: ['barberies', "centres d'estètica", 'massatges', 'perruqueries'],
     xifres: [
       { valor: 24, unitat: 'h', text: 'reserves obertes, cada dia' },
-      { valor: 0, unitat: '€', text: 'al mes, sense quotes' },
+      { valor: 0, unitat: '€', text: "d'alta, sense permanència" },
       { valor: 3, unitat: 'min', text: 'per reservar' },
     ],
     objecte: 'Anella de columnes de basalt',
@@ -159,9 +159,11 @@ const ca = {
     ],
   },
   preu: {
-    titol: 'Un sol pagament',
+    titol: 'Comences sense pagar res',
+    mes: '/mes',
     iva: '+ IVA',
-    punts: ['Sense quotes mensuals', 'Sense permanència', 'Proposta gratis'],
+    alternativa: 'O, si ho prefereixes, un sol pagament de',
+    punts: ['Alta gratuïta', 'Canvis inclosos', 'Sense permanència', 'Proposta gratis'],
     destacat: "La proposta és gratis i sense compromís: només pagues si t'agrada.",
     cta: 'Demana la teva proposta',
   },
@@ -178,7 +180,7 @@ const ca = {
       { q: "Cal saber d'informàtica?", a: 'No. Si saps fer servir el WhatsApp, saps fer servir el panell. I si tens cap dubte, ens truques o ens escrius.' },
       { q: "Puc canviar l'horari jo mateix?", a: "Sí, des del panell. Pots canviar l'horari, els serveis i marcar els dies de vacances, i la web s'actualitza al moment." },
       { q: 'Què passa si un client arriba sense reserva?', a: 'Pots reservar part de la capacitat per als clients de carrer, perquè sempre et quedi lloc per a qui entra per la porta.' },
-      { q: 'Hi ha quotes mensuals?', a: 'No. Pagues una sola vegada. Sense quotes mensuals i sense permanència.' },
+      { q: 'Quant costa?', a: "Tu tries: 29 € al mes + IVA, amb l'alta gratuïta, els canvis inclosos i sense permanència, o un sol pagament de 379 € + IVA. En tots dos casos, la proposta és gratis." },
     ],
   },
   contacte: {
@@ -202,7 +204,7 @@ const es: Dict = {
   meta: {
     title: 'Basalt Webs · Webs con reservas para negocios de proximidad',
     description:
-      'Webs con reservas online para negocios de proximidad de toda Cataluña, hechas desde la Garrotxa. Propuesta gratis y un solo pago, sin cuotas mensuales.',
+      'Webs con reservas online para negocios de proximidad de toda Cataluña, hechas desde la Garrotxa. Propuesta gratis, alta gratuita y sin permanencia.',
   },
   nav: {
     demo: 'Pruébalo',
@@ -225,7 +227,7 @@ const es: Dict = {
     paraules: ['barberías', 'centros de estética', 'masajes', 'peluquerías'],
     xifres: [
       { valor: 24, unitat: 'h', text: 'reservas abiertas, cada día' },
-      { valor: 0, unitat: '€', text: 'al mes, sin cuotas' },
+      { valor: 0, unitat: '€', text: 'de alta, sin permanencia' },
       { valor: 3, unitat: 'min', text: 'para reservar' },
     ],
     objecte: 'Anillo de columnas de basalto',
@@ -344,9 +346,11 @@ const es: Dict = {
     ],
   },
   preu: {
-    titol: 'Un solo pago',
+    titol: 'Empiezas sin pagar nada',
+    mes: '/mes',
     iva: '+ IVA',
-    punts: ['Sin cuotas mensuales', 'Sin permanencia', 'Propuesta gratis'],
+    alternativa: 'O, si lo prefieres, un solo pago de',
+    punts: ['Alta gratuita', 'Cambios incluidos', 'Sin permanencia', 'Propuesta gratis'],
     destacat: 'La propuesta es gratis y sin compromiso: solo pagas si te gusta.',
     cta: 'Pide tu propuesta',
   },
@@ -363,7 +367,7 @@ const es: Dict = {
       { q: '¿Hace falta saber de informática?', a: 'No. Si sabes usar WhatsApp, sabes usar el panel. Y si tienes cualquier duda, nos llamas o nos escribes.' },
       { q: '¿Puedo cambiar el horario yo mismo?', a: 'Sí, desde el panel. Puedes cambiar el horario, los servicios y marcar los días de vacaciones, y la web se actualiza al momento.' },
       { q: '¿Qué pasa si un cliente llega sin reserva?', a: 'Puedes reservar parte de la capacidad para los clientes de calle, para que siempre te quede sitio para quien entra por la puerta.' },
-      { q: '¿Hay cuotas mensuales?', a: 'No. Pagas una sola vez. Sin cuotas mensuales y sin permanencia.' },
+      { q: '¿Cuánto cuesta?', a: 'Tú eliges: 29 € al mes + IVA, con alta gratuita, cambios incluidos y sin permanencia, o un solo pago de 379 € + IVA. En ambos casos, la propuesta es gratis.' },
     ],
   },
   contacte: {

@@ -100,8 +100,9 @@ const wa = whatsapp(lang);
   <div class="wrap price">
     <div class="price-figure" data-set>
       <h2 class="price-title">{t.preu.titol}</h2>
-      <p class="price-num"><span data-countup={site.preu}>{site.preu}</span><span class="price-eur">€</span></p>
+      <p class="price-num"><span data-countup={site.preu}>{site.preu}</span><span class="price-eur">€</span><span class="price-mes">{t.preu.mes}</span></p>
       <p class="price-iva">{t.preu.iva}</p>
+      <p class="price-alt">{t.preu.alternativa} <strong>{site.preuUnic}&nbsp;€</strong>&nbsp;{t.preu.iva}</p>
       <ul class="price-points">
         {t.preu.punts.map((p) => (
           <li>
@@ -354,6 +355,19 @@ const wa = whatsapp(lang);
     margin-left: 0.08em;
     font-size: 0.5em;
     vertical-align: 0.6em;
+  }
+  .price-mes {
+    margin-left: 0.06em;
+    font-size: 0.32em;
+    letter-spacing: 0;
+    color: var(--ink-muted);
+  }
+  .price-alt {
+    margin-top: 10px;
+    color: var(--ink-muted);
+  }
+  .price-alt strong {
+    color: var(--ink);
   }
   .price-iva {
     margin-top: 6px;
