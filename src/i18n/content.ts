@@ -180,7 +180,7 @@ const ca = {
       { q: "Cal saber d'informàtica?", a: 'No. Si saps fer servir el WhatsApp, saps fer servir el panell. I si tens cap dubte, ens truques o ens escrius.' },
       { q: "Puc canviar l'horari jo mateix?", a: "Sí, des del panell. Pots canviar l'horari, els serveis i marcar els dies de vacances, i la web s'actualitza al moment." },
       { q: 'Què passa si un client arriba sense reserva?', a: 'Pots reservar part de la capacitat per als clients de carrer, perquè sempre et quedi lloc per a qui entra per la porta.' },
-      { q: 'Quant costa?', a: "Tu tries: 29 € al mes + IVA, amb l'alta gratuïta, els canvis inclosos i sense permanència, o un sol pagament de 379 € + IVA. En tots dos casos, la proposta és gratis." },
+      { q: 'Quant costa?', a: "Tu tries: 29 € al mes + IVA, amb l'alta gratuïta, els canvis inclosos i sense permanència, o un sol pagament de 459 € + IVA. En tots dos casos, la proposta és gratis." },
     ],
   },
   contacte: {
@@ -367,7 +367,7 @@ const es: Dict = {
       { q: '¿Hace falta saber de informática?', a: 'No. Si sabes usar WhatsApp, sabes usar el panel. Y si tienes cualquier duda, nos llamas o nos escribes.' },
       { q: '¿Puedo cambiar el horario yo mismo?', a: 'Sí, desde el panel. Puedes cambiar el horario, los servicios y marcar los días de vacaciones, y la web se actualiza al momento.' },
       { q: '¿Qué pasa si un cliente llega sin reserva?', a: 'Puedes reservar parte de la capacidad para los clientes de calle, para que siempre te quede sitio para quien entra por la puerta.' },
-      { q: '¿Cuánto cuesta?', a: 'Tú eliges: 29 € al mes + IVA, con alta gratuita, cambios incluidos y sin permanencia, o un solo pago de 379 € + IVA. En ambos casos, la propuesta es gratis.' },
+      { q: '¿Cuánto cuesta?', a: 'Tú eliges: 29 € al mes + IVA, con alta gratuita, cambios incluidos y sin permanencia, o un solo pago de 459 € + IVA. En ambos casos, la propuesta es gratis.' },
     ],
   },
   contacte: {

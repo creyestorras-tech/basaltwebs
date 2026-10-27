@@ -11,7 +11,7 @@ export const site = {
   domicili: 'Olot (Girona)',
   // Quota mensual (opció recomanada) i alternativa de pagament únic
   preu: '29',
-  preuUnic: '379',
+  preuUnic: '459',
   foto: {
     autor: 'Jesús Esteban',
     url: 'https://unsplash.com/photos/KZPJbeCAwEU',

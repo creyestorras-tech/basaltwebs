@@ -30,7 +30,7 @@ A one-person studio born in La Garrotxa (Olot) that works for neighbourhood busi
 
 - Static Astro site on Cloudflare Pages, https://basaltwebs.pages.dev. No database, no forms, no cookies, no analytics.
 - Catalan default (`/`), Spanish (`/es/`), CA | ES switch in the header.
-- Price: two options. Recommended: free setup + 29 €/month + IVA, small changes included, no lock-in. Alternative: single payment of 379 € + IVA. The proposal is free and without commitment: the client only pays if they like it.
+- Price: two options. Recommended: free setup + 29 €/month + IVA, small changes included, no lock-in. Alternative: single payment of 459 € + IVA. The proposal is free and without commitment: the client only pays if they like it.
 - Legal pages required (avís legal, política de privacitat). Holder: Jordi Reyes Fernández, NIF 46673015N, domicile Olot (Girona).
 - Undecided: own domain (planned .cat), testimonials.
 
