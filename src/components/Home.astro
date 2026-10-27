@@ -102,7 +102,7 @@ const wa = whatsapp(lang);
       <h2 class="price-title">{t.preu.titol}</h2>
       <p class="price-num"><span data-countup={site.preu}>{site.preu}</span><span class="price-eur">€</span><span class="price-mes">{t.preu.mes}</span></p>
       <p class="price-iva">{t.preu.iva}</p>
-      <p class="price-alt">{t.preu.alternativa} <strong>{site.preuUnic}&nbsp;€</strong>&nbsp;{t.preu.iva}</p>
+      <p class="price-alt">{t.preu.alternativa} <strong>{site.preuUnic}&nbsp;€</strong>&nbsp;{t.preu.ivaInclos}</p>
       <ul class="price-points">
         {t.preu.punts.map((p) => (
           <li>
