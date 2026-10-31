@@ -1,7 +1,7 @@
 // Dades de l'empresa.
 export const site = {
   nom: 'Basalt Webs',
-  url: 'https://basaltwebs.pages.dev',
+  url: 'https://basaltwebs.cat',
   persona: 'Jordi Reyes',
   // Mòbil amb prefix de país i sense espais ni signes, p. ex. 34612345678
   mobil: '34623202188',

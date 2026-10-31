@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://basaltwebs.pages.dev',
+  site: 'https://basaltwebs.cat',
   trailingSlash: 'ignore',
   build: { inlineStylesheets: 'always' },
   // three.js es carrega a demanda (només escriptori), per això el tros és gran
