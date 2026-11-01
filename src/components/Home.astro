@@ -114,10 +114,16 @@ const wa = whatsapp(lang);
     </div>
     <div class="price-plaque" data-set style="--i:1">
       <p>{t.preu.destacat}</p>
-      <a class="btn" href={wa} target="_blank" rel="noopener">
-        <Icon name="whatsapp" />
-        {t.hero.cta}
-      </a>
+      <div class="price-actions">
+        <a class="btn" href={rutes[lang].proposta}>
+          {t.preu.cta}
+          <Icon name="arrow" />
+        </a>
+        <a class="btn btn-line" href={wa} target="_blank" rel="noopener">
+          <Icon name="whatsapp" />
+          WhatsApp
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -168,6 +174,10 @@ const wa = whatsapp(lang);
     <div class="contact-copy" data-set>
       <h2 class="contact-title">{t.contacte.titol}</h2>
       <p class="lede">{t.contacte.text}</p>
+      <a class="btn btn-line contact-form" href={rutes[lang].proposta}>
+        {t.preu.cta}
+        <Icon name="arrow" />
+      </a>
       <p class="contact-legal"><a href={rutes[lang].privacitat}>{t.peu.privacitat}</a></p>
     </div>
     <div class="contact-wall" data-set style="--i:1">
@@ -408,6 +418,14 @@ const wa = whatsapp(lang);
     font-size: clamp(1.625rem, 3.2vw, 2.375rem);
     line-height: 1.18;
     text-wrap: balance;
+  }
+  .price-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .contact-form {
+    margin-top: 24px;
   }
   .price-plaque .btn {
     justify-self: start;

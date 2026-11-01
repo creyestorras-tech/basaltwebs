@@ -1,0 +1,998 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from './Icon.astro';
+import { site, plans, type Lang } from '../config/site';
+import { rutes } from '../i18n/content';
+import { propDict, estilsDemo } from '../i18n/proposta';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const p = propDict[lang];
+const r = rutes[lang];
+const alt = { ca: rutes.ca.proposta, es: rutes.es.proposta };
+
+const config = {
+  lang,
+  mobil: site.mobil.replace(/\D/g, ''),
+  plans,
+  t: p,
+};
+---
+<Base lang={lang} title={p.meta.title} description={p.meta.description} alt={alt}>
+  <section class="course course-lime prop">
+    <div class="wrap prop-in">
+      <a class="back" href={r.home}>← {p.tornar}</a>
+      <header class="prop-head">
+        <h1>{p.titol}</h1>
+        <p class="lede">{p.intro}</p>
+      </header>
+
+      <ol class="steps" aria-hidden="true" data-steps>
+        {p.passos.map((s, i) => <li data-step-dot={i}><span>{i + 1}</span>{s}</li>)}
+      </ol>
+
+      <div class="prop-grid">
+        <form class="prop-form" method="post" action="/api/proposta" data-form novalidate>
+          <input type="hidden" name="lang" value={lang} />
+          <div class="hp" aria-hidden="true">
+            <label>Web <input type="text" name="web2" tabindex="-1" autocomplete="off" /></label>
+          </div>
+
+          <!-- 1. Negoci -->
+          <fieldset class="step" data-step="0">
+            <legend><span class="n">1</span>{p.negoci.titol}</legend>
+            <div class="choices choices-2">
+              {p.negoci.opcions.map((o) => (
+                <label class="choice">
+                  <input type="radio" name="negoci" value={o.id} required />
+                  <span class="choice-body"><span class="choice-label">{o.label}</span></span>
+                  <span class="tick" aria-hidden="true"><Icon name="check" /></span>
+                </label>
+              ))}
+            </div>
+            <p class="err" data-err="negoci" hidden>{p.errors.tria}</p>
+          </fieldset>
+
+          <!-- 2. Pla i pagament -->
+          <fieldset class="step" data-step="1">
+            <legend><span class="n">2</span>{p.pla.titol}</legend>
+            <div class="choices">
+              {plans.map((pl) => (
+                <label class="choice choice-plan">
+                  <input type="radio" name="pla" value={pl.id} required />
+                  <span class="choice-body">
+                    <span class="choice-label">{p.pla.plans[pl.id].nom}</span>
+                    <span class="choice-desc">{p.pla.plans[pl.id].desc}</span>
+                    <span class="choice-price">
+                      <strong>{pl.mes} €</strong>{p.pla.mes} · <strong>{pl.unic} €</strong> {p.pla.ivaInclos}
+                    </span>
+                  </span>
+                  <span class="tick" aria-hidden="true"><Icon name="check" /></span>
+                </label>
+              ))}
+            </div>
+            <p class="err" data-err="pla" hidden>{p.errors.tria}</p>
+
+            <p class="sub">{p.pla.pagament}</p>
+            <div class="choices choices-2">
+              <label class="choice">
+                <input type="radio" name="pagament" value="mensual" checked />
+                <span class="choice-body">
+                  <span class="choice-label">{p.pla.mensual} <em class="badge">{p.pla.recomanat}</em></span>
+                  <span class="choice-desc">{p.pla.mensualNota}</span>
+                </span>
+                <span class="tick" aria-hidden="true"><Icon name="check" /></span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="pagament" value="unic" />
+                <span class="choice-body">
+                  <span class="choice-label">{p.pla.unic}</span>
+                  <span class="choice-desc">{p.pla.unicNota}</span>
+                </span>
+                <span class="tick" aria-hidden="true"><Icon name="check" /></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- 3. Ajustos -->
+          <fieldset class="step" data-step="2">
+            <legend><span class="n">3</span>{p.ajustos.titol}</legend>
+            <p class="help">{p.ajustos.ajuda}</p>
+            <div class="checks">
+              {p.ajustos.opcions.map((o) => (
+                <label class="check">
+                  <input type="checkbox" name="ajustos" value={o.id} />
+                  <span class="box" aria-hidden="true"><Icon name="check" /></span>
+                  <span class="check-text">
+                    <span>{o.label}</span>
+                    {o.nota && <small>{o.nota}</small>}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <!-- 4. Estil -->
+          <fieldset class="step" data-step="3">
+            <legend><span class="n">4</span>{p.estil.titol}</legend>
+            <p class="help">{p.estil.ajuda}</p>
+            <div class="styles">
+              {p.estil.opcions.map((o) => {
+                const d = estilsDemo[o.id];
+                return (
+                  <div class="style">
+                    <label class="choice choice-style">
+                      <input type="radio" name="estil" value={o.id} required />
+                      {d ? (
+                        <img src={d.img} alt="" width="640" height="360" loading="lazy" decoding="async" />
+                      ) : (
+                        <span class="style-any" aria-hidden="true">?</span>
+                      )}
+                      <span class="choice-body">
+                        <span class="choice-label">{o.label}</span>
+                        {o.nota && <span class="choice-desc">{o.nota}</span>}
+                      </span>
+                      <span class="tick" aria-hidden="true"><Icon name="check" /></span>
+                    </label>
+                    {d && (
+                      <a class="style-link" href={d.url} target="_blank" rel="noopener">
+                        {p.estil.veure} <Icon name="arrow" />
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <p class="err" data-err="estil" hidden>{p.errors.tria}</p>
+          </fieldset>
+
+          <!-- 5. Dades -->
+          <fieldset class="step" data-step="4">
+            <legend><span class="n">5</span>{p.dades.titol}</legend>
+            <div class="fields">
+              <label class="field">
+                <span>{p.dades.negoci}</span>
+                <input type="text" name="nomNegoci" required autocomplete="organization" maxlength="120" />
+                <em class="err" data-err="nomNegoci" hidden>{p.errors.obligatori}</em>
+              </label>
+              <label class="field">
+                <span>{p.dades.nom}</span>
+                <input type="text" name="nom" required autocomplete="name" maxlength="120" />
+                <em class="err" data-err="nom" hidden>{p.errors.obligatori}</em>
+              </label>
+              <label class="field">
+                <span>{p.dades.telefon}</span>
+                <input type="tel" name="telefon" required autocomplete="tel" inputmode="tel" maxlength="20" />
+                <em class="err" data-err="telefon" hidden>{p.errors.telefon}</em>
+              </label>
+              <label class="field">
+                <span>{p.dades.correu} <small>({p.dades.opcional})</small></span>
+                <input type="email" name="correu" autocomplete="email" maxlength="160" />
+                <em class="err" data-err="correu" hidden>{p.errors.correu}</em>
+              </label>
+              <label class="field">
+                <span>{p.dades.poblacio}</span>
+                <input type="text" name="poblacio" required autocomplete="address-level2" maxlength="80" />
+                <em class="err" data-err="poblacio" hidden>{p.errors.obligatori}</em>
+              </label>
+              <label class="field">
+                <span>{p.dades.enllac}</span>
+                <input type="text" name="enllac" placeholder={p.dades.enllacPh} maxlength="200" />
+              </label>
+              <label class="field field-wide">
+                <span>{p.dades.quan}</span>
+                <select name="quan">
+                  {p.dades.quanOpcions.map((q) => <option value={q}>{q}</option>)}
+                </select>
+              </label>
+              <label class="field field-wide">
+                <span>{p.dades.comentaris}</span>
+                <textarea name="comentaris" rows="3" maxlength="1000"></textarea>
+              </label>
+            </div>
+            <label class="check check-legal">
+              <input type="checkbox" name="privacitat" value="si" required />
+              <span class="box" aria-hidden="true"><Icon name="check" /></span>
+              <span class="check-text">
+                <span>{p.dades.privacitat} <a href={r.privacitat} target="_blank">{p.dades.privacitatEnllac}</a>.</span>
+              </span>
+            </label>
+            <p class="err" data-err="privacitat" hidden>{p.errors.privacitat}</p>
+          </fieldset>
+
+          <div class="nav-steps">
+            <button type="button" class="btn btn-line" data-prev hidden>{p.enrere}</button>
+            <button type="button" class="btn" data-next>{p.seguent}</button>
+            <button type="submit" class="btn" data-submit>{p.dades.enviar}</button>
+          </div>
+        </form>
+
+        <aside class="summary" aria-live="polite">
+          <h2>{p.resum.titol}</h2>
+          <div data-summary><p class="muted">{p.resum.buit}</p></div>
+          <p class="summary-foot"><Icon name="check" />{p.resum.proposta}</p>
+        </aside>
+      </div>
+
+      <div class="done" data-done hidden tabindex="-1">
+        <h2 data-done-title></h2>
+        <p class="lede" data-done-text></p>
+        <a class="btn" data-done-wa href="#" target="_blank" rel="noopener">
+          <Icon name="whatsapp" />
+          <span data-done-wa-label></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/json" id="prop-config" set:html={JSON.stringify(config)} />
+</Base>
+
+<script>
+  type Plan = { id: string; mes: number; unic: number };
+  const cfg = JSON.parse(document.getElementById('prop-config')!.textContent || '{}');
+  const t = cfg.t;
+  const plans: Plan[] = cfg.plans;
+
+  const form = document.querySelector<HTMLFormElement>('[data-form]')!;
+  const steps = [...form.querySelectorAll<HTMLFieldSetElement>('[data-step]')];
+  const dots = [...document.querySelectorAll<HTMLElement>('[data-step-dot]')];
+  const btnPrev = form.querySelector<HTMLButtonElement>('[data-prev]')!;
+  const btnNext = form.querySelector<HTMLButtonElement>('[data-next]')!;
+  const btnSubmit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+  const summary = document.querySelector<HTMLElement>('[data-summary]')!;
+  let current = 0;
+
+  document.documentElement.classList.add('prop-js');
+
+  const val = (name: string) =>
+    (form.querySelector<HTMLInputElement>(`[name="${name}"]:checked`) ||
+      (form.elements.namedItem(name) as HTMLInputElement | null))?.value?.trim() || '';
+  const labelOf = (list: { id: string; label: string }[], id: string) => list.find((o) => o.id === id)?.label || '';
+  const ajustosSel = () =>
+    [...form.querySelectorAll<HTMLInputElement>('[name="ajustos"]:checked')].map((i) => labelOf(t.ajustos.opcions, i.value));
+
+  function showErr(name: string, on: boolean) {
+    const el = form.querySelector<HTMLElement>(`[data-err="${name}"]`);
+    if (el) el.hidden = !on;
+  }
+
+  function go(i: number) {
+    current = Math.max(0, Math.min(steps.length - 1, i));
+    steps.forEach((s, k) => (s.hidden = k !== current));
+    dots.forEach((d, k) => {
+      d.classList.toggle('is-done', k < current);
+      d.classList.toggle('is-current', k === current);
+    });
+    btnPrev.hidden = current === 0;
+    btnNext.hidden = current === steps.length - 1;
+    btnSubmit.hidden = current !== steps.length - 1;
+    const top = form.getBoundingClientRect().top + window.scrollY - 120;
+    if (window.scrollY > top) window.scrollTo({ top, behavior: 'smooth' });
+    steps[current].querySelector<HTMLElement>('legend')?.focus?.();
+  }
+
+  function validStep(i: number) {
+    if (i === 0) {
+      const ok = !!val('negoci');
+      showErr('negoci', !ok);
+      return ok;
+    }
+    if (i === 1) {
+      const ok = !!val('pla');
+      showErr('pla', !ok);
+      return ok;
+    }
+    if (i === 3) {
+      const ok = !!val('estil');
+      showErr('estil', !ok);
+      return ok;
+    }
+    if (i === 4) {
+      let ok = true;
+      for (const n of ['nomNegoci', 'nom', 'poblacio']) {
+        const bad = !val(n);
+        showErr(n, bad);
+        if (bad) ok = false;
+      }
+      const tel = val('telefon').replace(/[\s.\-()]/g, '');
+      const telBad = !/^(\+?\d{9,15})$/.test(tel);
+      showErr('telefon', telBad);
+      if (telBad) ok = false;
+      const mail = val('correu');
+      const mailBad = !!mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail);
+      showErr('correu', mailBad);
+      if (mailBad) ok = false;
+      const priv = form.querySelector<HTMLInputElement>('[name="privacitat"]')!.checked;
+      showErr('privacitat', !priv);
+      if (!priv) ok = false;
+      if (!ok) form.querySelector<HTMLElement>('.err:not([hidden])')?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      return ok;
+    }
+    return true;
+  }
+
+  function planText() {
+    const pl = plans.find((p) => p.id === val('pla'));
+    if (!pl) return null;
+    const mensual = val('pagament') !== 'unic';
+    return {
+      nom: t.pla.plans[pl.id].nom,
+      preu: mensual ? `${pl.mes} €${t.pla.mes}` : `${pl.unic} € ${t.pla.ivaInclos}`,
+      pagament: mensual ? t.pla.mensual : t.pla.unic,
+    };
+  }
+
+  function renderSummary() {
+    const rows: [string, string][] = [];
+    const neg = labelOf(t.negoci.opcions, val('negoci'));
+    if (neg) rows.push([t.passos[0], neg]);
+    const pt = planText();
+    if (pt) rows.push([t.passos[1], `${pt.nom} · ${pt.pagament}`]);
+    const aj = ajustosSel();
+    if (aj.length) rows.push([t.passos[2], aj.join(', ')]);
+    const es = labelOf(t.estil.opcions, val('estil'));
+    if (es) rows.push([t.passos[3], es]);
+    if (!rows.length) {
+      summary.innerHTML = `<p class="muted">${t.resum.buit}</p>`;
+      return;
+    }
+    const dl = document.createElement('dl');
+    for (const [k, v] of rows) {
+      const dt = document.createElement('dt');
+      dt.textContent = k;
+      const dd = document.createElement('dd');
+      dd.textContent = v;
+      dl.append(dt, dd);
+    }
+    summary.replaceChildren(dl);
+    if (pt) {
+      const price = document.createElement('p');
+      price.className = 'summary-price';
+      price.textContent = pt.preu;
+      summary.append(price);
+    }
+  }
+
+  function whatsappText() {
+    const pt = planText();
+    const lines = [
+      t.wa.hola,
+      '',
+      `• ${t.passos[0]}: ${labelOf(t.negoci.opcions, val('negoci'))}`,
+      pt ? `• ${t.passos[1]}: ${pt.nom} (${pt.pagament}, ${pt.preu})` : '',
+      ajustosSel().length ? `• ${t.passos[2]}: ${ajustosSel().join(', ')}` : '',
+      `• ${t.passos[3]}: ${labelOf(t.estil.opcions, val('estil'))}`,
+      '',
+      `${t.dades.negoci}: ${val('nomNegoci')}`,
+      `${t.dades.nom}: ${val('nom')}`,
+      `${t.dades.poblacio}: ${val('poblacio')}`,
+      val('enllac') ? `${t.dades.enllac}: ${val('enllac')}` : '',
+      `${t.dades.quan} ${val('quan')}`,
+      val('comentaris') ? `\n${val('comentaris')}` : '',
+    ].filter((l) => l !== '');
+    return `https://wa.me/${cfg.mobil}?text=${encodeURIComponent(lines.join('\n'))}`;
+  }
+
+  function showDone(ok: boolean) {
+    const done = document.querySelector<HTMLElement>('[data-done]')!;
+    const box = ok ? t.fet : t.fallback;
+    done.querySelector('[data-done-title]')!.textContent = box.titol;
+    done.querySelector('[data-done-text]')!.textContent = box.text;
+    done.querySelector('[data-done-wa-label]')!.textContent = box.whatsapp;
+    done.querySelector<HTMLAnchorElement>('[data-done-wa]')!.href = whatsappText();
+    done.classList.toggle('is-fallback', !ok);
+    document.querySelector<HTMLElement>('.prop-grid')!.hidden = true;
+    document.querySelector<HTMLElement>('[data-steps]')!.hidden = true;
+    done.hidden = false;
+    done.focus();
+    done.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }
+
+  btnNext.addEventListener('click', () => {
+    if (validStep(current)) go(current + 1);
+  });
+  btnPrev.addEventListener('click', () => go(current - 1));
+
+  form.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+    if (target.name === 'negoci') {
+      // Proposa el pla que encaixa amb el negoci (es pot canviar)
+      const suggerit = target.value === 'allotjament' ? 'allotjament' : 'reserves';
+      const radio = form.querySelector<HTMLInputElement>(`[name="pla"][value="${suggerit}"]`);
+      if (radio && !val('pla')) radio.checked = true;
+      showErr('negoci', false);
+    }
+    if (target.name === 'pla') showErr('pla', false);
+    if (target.name === 'estil') showErr('estil', false);
+    renderSummary();
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    for (let i = 0; i < steps.length; i++) {
+      if (!validStep(i)) {
+        go(i);
+        validStep(i);
+        return;
+      }
+    }
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = t.dades.enviant;
+    const pt = planText();
+    const payload = {
+      lang: cfg.lang,
+      web2: val('web2'),
+      negoci: labelOf(t.negoci.opcions, val('negoci')),
+      pla: pt?.nom || '',
+      pagament: pt?.pagament || '',
+      preu: pt?.preu || '',
+      ajustos: ajustosSel(),
+      estil: labelOf(t.estil.opcions, val('estil')),
+      nomNegoci: val('nomNegoci'),
+      nom: val('nom'),
+      telefon: val('telefon'),
+      correu: val('correu'),
+      poblacio: val('poblacio'),
+      enllac: val('enllac'),
+      quan: val('quan'),
+      comentaris: val('comentaris'),
+    };
+    let ok = false;
+    try {
+      const res = await fetch('/api/proposta', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      ok = res.ok && (await res.json().catch(() => ({})))?.ok === true;
+    } catch {
+      ok = false;
+    }
+    showDone(ok);
+  });
+
+  go(0);
+  renderSummary();
+</script>
+
+<style>
+  .prop {
+    padding-block: clamp(40px, 7vw, 88px) var(--course);
+  }
+  .back {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ink-muted);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .prop-head {
+    max-width: 44rem;
+    margin-top: 8px;
+  }
+  h1 {
+    font-size: clamp(2.25rem, 5.4vw, 3.75rem);
+  }
+  .lede {
+    margin-top: 14px;
+    font-size: clamp(1.0625rem, 1.9vw, 1.25rem);
+    color: var(--ink-muted);
+  }
+
+  /* Passos */
+  .steps {
+    display: none;
+    gap: 6px;
+    margin: 36px 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: s;
+  }
+  :global(.prop-js) .steps {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .steps li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 6px;
+    border-radius: 999px;
+    background: var(--face);
+    color: var(--ink-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .steps li span {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--lime-bed);
+    color: var(--ink);
+    font-size: 0.75rem;
+  }
+  .steps li.is-current {
+    background: var(--ink);
+    color: var(--lime);
+  }
+  .steps li.is-current span {
+    background: var(--lichen);
+  }
+  .steps li.is-done span {
+    background: var(--lichen);
+  }
+
+  .prop-grid {
+    display: grid;
+    gap: 28px;
+    margin-top: 24px;
+    align-items: start;
+  }
+  @media (min-width: 960px) {
+    .prop-grid {
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 40px;
+    }
+    .summary {
+      position: sticky;
+      top: calc(var(--header-h) + 24px);
+    }
+  }
+
+  /* Formulari */
+  .prop-form {
+    padding: clamp(20px, 3.4vw, 40px);
+    border-radius: 6px;
+    background: var(--face);
+    box-shadow: 0 0 0 1px var(--lime-bed);
+  }
+  .step {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  :global(.prop-js) .step + .step {
+    margin-top: 0;
+  }
+  html:not(.prop-js) .step + .step {
+    margin-top: 48px;
+  }
+  legend {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    line-height: 1.15;
+    outline: none;
+  }
+  legend .n {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--lime);
+    font: 650 0.9375rem/1 var(--text);
+  }
+  .help,
+  .sub {
+    margin-top: 10px;
+    color: var(--ink-muted);
+  }
+  .sub {
+    margin-top: 28px;
+    color: var(--ink);
+    font-weight: 650;
+  }
+
+  .choices {
+    display: grid;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  @media (min-width: 640px) {
+    .choices-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .choice {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 48px 16px 18px;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1.5px var(--lime-bed);
+    cursor: pointer;
+    transition:
+      box-shadow 160ms var(--ease-out),
+      transform 160ms var(--ease-press);
+  }
+  .choice:active {
+    transform: scale(0.99);
+  }
+  .choice input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .choice:has(input:checked) {
+    box-shadow: inset 0 0 0 2.5px var(--ink);
+  }
+  .choice:has(input:focus-visible) {
+    outline: 3px solid var(--lichen);
+    outline-offset: 2px;
+  }
+  @media (hover: hover) {
+    .choice:hover {
+      box-shadow: inset 0 0 0 1.5px var(--ink-muted);
+    }
+    .choice:has(input:checked):hover {
+      box-shadow: inset 0 0 0 2.5px var(--ink);
+    }
+  }
+  .choice-body {
+    display: grid;
+    gap: 4px;
+  }
+  .choice-label {
+    font-weight: 650;
+    line-height: 1.3;
+  }
+  .choice-desc {
+    color: var(--ink-muted);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+  .choice-price {
+    margin-top: 6px;
+    font-size: 0.9375rem;
+    color: var(--ink-muted);
+  }
+  .choice-price strong {
+    font-family: var(--display);
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--lichen);
+    color: var(--ink);
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 650;
+    vertical-align: 2px;
+  }
+  .tick {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1.5px var(--lime-bed);
+    color: transparent;
+    transition: background 160ms var(--ease-out);
+  }
+  .tick :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+  .choice:has(input:checked) .tick {
+    background: var(--lichen);
+    box-shadow: none;
+    color: var(--ink);
+  }
+
+  /* Estils */
+  .styles {
+    display: grid;
+    gap: 14px;
+    margin-top: 20px;
+  }
+  @media (min-width: 640px) {
+    .styles {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .style {
+    display: grid;
+    gap: 6px;
+  }
+  .choice-style {
+    padding: 0 0 14px;
+    overflow: hidden;
+  }
+  .choice-style img,
+  .style-any {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: top;
+    background: var(--lime);
+  }
+  .style-any {
+    display: grid;
+    place-items: center;
+    font-family: var(--display);
+    font-size: 3rem;
+    color: var(--ink-muted);
+  }
+  .choice-style .choice-body {
+    padding: 0 18px;
+  }
+  .choice-style .tick {
+    background: #fff;
+  }
+  .style-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    justify-self: start;
+    color: var(--ink);
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .style-link :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Caselles */
+  .checks {
+    display: grid;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .check {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1.5px var(--lime-bed);
+    cursor: pointer;
+  }
+  .check input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .check:has(input:checked) {
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+  .check:has(input:focus-visible) {
+    outline: 3px solid var(--lichen);
+    outline-offset: 2px;
+  }
+  .box {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border-radius: 3px;
+    box-shadow: inset 0 0 0 1.5px var(--joint-lime);
+    color: transparent;
+  }
+  .box :global(svg) {
+    width: 13px;
+    height: 13px;
+  }
+  .check:has(input:checked) .box {
+    background: var(--lichen);
+    box-shadow: none;
+    color: var(--ink);
+  }
+  .check-text {
+    display: grid;
+    gap: 2px;
+  }
+  .check-text small {
+    color: var(--ink-muted);
+    font-size: 0.875rem;
+  }
+  .check-legal {
+    margin-top: 20px;
+    background: transparent;
+    box-shadow: none;
+    padding-inline: 0;
+  }
+  .check-legal:has(input:checked) {
+    box-shadow: none;
+  }
+  .check-legal a {
+    color: var(--ink);
+  }
+
+  /* Camps */
+  .fields {
+    display: grid;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  @media (min-width: 640px) {
+    .fields {
+      grid-template-columns: 1fr 1fr;
+    }
+    .field-wide {
+      grid-column: 1 / -1;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .field small {
+    font-weight: 400;
+    color: var(--ink-muted);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 50px;
+    padding: 12px 14px;
+    border: 0;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: inset 0 0 0 1.5px var(--lime-bed);
+    color: var(--ink);
+    color-scheme: light;
+    font: 400 1rem/1.4 var(--text);
+  }
+  .field select option {
+    background: #fff;
+    color: var(--ink);
+  }
+  .field textarea {
+    resize: vertical;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+  .err {
+    margin-top: 10px;
+    color: var(--missed);
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-style: normal;
+  }
+  .field .err {
+    margin-top: 0;
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .nav-steps {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .nav-steps [data-next],
+  .nav-steps [data-submit] {
+    margin-left: auto;
+  }
+  html:not(.prop-js) [data-next],
+  html:not(.prop-js) [data-prev] {
+    display: none;
+  }
+  .btn[disabled] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  /* Resum */
+  .summary {
+    padding: 24px;
+    border-radius: 6px;
+    background: var(--ink);
+    color: var(--lime);
+  }
+  .summary h2 {
+    font-size: 1.5rem;
+  }
+  .summary :global(dl) {
+    display: grid;
+    gap: 12px;
+    margin: 18px 0 0;
+  }
+  .summary :global(dt) {
+    color: var(--mist);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+  }
+  .summary :global(dd) {
+    margin: 2px 0 0;
+    line-height: 1.4;
+  }
+  .summary :global(.summary-price) {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--slate-2);
+    font-family: var(--display);
+    font-size: 1.75rem;
+    color: var(--lichen);
+  }
+  .summary :global(.muted) {
+    margin-top: 14px;
+    color: var(--mist);
+  }
+  .summary-foot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    color: var(--mist-2);
+    font-size: 0.875rem;
+  }
+  .summary-foot :global(svg) {
+    width: 14px;
+    height: 14px;
+    color: var(--lichen);
+  }
+
+  /* Fet */
+  .done {
+    max-width: 40rem;
+    margin-top: 40px;
+    padding: clamp(24px, 4vw, 44px);
+    border-radius: 6px;
+    background: var(--face);
+    box-shadow: 0 0 0 1px var(--lime-bed);
+    outline: none;
+  }
+  .done h2 {
+    font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+  }
+  .done .btn {
+    margin-top: 24px;
+  }
+  .done:not(.is-fallback) .btn {
+    --btn-bg: transparent;
+    --btn-fg: var(--ink);
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 34%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .choice,
+    .tick {
+      transition: none;
+    }
+  }
+</style>

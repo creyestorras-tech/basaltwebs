@@ -24,6 +24,17 @@ export const site = {
 
 export type Lang = 'ca' | 'es';
 
+// Plans del formulari de proposta (/proposta). Preus en euros.
+// mes: quota mensual + IVA (alta gratuïta) · unic: pagament únic, IVA inclòs.
+// Canvia aquí els preus i s'actualitzen a tot el formulari.
+export const plans = [
+  { id: 'reserves', mes: 29, unic: 459 },
+  { id: 'basica', mes: 19, unic: 300 },
+  { id: 'allotjament', mes: 39, unic: 690 },
+] as const;
+
+export type PlanId = (typeof plans)[number]['id'];
+
 export function whatsapp(lang: Lang) {
   const text =
     lang === 'ca'

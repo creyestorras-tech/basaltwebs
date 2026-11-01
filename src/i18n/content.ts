@@ -1,8 +1,8 @@
 import { site, type Lang } from '../config/site';
 
 export const rutes = {
-  ca: { home: '/', avis: '/avis-legal', privacitat: '/politica-privacitat' },
-  es: { home: '/es/', avis: '/es/aviso-legal', privacitat: '/es/politica-privacidad' },
+  ca: { home: '/', avis: '/avis-legal', privacitat: '/politica-privacitat', proposta: '/proposta' },
+  es: { home: '/es/', avis: '/es/aviso-legal', privacitat: '/es/politica-privacidad', proposta: '/es/propuesta' },
 } as const;
 
 // Negocis inventats per mostrar estils. No són clients reals: cada panell porta l'etiqueta «Exemple».
