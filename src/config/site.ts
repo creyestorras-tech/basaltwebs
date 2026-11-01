@@ -10,8 +10,8 @@ export const site = {
   nif: '46673015N',
   domicili: 'Olot (Girona)',
   // Quota mensual (opció recomanada) i alternativa de pagament únic
-  preu: '29',
-  preuUnic: '459',
+  preu: '19',
+  preuUnic: '349',
   foto: {
     autor: 'Jesús Esteban',
     url: 'https://unsplash.com/photos/KZPJbeCAwEU',
@@ -28,9 +28,9 @@ export type Lang = 'ca' | 'es';
 // mes: quota mensual + IVA (alta gratuïta) · unic: pagament únic, IVA inclòs.
 // Canvia aquí els preus i s'actualitzen a tot el formulari.
 export const plans = [
-  { id: 'reserves', mes: 29, unic: 459 },
-  { id: 'basica', mes: 19, unic: 300 },
-  { id: 'allotjament', mes: 39, unic: 690 },
+  { id: 'reserves', mes: 19, unic: 349 },
+  { id: 'basica', mes: 12, unic: 249 },
+  { id: 'allotjament', mes: 29, unic: 490 },
 ] as const;
 
 export type PlanId = (typeof plans)[number]['id'];
