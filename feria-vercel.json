@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "api/odoo.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/odoo", "dest": "/api/odoo.js" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}

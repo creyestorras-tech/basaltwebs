@@ -3510,7 +3510,16 @@ function renderProveedorCards(list){
             <div style="font-size:11px;color:#aab2c8;margin-top:2px">${pr.cat}${pr.note?' · <em>'+pr.note+'</em>':''}</div>
           </div>`).join('')}
         </div>` : ''}
-        <div class="dtab-content active" id="prov-notas-${safeId}">
+        ${s._purchaseProds && s._purchaseProds.length ? `
+        <div class="detail-tabs">
+          <div class="dtab active" onclick="switchDtab(this,'prov-compras-${safeId}')">🛒 Compras</div>
+          <div class="dtab" onclick="switchDtab(this,'prov-notas-${safeId}')">📋 Notas</div>
+        </div>
+        <div class="dtab-content active" id="prov-compras-${safeId}">
+          ${buildProdTableHTML(s._purchaseProds, 'pt-prov-'+safeId)}
+        </div>
+        <div class="dtab-content" id="prov-notas-${safeId}">` : `
+        <div class="dtab-content active" id="prov-notas-${safeId}">`}
           <div class="notes-area">
             <textarea class="notes-textarea" id="pnota-${safeId}"
               placeholder="Acuerdos de precios, condiciones, productos negociados...">${savedNotes?savedNotes.text:''}</textarea>
@@ -3639,7 +3648,7 @@ async function syncFromOdoo(){
     });
     const ordersData = await ordersRes.json();
     const orders = ordersData.result||[];
-    syncProgress('Procesando '+orders.length+' pedidos...', 75);
+    syncProgress('Procesando '+orders.length+' pedidos...', 65);
 
     // Build fresh CLIENT_DATA from orders
     const map = {};
@@ -3666,9 +3675,69 @@ async function syncFromOdoo(){
       if(staticMap[key]) c.products = staticMap[key];
     }
     CLIENT_DATA = newClients;
-    syncProgress('Actualizando vistas...', 90);
 
+    // ── Descargar líneas de compra (purchase.order.line) ──────────────
+    syncProgress('Descargando compras a proveedores...', 75);
+    const minDateP = (new Date().getFullYear()-2)+'-01-01';
+    const purchDomain = [['order_id.state','in',['purchase','done']],['order_id.date_order','>=',minDateP]];
+    if(COMPANY_ID) purchDomain.push(['company_id','=',COMPANY_ID]);
+    let purchLines = [];
+    try {
+      const purchRes = await fetch(PROXY, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'search_read', params:{
+          uid:UID, session:SESSION, model:'purchase.order.line',
+          domain: purchDomain,
+          fields:['order_id','partner_id','product_id','price_subtotal','date_approve','product_uom_qty'],
+          limit:10000
+        }})
+      });
+      const purchData = await purchRes.json();
+      purchLines = purchData.result||[];
+    } catch(e){ console.warn('Purchase fetch failed:', e.message); }
+
+    syncProgress('Procesando '+purchLines.length+' líneas de compra...', 85);
+
+    // Build supplier purchase map: supplierName → { products: { pk: {name,years} } }
+    if(purchLines.length > 0){
+      const suppMap = {};
+      for(const l of purchLines){
+        if(!l.partner_id) continue;
+        const suppName = l.partner_id[1]||'';
+        const prodName = l.product_id ? l.product_id[1] : '(sin producto)';
+        const pk = l.product_id ? String(l.product_id[0]) : prodName;
+        // Get year from date_approve or order date
+        const dateStr = l.date_approve || (l.order_id && l.order_id[1] ? '' : '');
+        const y = dateStr ? new Date(dateStr).getFullYear() : new Date().getFullYear();
+        const v = l.price_subtotal||0;
+        if(!suppMap[suppName]) suppMap[suppName] = {products:{}};
+        if(!suppMap[suppName].products[pk]) suppMap[suppName].products[pk] = {name:prodName, ref:'', cat:'', years:{}};
+        if(!suppMap[suppName].products[pk].years[y]) suppMap[suppName].products[pk].years[y] = 0;
+        suppMap[suppName].products[pk].years[y] += v;
+      }
+      // Match to SUPPLIER_DATA by normalized name and inject _purchaseProds
+      for(const s of SUPPLIER_DATA){
+        const sn = norm(s.p);
+        // Try exact match first, then partial
+        let match = suppMap[s.p];
+        if(!match){
+          for(const [k,v] of Object.entries(suppMap)){
+            if(norm(k).includes(sn) || sn.includes(norm(k))){ match = v; break; }
+          }
+        }
+        if(match){
+          s._purchaseProds = Object.values(match.products)
+            .filter(p=>(p.years[2024]||0)+(p.years[2025]||0)+(p.years[2026]||0)>0)
+            .sort((a,b)=>((b.years[2026]||0)+(b.years[2025]||0))-((a.years[2026]||0)+(a.years[2025]||0)));
+        }
+      }
+      // Reset cached purchase data so cards re-render with live data
+      SUPPLIER_PURCHASE_DATA = null;
+    }
+
+    syncProgress('Actualizando vistas...', 92);
     renderClientes();
+    renderProveedores();
     syncProgress('✅ Datos actualizados correctamente', 100);
     setTimeout(()=>{ overlay.style.display='none'; }, 1500);
 
