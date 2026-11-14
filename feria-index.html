@@ -3676,25 +3676,52 @@ async function syncFromOdoo(){
     }
     CLIENT_DATA = newClients;
 
-    // ── Descargar líneas de compra (purchase.order.line) ──────────────
+    // ── Descargar pedidos de compra (purchase.order) ──────────────────
     syncProgress('Descargando compras a proveedores...', 75);
     const minDateP = (new Date().getFullYear()-2)+'-01-01';
-    const purchDomain = [['order_id.state','in',['purchase','done']],['order_id.date_order','>=',minDateP]];
-    if(COMPANY_ID) purchDomain.push(['company_id','=',COMPANY_ID]);
-    let purchLines = [];
+    const purchOrderDomain = [['state','in',['purchase','done']],['date_order','>=',minDateP]];
+    if(COMPANY_ID) purchOrderDomain.push(['company_id','=',COMPANY_ID]);
+    let purchOrders = [];
     try {
-      const purchRes = await fetch(PROXY, {
+      const poRes = await fetch(PROXY, {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({action:'search_read', params:{
-          uid:UID, session:SESSION, model:'purchase.order.line',
-          domain: purchDomain,
-          fields:['order_id','partner_id','product_id','price_subtotal','date_approve','product_uom_qty'],
+          uid:UID, session:SESSION, model:'purchase.order',
+          domain: purchOrderDomain,
+          fields:['id','partner_id','date_order','order_line'],
           limit:10000
         }})
       });
-      const purchData = await purchRes.json();
-      purchLines = purchData.result||[];
-    } catch(e){ console.warn('Purchase fetch failed:', e.message); }
+      const poData = await poRes.json();
+      purchOrders = poData.result||[];
+    } catch(e){ console.warn('Purchase orders fetch failed:', e.message); }
+
+    // Build order→partner+year map
+    const orderInfoMap = {}; // orderId → {suppName, year}
+    for(const po of purchOrders){
+      if(!po.partner_id) continue;
+      const y = po.date_order ? new Date(po.date_order).getFullYear() : new Date().getFullYear();
+      orderInfoMap[po.id] = { suppName: po.partner_id[1]||'', year: y };
+    }
+
+    // Now fetch the lines for those orders
+    const purchOrderIds = purchOrders.map(o=>o.id);
+    let purchLines = [];
+    if(purchOrderIds.length > 0){
+      try {
+        const plRes = await fetch(PROXY, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({action:'search_read', params:{
+            uid:UID, session:SESSION, model:'purchase.order.line',
+            domain:[['order_id','in', purchOrderIds.slice(0,2000)]],
+            fields:['order_id','product_id','price_subtotal','product_uom_qty'],
+            limit:10000
+          }})
+        });
+        const plData = await plRes.json();
+        purchLines = plData.result||[];
+      } catch(e){ console.warn('Purchase lines fetch failed:', e.message); }
+    }
 
     syncProgress('Procesando '+purchLines.length+' líneas de compra...', 85);
 
@@ -3702,13 +3729,12 @@ async function syncFromOdoo(){
     if(purchLines.length > 0){
       const suppMap = {};
       for(const l of purchLines){
-        if(!l.partner_id) continue;
-        const suppName = l.partner_id[1]||'';
+        const oInfo = l.order_id ? orderInfoMap[l.order_id[0]] : null;
+        if(!oInfo) continue;
+        const suppName = oInfo.suppName;
+        const y = oInfo.year;
         const prodName = l.product_id ? l.product_id[1] : '(sin producto)';
         const pk = l.product_id ? String(l.product_id[0]) : prodName;
-        // Get year from date_approve or order date
-        const dateStr = l.date_approve || (l.order_id && l.order_id[1] ? '' : '');
-        const y = dateStr ? new Date(dateStr).getFullYear() : new Date().getFullYear();
         const v = l.price_subtotal||0;
         if(!suppMap[suppName]) suppMap[suppName] = {products:{}};
         if(!suppMap[suppName].products[pk]) suppMap[suppName].products[pk] = {name:prodName, ref:'', cat:'', years:{}};
@@ -3718,7 +3744,6 @@ async function syncFromOdoo(){
       // Match to SUPPLIER_DATA by normalized name and inject _purchaseProds
       for(const s of SUPPLIER_DATA){
         const sn = norm(s.p);
-        // Try exact match first, then partial
         let match = suppMap[s.p];
         if(!match){
           for(const [k,v] of Object.entries(suppMap)){
@@ -3731,7 +3756,6 @@ async function syncFromOdoo(){
             .sort((a,b)=>((b.years[2026]||0)+(b.years[2025]||0))-((a.years[2026]||0)+(a.years[2025]||0)));
         }
       }
-      // Reset cached purchase data so cards re-render with live data
       SUPPLIER_PURCHASE_DATA = null;
     }
 
