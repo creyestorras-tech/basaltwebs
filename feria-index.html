@@ -3501,15 +3501,6 @@ function renderProveedorCards(list){
           </div>
         </div>
         ${s.meetingAt ? `<div style="margin-bottom:12px;padding:6px 10px;background:#f0f8ff;border-radius:8px;font-size:12px;color:#2563eb;border-left:3px solid #2563eb">📍 Reunión MEDICA: ${s.meetingAt}</div>` : ''}
-        ${s.prods && s.prods.length ? `
-        <div style="margin-bottom:14px">
-          <div style="font-size:11px;font-weight:700;color:#7a8aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">📦 Productos / Materiales ofrecidos</div>
-          ${s.prods.map(pr => `
-          <div style="margin-bottom:8px;padding:8px 10px;background:#f8f9fb;border-radius:8px;border-left:3px solid #daaa00">
-            <div style="font-size:13px;font-weight:600;color:#1a2236">${pr.name}</div>
-            <div style="font-size:11px;color:#aab2c8;margin-top:2px">${pr.cat}${pr.note?' · <em>'+pr.note+'</em>':''}</div>
-          </div>`).join('')}
-        </div>` : ''}
         ${s._purchaseProds && s._purchaseProds.length ? `
         <div class="detail-tabs">
           <div class="dtab active" onclick="switchDtab(this,'prov-compras-${safeId}')">🛒 Compras</div>
