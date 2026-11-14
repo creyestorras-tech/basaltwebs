@@ -3398,9 +3398,9 @@ function buildProdTableHTML(prods, tableId){
     if(p24+p25+p26===0) return '';
     return `<tr>
       <td><div class="prod-name">${p.name||p.ref}</div><div class="prod-ref">${p.ref} ${p.cat?'· '+p.cat:''}</div></td>
-      <td class="r">${p24>0?fmt(p24):'<span style="color:#ddd">—</span>'}</td>
-      <td class="r">${p25>0?fmt(p25):'<span style="color:#ddd">—</span>'}</td>
-      <td class="r">${p26>0?fmt(p26):'<span style="color:#ddd">—</span>'}</td>
+      <td class="r" data-value="${p24}">${p24>0?fmt(p24):'<span style="color:#ddd">—</span>'}</td>
+      <td class="r" data-value="${p25}">${p25>0?fmt(p25):'<span style="color:#ddd">—</span>'}</td>
+      <td class="r" data-value="${p26}">${p26>0?fmt(p26):'<span style="color:#ddd">—</span>'}</td>
       <td class="r">${trendIcon(p25,p26)}</td>
     </tr>`;
   }).join('');
@@ -3436,8 +3436,8 @@ function sortProdTable(tableId, year){
   const tbody = table.querySelector('tbody');
   const rows = Array.from(tbody.querySelectorAll('tr')).filter(r=>r.cells.length>1);
   rows.sort((a,b) => {
-    const va = parseFloat((a.cells[colIndex].textContent||'0').replace(/[^0-9.]/g,''))||0;
-    const vb = parseFloat((b.cells[colIndex].textContent||'0').replace(/[^0-9.]/g,''))||0;
+    const va = parseFloat(a.cells[colIndex].dataset.value)||0;
+    const vb = parseFloat(b.cells[colIndex].dataset.value)||0;
     return asc ? va-vb : vb-va;
   });
   rows.forEach(r => tbody.appendChild(r));
