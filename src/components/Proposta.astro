@@ -454,6 +454,19 @@ const config = {
     showDone(ok);
   });
 
+  // Preselecció des dels enllaços de les pàgines de sector: /proposta?negoci=allotjament
+  const qs = new URLSearchParams(location.search);
+  const qNegoci = qs.get('negoci');
+  if (qNegoci) {
+    const r = form.querySelector<HTMLInputElement>(`[name="negoci"][value="${CSS.escape(qNegoci)}"]`);
+    if (r) {
+      r.checked = true;
+      const suggerit = qNegoci === 'allotjament' ? 'allotjament' : 'reserves';
+      const p = form.querySelector<HTMLInputElement>(`[name="pla"][value="${suggerit}"]`);
+      if (p) p.checked = true;
+    }
+  }
+
   go(0);
   renderSummary();
 </script>

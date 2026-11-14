@@ -1,0 +1,493 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from './Icon.astro';
+import { site, plans, whatsapp, type Lang } from '../config/site';
+import { rutes } from '../i18n/content';
+import { sectors, sectorUi, type Sector } from '../i18n/sectors';
+
+interface Props {
+  lang: Lang;
+  sector: Sector;
+}
+const { lang, sector } = Astro.props;
+const t = sector.text[lang];
+const ui = sectorUi[lang];
+const r = rutes[lang];
+const pla = plans.find((p) => p.id === sector.pla)!;
+const proposta = `${r.proposta}?negoci=${sector.negoci}`;
+const wa = whatsapp(lang);
+const alt = {
+  ca: `${sectorUi.ca.base}${sector.text.ca.slug}`,
+  es: `${sectorUi.es.base}${sector.text.es.slug}`,
+};
+const demoUrl = sector.demo
+  ? sector.id === 'rural' && lang === 'es'
+    ? sector.demo.url.replace(/\/ca\/$/, '/es/')
+    : sector.demo.url
+  : `${r.home}#prova`;
+const altres = sectors.filter((s) => s.id !== sector.id);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: t.h1,
+    description: t.description,
+    provider: { '@type': 'ProfessionalService', name: site.nom, url: site.url },
+    areaServed: [
+      { '@type': 'AdministrativeArea', name: 'Garrotxa' },
+      { '@type': 'AdministrativeArea', name: 'Catalunya' },
+    ],
+    offers: [
+      { '@type': 'Offer', price: String(pla.mes), priceCurrency: 'EUR', description: `${pla.mes} € ${ui.mes}` },
+      { '@type': 'Offer', price: String(pla.unic), priceCurrency: 'EUR', description: `${pla.unic} € ${ui.ivaInclos}` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: t.faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+<Base lang={lang} title={t.title} description={t.description} alt={alt}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="course course-dark sec-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label={lang === 'ca' ? 'Ruta' : 'Ruta'}>
+        <a href={r.home}>{site.nom}</a>
+        <span aria-hidden="true">/</span>
+        <span>{ui.etiqueta}</span>
+      </nav>
+      <h1 class="sec-title">{t.h1}</h1>
+      <p class="lede sec-lede">{t.lede}</p>
+      <div class="sec-actions">
+        <a class="btn" href={proposta}>{ui.proposta}</a>
+        <a class="btn btn-line" href={wa} target="_blank" rel="noopener"><Icon name="whatsapp" />{ui.whatsapp}</a>
+      </div>
+      <p class="sec-zone">{ui.zona}</p>
+    </div>
+  </section>
+
+  <section class="course course-lime">
+    <div class="wrap">
+      <h2 class="h2 sec-h2" data-set>{t.dolorsTitol}</h2>
+      <ul class="joints" data-set style="--i:1">
+        {t.dolors.map((d, i) => (
+          <li class="joint">
+            <span class="joint-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{d.t}</h3>
+            <p>{d.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="course course-dark">
+    <div class="wrap">
+      <h2 class="h2 sec-h2" data-set>{t.funcionsTitol}</h2>
+      <ul class="feats" data-set style="--i:1">
+        {t.funcions.map((f) => (
+          <li class="feat">
+            <span class="feat-ico" aria-hidden="true"><Icon name="check" /></span>
+            <div>
+              <h3>{f.t}</h3>
+              <p>{f.d}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="course course-lime">
+    <div class="wrap demo">
+      <div class="demo-copy" data-set>
+        <h2 class="h2">{t.demoTitol}</h2>
+        <p class="lede">{t.demoText}</p>
+        <a
+          class="btn"
+          href={demoUrl}
+          {...(sector.demo ? { target: '_blank', rel: 'noopener' } : {})}
+        >
+          {sector.demo ? ui.veureDemo : ui.provaPortada}
+          <Icon name="arrow" />
+        </a>
+      </div>
+      {sector.demo?.img && (
+        <a class="demo-shot" href={demoUrl} target="_blank" rel="noopener" data-set style="--i:1" tabindex="-1" aria-hidden="true">
+          <img src={sector.demo.img} alt="" width="640" height="400" loading="lazy" decoding="async" />
+        </a>
+      )}
+    </div>
+  </section>
+
+  <section class="course course-lime">
+    <div class="wrap price">
+      <div data-set>
+        <h2 class="price-title">{ui.preuTitol}</h2>
+        <p class="price-num">{pla.mes}<span class="price-eur">€</span><span class="price-mes">{ui.mes}</span></p>
+        <p class="price-alt">{ui.unic} <strong>{pla.unic}&nbsp;€</strong> {ui.ivaInclos}</p>
+      </div>
+      <ul class="price-points" data-set style="--i:1">
+        {ui.punts.map((p) => (
+          <li><Icon name="check" />{p}</li>
+        ))}
+      </ul>
+      {sector.id === 'rural' && (
+        <a class="link-arrow price-calc" href={r.calculadora}>{ui.calculadora} <Icon name="arrow" /></a>
+      )}
+    </div>
+  </section>
+
+  <section class="course course-lime">
+    <div class="wrap faq-in">
+      <h2 class="h2" data-set>{ui.faqTitol}</h2>
+      <div class="faq" data-set style="--i:1">
+        {t.faq.map((f) => (
+          <details class="faq-item">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="course course-dark">
+    <div class="wrap final">
+      <div data-set>
+        <h2 class="h2">{ui.finalTitol}</h2>
+        <p class="lede final-text">{ui.finalText}</p>
+        <div class="sec-actions">
+          <a class="btn" href={proposta}>{ui.proposta}</a>
+          <a class="btn btn-line" href={wa} target="_blank" rel="noopener"><Icon name="whatsapp" />{ui.whatsapp}</a>
+        </div>
+      </div>
+      <nav class="others" aria-label={ui.altres} data-set style="--i:1">
+        <p class="others-head">{ui.altres}</p>
+        <ul>
+          {altres.map((s) => (
+            <li><a href={`${ui.base}${s.text[lang].slug}`}>{s.text[lang].nom}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sec-hero {
+    padding-block: clamp(56px, 9vw, 120px) clamp(64px, 9vw, 112px);
+  }
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+    color: var(--mist);
+    font-size: 0.9375rem;
+  }
+  .crumbs a {
+    color: var(--mist-2);
+  }
+  .sec-title {
+    max-width: 16ch;
+    font-size: clamp(2.75rem, 7.4vw, 5.25rem);
+    line-height: 1;
+  }
+  .sec-lede {
+    margin-top: 24px;
+  }
+  .sec-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 36px;
+  }
+  .sec-zone {
+    margin-top: 28px;
+    color: var(--mist);
+    font-size: 0.9375rem;
+  }
+  .sec-h2 {
+    max-width: 22ch;
+    margin-bottom: clamp(36px, 5vw, 60px);
+  }
+
+  /* Problemes: tres pedres amb junt de morter */
+  .joints {
+    display: grid;
+    gap: 3px;
+    margin: 0;
+    padding: 3px;
+    list-style: none;
+    background: var(--joint-lime);
+  }
+  .joint {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: clamp(24px, 3.2vw, 36px);
+    background: var(--face);
+  }
+  .joint-n {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    color: var(--lichen-ink);
+  }
+  .joint h3 {
+    font-size: 1.25rem;
+  }
+  .joint p {
+    color: var(--ink-muted);
+  }
+  @media (min-width: 820px) {
+    .joints {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Funcions */
+  .feats {
+    display: grid;
+    gap: clamp(28px, 4vw, 44px) 56px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .feat {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .feat-ico {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r);
+    background: var(--lichen);
+    color: var(--ink);
+  }
+  .feat-ico :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+  .feat h3 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+    line-height: 1.15;
+  }
+  .feat p {
+    margin-top: 6px;
+    color: var(--mist-2);
+    max-width: 40ch;
+  }
+  @media (min-width: 820px) {
+    .feats {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* Demostració */
+  .demo {
+    display: grid;
+    gap: 44px;
+    align-items: center;
+  }
+  .demo-copy {
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+  }
+  .demo-shot {
+    display: block;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 0 3px var(--joint-lime), 0 24px 48px -24px rgb(0 0 0 / 0.45);
+  }
+  .demo-shot img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top;
+    transition: transform 600ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .demo-shot:hover img {
+      transform: scale(1.02);
+    }
+  }
+  @media (min-width: 900px) {
+    .demo {
+      grid-template-columns: 1fr 1.15fr;
+      gap: 64px;
+    }
+  }
+
+  /* Preu */
+  .price {
+    display: grid;
+    gap: 32px;
+    align-items: end;
+  }
+  .price-title {
+    font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+  }
+  .price-num {
+    margin-top: 10px;
+    font-family: var(--display);
+    font-size: clamp(5rem, 15vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+  .price-eur {
+    margin-left: 0.08em;
+    font-size: 0.5em;
+    vertical-align: 0.6em;
+  }
+  .price-mes {
+    margin-left: 0.08em;
+    font-size: 0.28em;
+    letter-spacing: 0;
+    color: var(--ink-muted);
+  }
+  .price-alt {
+    margin-top: 10px;
+    color: var(--ink-muted);
+  }
+  .price-alt strong {
+    color: var(--ink);
+  }
+  .price-points {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: 600;
+  }
+  .price-points li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .price-points :global(svg) {
+    width: 20px;
+    height: 20px;
+    color: var(--lichen-ink);
+  }
+  .price-calc {
+    grid-column: 1 / -1;
+    color: var(--lichen-ink);
+  }
+  @media (min-width: 820px) {
+    .price {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* Preguntes */
+  .faq-in {
+    display: grid;
+    gap: 36px;
+  }
+  .faq {
+    display: grid;
+    border-top: 2px solid var(--lime-bed);
+  }
+  .faq-item {
+    border-bottom: 2px solid var(--lime-bed);
+  }
+  .faq-item summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 0;
+    font-weight: 650;
+    font-size: 1.125rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item summary::after {
+    content: '+';
+    flex: none;
+    font-family: var(--display);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--lichen-ink);
+    transition: transform 200ms var(--ease-out);
+  }
+  .faq-item[open] summary::after {
+    transform: rotate(45deg);
+  }
+  .faq-item p {
+    padding-bottom: 22px;
+    max-width: 62ch;
+    color: var(--ink-muted);
+  }
+  @media (min-width: 900px) {
+    .faq-in {
+      grid-template-columns: 1fr 1.6fr;
+      gap: 64px;
+    }
+  }
+
+  /* Final */
+  .final {
+    display: grid;
+    gap: 56px;
+  }
+  .final .h2 {
+    max-width: 18ch;
+  }
+  .final-text {
+    margin-top: 20px;
+  }
+  .others-head {
+    margin-bottom: 10px;
+    color: var(--mist);
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+  .others ul {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .others a {
+    display: inline-block;
+    padding-block: 8px;
+    color: var(--chalk);
+    font-family: var(--display);
+    font-size: 1.375rem;
+    text-decoration: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .others a:hover {
+      color: var(--lichen-hi);
+    }
+  }
+  @media (min-width: 900px) {
+    .final {
+      grid-template-columns: 1.6fr 1fr;
+      gap: 80px;
+      align-items: end;
+    }
+  }
+</style>

@@ -1,0 +1,10 @@
+---
+import Sector from '../../../components/Sector.astro';
+import { sectors } from '../../../i18n/sectors';
+
+export function getStaticPaths() {
+  return sectors.map((sector) => ({ params: { slug: sector.text.es.slug }, props: { sector } }));
+}
+const { sector } = Astro.props;
+---
+<Sector lang="es" sector={sector} />

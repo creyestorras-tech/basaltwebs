@@ -1,8 +1,8 @@
 import { site, type Lang } from '../config/site';
 
 export const rutes = {
-  ca: { home: '/', avis: '/avis-legal', privacitat: '/politica-privacitat', proposta: '/proposta' },
-  es: { home: '/es/', avis: '/es/aviso-legal', privacitat: '/es/politica-privacidad', proposta: '/es/propuesta' },
+  ca: { home: '/', avis: '/avis-legal', privacitat: '/politica-privacitat', proposta: '/proposta', calculadora: '/calculadora-comissions', guia: '/guia-clients-google' },
+  es: { home: '/es/', avis: '/es/aviso-legal', privacitat: '/es/politica-privacidad', proposta: '/es/propuesta', calculadora: '/es/calculadora-comisiones', guia: '/es/guia-clientes-google' },
 } as const;
 
 // Negocis inventats per mostrar estils. No són clients reals: cada panell porta l'etiqueta «Exemple».
@@ -171,7 +171,7 @@ const ca = {
   quisom: {
     titol: 'Arrels a la Garrotxa, clients a tot Catalunya',
     text: "Basalt Webs neix a la Garrotxa, terra de volcans i de gent treballadora, per ajudar els negocis de proximitat de tot Catalunya a tenir una web professional, a l'altura del seu ofici, que treballa per ells les 24 hores. Com el basalt: sòlida i feta per durar. T'atenem directament, sense intermediaris, i parlem el teu idioma.",
-    signatura: `${site.persona}, de Basalt Webs`,
+    signatura: "L'equip de Basalt Webs",
     peuFoto: 'Cingle de basalt de Castellfollit de la Roca',
     foto: 'Foto',
   },
@@ -359,7 +359,7 @@ const es: Dict = {
   quisom: {
     titol: 'Raíces en la Garrotxa, clientes en toda Cataluña',
     text: 'Basalt Webs nace en la Garrotxa, tierra de volcanes y de gente trabajadora, para ayudar a los negocios de proximidad de toda Cataluña a tener una web profesional, a la altura de su oficio, que trabaja para ellos las 24 horas. Como el basalto: sólida y hecha para durar. Te atendemos directamente, sin intermediarios, y hablamos tu idioma.',
-    signatura: `${site.persona}, de Basalt Webs`,
+    signatura: 'El equipo de Basalt Webs',
     peuFoto: 'Acantilado de basalto de Castellfollit de la Roca',
     foto: 'Foto',
   },

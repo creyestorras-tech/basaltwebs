@@ -1,0 +1,290 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from './Icon.astro';
+import { type Lang } from '../config/site';
+import { rutes } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const r = rutes[lang];
+const pdf = lang === 'ca' ? '/guia/guia-clients-google.pdf' : '/guia/guia-clientes-google.pdf';
+
+const tx = {
+  ca: {
+    title: 'Guia gratuïta: 5 coses per tenir més clients des de Google | Basalt Webs',
+    description:
+      'Guia pràctica i gratuïta per a perruqueries, centres d’estètica, tallers, consultes i cases rurals: fitxa de Google, ressenyes, reserves en línia i web al mòbil.',
+    etiqueta: 'Guia gratuïta · PDF',
+    h1: '5 coses per tenir més clients des de Google',
+    lede: 'Una guia curta i pràctica per a negocis de proximitat. Sense tecnicismes: coses que pots fer aquesta mateixa setmana.',
+    dins: 'Què hi trobaràs',
+    punts: [
+      'Com completar la fitxa de Google perquè et trobin',
+      'Com aconseguir més ressenyes, i com respondre-les',
+      'Per què et convé que puguin reservar sense trucar',
+      'Què ha de tenir una web perquè funcioni al mòbil',
+      'Una llista ràpida per revisar el teu negoci',
+    ],
+    formTitol: 'Rep-la al teu correu',
+    nom: 'Nom',
+    correu: 'Correu electrònic',
+    negoci: 'Tipus de negoci (opcional)',
+    negociPh: 'Perruqueria, casa rural, taller…',
+    privacitat: 'Accepto la',
+    privacitatEnllac: 'política de privacitat',
+    enviar: 'Vull la guia',
+    enviant: 'Enviant…',
+    errCorreu: 'Escriu un correu vàlid.',
+    errPriv: 'Cal acceptar la política de privacitat.',
+    ok: 'Fet! T’hem enviat l’enllaç al correu. També la pots descarregar ara:',
+    descarregar: 'Descarrega la guia (PDF)',
+    nota: 'Només et farem servir el correu per enviar-te la guia i, si de cas, alguna proposta relacionada. Te’n pots donar de baixa responent el correu.',
+    proposta: 'Prefereixes que ho fem per tu? Demana una proposta gratis',
+  },
+  es: {
+    title: 'Guía gratuita: 5 cosas para tener más clientes desde Google | Basalt Webs',
+    description:
+      'Guía práctica y gratuita para peluquerías, centros de estética, talleres, consultas y casas rurales: ficha de Google, reseñas, reservas online y web en el móvil.',
+    etiqueta: 'Guía gratuita · PDF',
+    h1: '5 cosas para tener más clientes desde Google',
+    lede: 'Una guía corta y práctica para negocios de proximidad. Sin tecnicismos: cosas que puedes hacer esta misma semana.',
+    dins: 'Qué encontrarás',
+    punts: [
+      'Cómo completar la ficha de Google para que te encuentren',
+      'Cómo conseguir más reseñas, y cómo responderlas',
+      'Por qué te conviene que puedan reservar sin llamar',
+      'Qué tiene que tener una web para que funcione en el móvil',
+      'Una lista rápida para revisar tu negocio',
+    ],
+    formTitol: 'Recíbela en tu correo',
+    nom: 'Nombre',
+    correu: 'Correo electrónico',
+    negoci: 'Tipo de negocio (opcional)',
+    negociPh: 'Peluquería, casa rural, taller…',
+    privacitat: 'Acepto la',
+    privacitatEnllac: 'política de privacidad',
+    enviar: 'Quiero la guía',
+    enviant: 'Enviando…',
+    errCorreu: 'Escribe un correo válido.',
+    errPriv: 'Hay que aceptar la política de privacidad.',
+    ok: '¡Hecho! Te hemos enviado el enlace al correo. También la puedes descargar ahora:',
+    descarregar: 'Descarga la guía (PDF)',
+    nota: 'Solo usaremos tu correo para enviarte la guía y, si acaso, alguna propuesta relacionada. Puedes darte de baja respondiendo al correo.',
+    proposta: '¿Prefieres que lo hagamos por ti? Pide una propuesta gratis',
+  },
+}[lang];
+const alt = { ca: rutes.ca.guia, es: rutes.es.guia };
+---
+<Base lang={lang} title={tx.title} description={tx.description} alt={alt}>
+  <section class="course course-dark g-hero">
+    <div class="wrap g-grid">
+      <div class="g-copy">
+        <p class="g-tag">{tx.etiqueta}</p>
+        <h1 class="g-title">{tx.h1}</h1>
+        <p class="lede g-lede">{tx.lede}</p>
+        <p class="g-dins">{tx.dins}</p>
+        <ul class="g-list">
+          {tx.punts.map((p) => (
+            <li><Icon name="check" />{p}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="g-card">
+        <form class="g-form" method="post" action="/api/guia" data-guia novalidate>
+          <input type="hidden" name="lang" value={lang} />
+          <div class="hp" aria-hidden="true">
+            <label>Web <input type="text" name="web2" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          <h2 class="g-form-title">{tx.formTitol}</h2>
+          <label class="f">
+            <span>{tx.nom}</span>
+            <input type="text" name="nom" autocomplete="given-name" maxlength="120" />
+          </label>
+          <label class="f">
+            <span>{tx.correu}</span>
+            <input type="email" name="correu" required autocomplete="email" inputmode="email" maxlength="160" />
+            <small class="err" data-err="correu" hidden>{tx.errCorreu}</small>
+          </label>
+          <label class="f">
+            <span>{tx.negoci}</span>
+            <input type="text" name="negoci" placeholder={tx.negociPh} maxlength="120" />
+          </label>
+          <label class="check">
+            <input type="checkbox" name="privacitat" value="si" required />
+            <span>{tx.privacitat} <a href={r.privacitat} target="_blank">{tx.privacitatEnllac}</a></span>
+          </label>
+          <small class="err" data-err="privacitat" hidden>{tx.errPriv}</small>
+          <button class="btn" type="submit" data-submit>{tx.enviar}</button>
+          <p class="g-nota">{tx.nota}</p>
+        </form>
+
+        <div class="g-done" data-done hidden>
+          <p>{tx.ok}</p>
+          <a class="btn" href={pdf} download>{tx.descarregar}</a>
+          <a class="link-arrow" href={r.proposta}>{tx.proposta} <Icon name="arrow" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script type="application/json" id="guia-cfg" set:html={JSON.stringify({ enviant: tx.enviant, pdf })} />
+</Base>
+
+<script>
+  const cfg = JSON.parse(document.getElementById('guia-cfg')!.textContent || '{}');
+  const form = document.querySelector<HTMLFormElement>('[data-guia]')!;
+  const done = document.querySelector<HTMLElement>('[data-done]')!;
+  const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+  const err = (n: string, on: boolean) => {
+    const el = form.querySelector<HTMLElement>(`[data-err="${n}"]`);
+    if (el) el.hidden = !on;
+  };
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const correu = String(fd.get('correu') || '').trim();
+    const okCorreu = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correu);
+    const okPriv = fd.get('privacitat') === 'si';
+    err('correu', !okCorreu);
+    err('privacitat', !okPriv);
+    if (!okCorreu || !okPriv) return;
+    btn.disabled = true;
+    btn.textContent = cfg.enviant;
+    try {
+      await fetch('/api/guia', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(fd.entries())),
+      });
+    } catch {
+      /* La descàrrega es mostra igualment */
+    }
+    form.hidden = true;
+    done.hidden = false;
+  });
+</script>
+
+<style>
+  .g-hero {
+    padding-block: clamp(56px, 8vw, 104px);
+  }
+  .g-grid {
+    display: grid;
+    gap: 48px;
+    align-items: start;
+  }
+  .g-tag {
+    color: var(--lichen-hi);
+    font-weight: 650;
+    font-size: 0.9375rem;
+  }
+  .g-title {
+    margin-top: 14px;
+    max-width: 16ch;
+    font-size: clamp(2.5rem, 6.4vw, 4.25rem);
+    line-height: 1.02;
+  }
+  .g-lede {
+    margin-top: 22px;
+  }
+  .g-dins {
+    margin-top: 36px;
+    font-weight: 650;
+  }
+  .g-list {
+    display: grid;
+    gap: 10px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--mist-2);
+  }
+  .g-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .g-list :global(svg) {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 4px;
+    color: var(--lichen);
+  }
+  .g-card {
+    padding: clamp(24px, 4vw, 40px);
+    border-radius: 4px;
+    background: var(--lime);
+    color: var(--ink);
+    box-shadow: 0 0 0 3px var(--bed);
+  }
+  .g-form,
+  .g-done {
+    display: grid;
+    gap: 16px;
+  }
+  .g-form-title {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+  }
+  .f {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .f input {
+    min-height: 50px;
+    padding: 0 14px;
+    border: 1.5px solid var(--joint-lime);
+    border-radius: var(--r);
+    background: var(--face);
+    color: var(--ink);
+    font: 400 1.0625rem var(--text);
+  }
+  .f input:focus-visible {
+    outline: 2px solid var(--lichen-ink);
+    outline-offset: 1px;
+    border-color: transparent;
+  }
+  .check {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.9375rem;
+  }
+  .check input {
+    width: 20px;
+    height: 20px;
+    margin: 2px 0 0;
+    flex: none;
+    accent-color: var(--lichen-ink);
+  }
+  .err {
+    color: var(--missed);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .g-nota {
+    color: var(--ink-muted);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+  .g-done p {
+    font-weight: 600;
+  }
+  .g-done .link-arrow {
+    color: var(--lichen-ink);
+  }
+  @media (min-width: 960px) {
+    .g-grid {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 72px;
+    }
+  }
+</style>
