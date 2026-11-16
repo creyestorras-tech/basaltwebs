@@ -36,6 +36,7 @@ const config = {
       <div class="prop-grid">
         <form class="prop-form" method="post" action="/api/proposta" data-form novalidate>
           <input type="hidden" name="lang" value={lang} />
+          <input type="hidden" name="calculadora" value="" />
           <div class="hp" aria-hidden="true">
             <label>Web <input type="text" name="web2" tabindex="-1" autocomplete="off" /></label>
           </div>
@@ -335,6 +336,7 @@ const config = {
     if (aj.length) rows.push([t.passos[2], aj.join(', ')]);
     const es = labelOf(t.estil.opcions, val('estil'));
     if (es) rows.push([t.passos[3], es]);
+    if (val('calculadora')) rows.push([t.resum.calc, t.resum.calcAdjunt]);
     if (!rows.length) {
       summary.innerHTML = `<p class="muted">${t.resum.buit}</p>`;
       return;
@@ -372,6 +374,7 @@ const config = {
       val('enllac') ? `${t.dades.enllac}: ${val('enllac')}` : '',
       `${t.dades.quan} ${val('quan')}`,
       val('comentaris') ? `\n${val('comentaris')}` : '',
+      val('calculadora') ? `\n${val('calculadora')}` : '',
     ].filter((l) => l !== '');
     return `https://wa.me/${cfg.mobil}?text=${encodeURIComponent(lines.join('\n'))}`;
   }
@@ -439,6 +442,7 @@ const config = {
       enllac: val('enllac'),
       quan: val('quan'),
       comentaris: val('comentaris'),
+      calculadora: val('calculadora'),
     };
     let ok = false;
     try {
@@ -466,6 +470,9 @@ const config = {
       if (p) p.checked = true;
     }
   }
+  // Números de la calculadora de beneficis (/calculadora): viatgen amb la sol·licitud
+  const qCalc = qs.get('calc');
+  if (qCalc) (form.elements.namedItem('calculadora') as HTMLInputElement).value = qCalc.slice(0, 600);
 
   go(0);
   renderSummary();

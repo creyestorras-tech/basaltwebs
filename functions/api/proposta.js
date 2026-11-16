@@ -73,6 +73,7 @@ export async function onRequestPost({ request, env }) {
     enllac: clip(d.enllac),
     quan: clip(d.quan),
     comentaris: clip(d.comentaris, MAX.llarg),
+    calculadora: clip(d.calculadora, 600),
   };
 
   if (!f.nomNegoci || !f.nom || !f.telefon || !f.poblacio) {
@@ -99,6 +100,7 @@ export async function onRequestPost({ request, env }) {
     ['Web', f.pla],
     ['Pagament', f.pagament ? `${f.pagament} (${f.preu})` : ''],
     ['Ajustos', f.ajustos.join(', ')],
+    ['Calculadora', f.calculadora],
     ['Estil', f.estil],
     ['Quan', f.quan],
     ['Comentaris', f.comentaris],

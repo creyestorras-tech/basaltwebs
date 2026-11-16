@@ -90,6 +90,8 @@ const ca = {
     titol: 'La teva tria',
     buit: 'Ves triant i aquí veuràs el resum.',
     proposta: 'Proposta gratis i sense compromís.',
+    calc: 'Calculadora',
+    calcAdjunt: 'Enviarem els teus números amb la sol·licitud.',
   },
   errors: {
     tria: 'Tria una opció per continuar.',
@@ -202,6 +204,8 @@ const es: PropDict = {
     titol: 'Tu elección',
     buit: 'Ve eligiendo y aquí verás el resumen.',
     proposta: 'Propuesta gratis y sin compromiso.',
+    calc: 'Calculadora',
+    calcAdjunt: 'Enviaremos tus números con la solicitud.',
   },
   errors: {
     tria: 'Elige una opción para continuar.',

@@ -1,8 +1,8 @@
 import { site, type Lang } from '../config/site';
 
 export const rutes = {
-  ca: { home: '/', avis: '/avis-legal', privacitat: '/politica-privacitat', proposta: '/proposta', calculadora: '/calculadora-comissions', guia: '/guia-clients-google' },
-  es: { home: '/es/', avis: '/es/aviso-legal', privacitat: '/es/politica-privacidad', proposta: '/es/propuesta', calculadora: '/es/calculadora-comisiones', guia: '/es/guia-clientes-google' },
+  ca: { home: '/', avis: '/avis-legal', privacitat: '/politica-privacitat', proposta: '/proposta', calculadora: '/calculadora', guia: '/guia-clients-google' },
+  es: { home: '/es/', avis: '/es/aviso-legal', privacitat: '/es/politica-privacidad', proposta: '/es/propuesta', calculadora: '/es/calculadora', guia: '/es/guia-clientes-google' },
 } as const;
 
 // Negocis inventats per mostrar estils. No són clients reals: cada panell porta l'etiqueta «Exemple».
@@ -157,6 +157,11 @@ const ca = {
       { t: 'Català i castellà', d: "La web en els dos idiomes, perquè t'entengui tothom." },
       { t: 'Avís legal i privacitat', d: 'Els textos legals preparats i enllaçats on toca.' },
     ],
+  },
+  calcBloc: {
+    titol: 'Quant perds per no tenir reserves en línia?',
+    text: 'Posa-hi les trucades que reps i el que et deixa cada client, i en 30 segons veuràs quants clients recuperes i quan queda pagada la web.',
+    cta: 'Obre la calculadora',
   },
   preu: {
     titol: 'Comences sense pagar res',
@@ -345,6 +350,11 @@ const es: Dict = {
       { t: 'Catalán y castellano', d: 'La web en los dos idiomas, para que te entienda todo el mundo.' },
       { t: 'Aviso legal y privacidad', d: 'Los textos legales preparados y enlazados donde toca.' },
     ],
+  },
+  calcBloc: {
+    titol: '¿Cuánto pierdes por no tener reservas online?',
+    text: 'Pon las llamadas que recibes y lo que te deja cada cliente, y en 30 segundos verás cuántos clientes recuperas y cuándo queda pagada la web.',
+    cta: 'Abre la calculadora',
   },
   preu: {
     titol: 'Empiezas sin pagar nada',

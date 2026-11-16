@@ -502,6 +502,7 @@ export const sectorUi = {
     finalText: 'Explica’ns quin negoci tens i et fem una proposta amb el teu nom i els teus serveis. Només pagues si t’agrada.',
     altres: 'Altres sectors',
     calculadora: 'Calcula quant et costen les comissions',
+    calculadoraCites: 'Calcula quant perds sense reserves en línia',
     zona: 'Des de la Garrotxa, per a tot Catalunya',
   },
   es: {
@@ -521,6 +522,7 @@ export const sectorUi = {
     finalText: 'Cuéntanos qué negocio tienes y te hacemos una propuesta con tu nombre y tus servicios. Solo pagas si te gusta.',
     altres: 'Otros sectores',
     calculadora: 'Calcula cuánto te cuestan las comisiones',
+    calculadoraCites: 'Calcula cuánto pierdes sin reservas online',
     zona: 'Desde la Garrotxa, para toda Cataluña',
   },
 } as const;

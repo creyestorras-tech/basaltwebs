@@ -1,0 +1,1121 @@
+---
+// Calculadora de beneficis (/calculadora i /es/calculadora): dues pestanyes,
+// "Negoci amb cites" i "Casa rural". Sense JS es veuen totes dues, una sota l'altra,
+// amb els resultats dels valors per defecte calculats aquí.
+import Base from '../layouts/Base.astro';
+import Icon from './Icon.astro';
+import { plans, site, type Lang } from '../config/site';
+import { rutes } from '../i18n/content';
+import { calcDict, comparativa } from '../i18n/calculadora';
+import {
+  CAMPS,
+  TIPUS,
+  TIQUET,
+  NEGOCI_PROPOSTA,
+  PER_DEFECTE,
+  IVA,
+  calcula,
+  costWeb,
+  aParams,
+  type Camp,
+} from '../scripts/calc-cites';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const tx = calcDict[lang];
+const r = rutes[lang];
+const locale = lang === 'ca' ? 'ca-ES' : 'es-ES';
+const alt = { ca: rutes.ca.calculadora, es: rutes.es.calculadora };
+const pageUrl = new URL(alt[lang], site.url).href;
+
+const nf = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+const nf2 = new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const eur = (n: number) => `${nf.format(Math.round(n))} €`;
+const eur2 = (n: number) => `${nf2.format(n)} €`;
+
+/* ---------- Negoci amb cites ---------- */
+const plaR = plans.find((p) => p.id === 'reserves')!;
+const costAny = costWeb(plaR.mes);
+const v0 = PER_DEFECTE;
+const c0 = calcula(v0, costAny);
+const maxBar = Math.max(c0.ingressos, costAny) || 1;
+const ordre: Camp[] = ['tr', 'np', 'ma', 'tq', 'mi', 'on'];
+
+const propostaText = tx.propostaCalc(tx.tipus.noms[v0.t], v0, {
+  clients: nf.format(c0.clients),
+  ingressos: eur(c0.ingressos),
+  hores: nf.format(c0.hores),
+  net: eur(c0.net),
+});
+const propostaHref = `${r.proposta}?${new URLSearchParams({
+  negoci: NEGOCI_PROPOSTA[v0.t],
+  calc: `${propostaText} ${pageUrl}?${aParams(v0)}`,
+})}`;
+
+/* ---------- Casa rural (comissions) ---------- */
+const plaA = plans.find((p) => p.id === 'allotjament')!;
+const costRural = costWeb(plaA.mes);
+const rx = {
+  ca: {
+    h2: 'Quant et costen les comissions de Booking i Airbnb?',
+    lede: 'Posa-hi els números de la teva casa i mira quant pagues cada any en comissions, i quant t’estalviaries si una part dels clients reservés directament amb tu.',
+    preu: 'Preu mitjà per nit',
+    nits: 'Nits reservades per plataformes en un any',
+    pct: 'Comissió de la plataforma',
+    pctAjuda: 'A Booking sol ser al voltant d’un 15 %, però depèn del teu contracte.',
+    directe: 'Part dels clients que podrien reservar directament',
+    directeAjuda: 'Clients que repeteixen, que et coneixen o que busquen el nom de la casa a Google.',
+    comissions: 'Pagues en comissions cada any',
+    estalvi: 'Comissions que t’estalviaries',
+    web: 'Cost de la web en un any',
+    webDetall: `${plaA.mes} €/mes + IVA`,
+    net: 'Et quedaria a la butxaca',
+    perdua: 'Amb aquests números, encara no et compensa',
+    nitsMin: 'nits directes l’any i la web ja està pagada',
+    nota: 'Càlcul orientatiu. La comissió real depèn de la plataforma i de les condicions de la teva casa. No inclou la taxa turística ni l’IVA de la comissió.',
+    cta: 'Demana la proposta per a la teva casa',
+    demo: 'Mira una casa rural de demostració',
+    any: 'nits',
+  },
+  es: {
+    h2: '¿Cuánto te cuestan las comisiones de Booking y Airbnb?',
+    lede: 'Pon los números de tu casa y mira cuánto pagas cada año en comisiones, y cuánto ahorrarías si una parte de los clientes reservara directamente contigo.',
+    preu: 'Precio medio por noche',
+    nits: 'Noches reservadas por plataformas en un año',
+    pct: 'Comisión de la plataforma',
+    pctAjuda: 'En Booking suele rondar el 15 %, pero depende de tu contrato.',
+    directe: 'Parte de los clientes que podrían reservar directamente',
+    directeAjuda: 'Clientes que repiten, que te conocen o que buscan el nombre de la casa en Google.',
+    comissions: 'Pagas en comisiones cada año',
+    estalvi: 'Comisiones que te ahorrarías',
+    web: 'Coste de la web en un año',
+    webDetall: `${plaA.mes} €/mes + IVA`,
+    net: 'Te quedaría en el bolsillo',
+    perdua: 'Con estos números, todavía no te compensa',
+    nitsMin: 'noches directas al año y la web ya está pagada',
+    nota: 'Cálculo orientativo. La comisión real depende de la plataforma y de las condiciones de tu casa. No incluye la tasa turística ni el IVA de la comisión.',
+    cta: 'Pide la propuesta para tu casa',
+    demo: 'Mira una casa rural de demostración',
+    any: 'noches',
+  },
+}[lang];
+const rDef = { preu: 180, nits: 80, pct: 15, directe: 30 };
+const rComissions = rDef.preu * rDef.nits * (rDef.pct / 100);
+const rEstalvi = rComissions * (rDef.directe / 100);
+const rNet = rEstalvi - costRural;
+const rNitsMin = Math.ceil(costRural / (rDef.preu * (rDef.pct / 100)));
+const demoUrl = lang === 'ca' ? 'https://demorural.pages.dev/ca/' : 'https://demorural.pages.dev/es/';
+
+/* ---------- Comparativa ---------- */
+const [ay, am, ad] = comparativa.data.split('-').map(Number);
+const dataText = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(
+  new Date(Date.UTC(ay, am - 1, ad, 12)),
+);
+const booksyAny = Math.round(comparativa.booksy.mes * 12 * (1 + IVA) * 100) / 100;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: tx.title.split(' | ')[0],
+  url: pageUrl,
+  description: tx.ld,
+  inLanguage: lang,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript for live updates',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+  publisher: { '@type': 'Organization', name: site.nom, url: site.url },
+};
+---
+<Base lang={lang} title={tx.title} description={tx.description} alt={alt}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="course course-dark cx-hero">
+    <div class="wrap">
+      <h1 class="cx-title">{tx.h1}</h1>
+      <p class="lede cx-lede">{tx.lede}</p>
+      <nav class="cx-tabs" aria-label={tx.tabs.label} data-tabs>
+        <a href="#cites" data-tab="cites" aria-current="true">{tx.tabs.cites}</a>
+        <a href="#rural" data-tab="rural">{tx.tabs.rural}</a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ============ Pestanya: negoci amb cites ============ -->
+  <div id="cites" class="cx-panel" data-panel="cites" tabindex="-1">
+    <section class="course course-lime cx-course">
+      <h2 class="sr-only">{tx.tabs.cites}</h2>
+      <div class="wrap cx">
+        <form class="cx-form" data-cites onsubmit="return false">
+          <fieldset class="field cx-type">
+            <legend class="field-top">{tx.tipus.label}</legend>
+            <div class="chips">
+              {TIPUS.map((t) => (
+                <label class="chip">
+                  <input type="radio" name="t" value={t} checked={t === v0.t} data-tiquet={TIQUET[t]} />
+                  <span>{tx.tipus.noms[t]}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          {ordre.map((k) => {
+            const c = CAMPS[k];
+            const f = tx.camps[k] as { label: string; ajuda?: string; unitat: string };
+            return (
+              <div class="field">
+                <span class="field-top">
+                  <label for={`cx-${k}`}>{f.label}</label>
+                  <output for={`cx-${k}`} data-out={k}>{v0[k]}{f.unitat}</output>
+                </span>
+                <input
+                  id={`cx-${k}`}
+                  type="range"
+                  name={k}
+                  min={c.min}
+                  max={c.max}
+                  step={c.step}
+                  value={v0[k]}
+                  aria-describedby={f.ajuda ? `cx-${k}-a` : undefined}
+                />
+                {f.ajuda && <small id={`cx-${k}-a`}>{f.ajuda}</small>}
+              </div>
+            );
+          })}
+          <p class="cx-example">{tx.exemple}</p>
+        </form>
+
+        <!-- Mòbil: el benefici net queda enganxat a baix mentre mous els lliscadors -->
+        <a class="cx-dock" href="#resultat-cites" aria-hidden="true" tabindex="-1">
+          <span class="cx-dock-label" data-c="netLabel">{c0.net >= 0 ? tx.net : tx.perdua}</span>
+          <span class="cx-dock-num" data-c="net">{eur(c0.net)}</span>
+          <span class="cx-dock-more">{tx.veure} <Icon name="arrow" /></span>
+        </a>
+
+        <div class="result" id="resultat-cites">
+          <p class="result-head">{tx.resultat}</p>
+          <div aria-live="polite">
+            <dl class="rows">
+              <div class="row">
+                <dt>{tx.clients}</dt>
+                <dd data-c="clients">{nf.format(c0.clients)}</dd>
+              </div>
+              <div class="row">
+                <dt>{tx.ingressos}</dt>
+                <dd data-c="ingressos">{eur(c0.ingressos)}</dd>
+              </div>
+              <div class="row">
+                <dt>{tx.hores}</dt>
+                <dd><span data-c="hores">{nf.format(c0.hores)}</span> {tx.hUnitat}</dd>
+              </div>
+              <div class="row">
+                <dt>{tx.web} <small>{tx.webDetall(plaR.mes, plaR.unic)}</small></dt>
+                <dd>− {eur2(costAny)}</dd>
+              </div>
+              <div class={`row row-total${c0.net < 0 ? ' is-neg' : ''}`} data-c-total>
+                <dt data-c="netLabel">{c0.net >= 0 ? tx.net : tx.perdua}</dt>
+                <dd data-c="net">{eur(c0.net)}</dd>
+              </div>
+            </dl>
+            <p class="breakeven" data-c-html="pagada" set:html={tx.pagada(nf.format(c0.clientsMin))} />
+          </div>
+
+          <figure class="bars" aria-label={tx.barres}>
+            <div class="bar">
+              <span class="bar-label">{tx.barraIngressos}</span>
+              <span class="bar-val" data-c="ingressos">{eur(c0.ingressos)}</span>
+              <span class="bar-track"><span class="bar-fill bar-gain" data-bar="ingressos" style={`--w:${(c0.ingressos / maxBar) * 100}%`}></span></span>
+            </div>
+            <div class="bar">
+              <span class="bar-label">{tx.barraCost}</span>
+              <span class="bar-val">{eur2(costAny)}</span>
+              <span class="bar-track"><span class="bar-fill bar-cost" data-bar="cost" style={`--w:${(costAny / maxBar) * 100}%`}></span></span>
+            </div>
+          </figure>
+
+          <div class="result-actions">
+            <a class="btn" href={propostaHref} data-proposta>{tx.cta} <Icon name="arrow" /></a>
+            <button type="button" class="btn btn-line" data-share hidden>{tx.compartir}</button>
+            <span class="share-status" role="status" data-share-status></span>
+          </div>
+          <p class="note">{tx.nota}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Avantatges que no es poden calcular -->
+    <section class="course course-lime">
+      <div class="wrap">
+        <h2 class="h2 cx-head" data-set>{tx.avantatges.titol}</h2>
+        <ul class="wall" data-set style="--i:1">
+          {tx.avantatges.llista.map((a) => (
+            <li class="stone">
+              <h3>{a.t}</h3>
+              <p>{a.d}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Comparativa amb preus públics -->
+    <section class="course course-lime">
+      <div class="wrap">
+        <h2 class="h2 cx-head" data-set>{tx.comp.titol}</h2>
+        <div class="cmp-wrap" data-set style="--i:1">
+          <table class="cmp">
+            <thead>
+              <tr>
+                <th scope="col">{tx.comp.servei}</th>
+                <th scope="col">{tx.comp.publicat}</th>
+                <th scope="col" class="num">{tx.comp.any}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="cmp-own">
+                <th scope="row">{tx.comp.basalt}</th>
+                <td>{tx.comp.basaltPreu(plaR.mes, plaR.unic)}</td>
+                <td class="num">{eur2(costAny)}</td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  {tx.comp.booksy}
+                  <a class="src" href={comparativa.booksy.url} target="_blank" rel="noopener">{tx.comp.font}</a>
+                </th>
+                <td>{tx.comp.booksyPreu(nf2.format(comparativa.booksy.mes), comparativa.booksy.extra)}</td>
+                <td class="num">{eur2(booksyAny)}</td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  {tx.comp.wix}
+                  <a class="src" href={comparativa.wix.url} target="_blank" rel="noopener">{tx.comp.font}</a>
+                </th>
+                <td>{tx.comp.wixPreu(comparativa.wix.desDe, comparativa.wix.finsA)}</td>
+                <td class="num cmp-na">{tx.comp.noPublicat}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="cmp-note">{tx.comp.consultats(dataText)} {tx.comp.avis}</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ Pestanya: casa rural ============ -->
+  <div id="rural" class="cx-panel" data-panel="rural" tabindex="-1">
+    <section class="course course-lime cx-course">
+      <div class="wrap">
+        <div class="cx-rural-head">
+          <h2 class="h2">{rx.h2}</h2>
+          <p class="lede">{rx.lede}</p>
+        </div>
+        <div class="cx">
+          <form class="cx-form" data-rural onsubmit="return false">
+            <div class="field">
+              <span class="field-top"><label for="rx-preu">{rx.preu}</label><output for="rx-preu" data-out="preu">{rDef.preu} €</output></span>
+              <input id="rx-preu" type="range" name="preu" min="40" max="900" step="10" value={rDef.preu} />
+            </div>
+            <div class="field">
+              <span class="field-top"><label for="rx-nits">{rx.nits}</label><output for="rx-nits" data-out="nits">{rDef.nits} {rx.any}</output></span>
+              <input id="rx-nits" type="range" name="nits" min="5" max="300" step="5" value={rDef.nits} />
+            </div>
+            <div class="field">
+              <span class="field-top"><label for="rx-pct">{rx.pct}</label><output for="rx-pct" data-out="pct">{rDef.pct} %</output></span>
+              <input id="rx-pct" type="range" name="pct" min="3" max="25" step="1" value={rDef.pct} aria-describedby="rx-pct-a" />
+              <small id="rx-pct-a">{rx.pctAjuda}</small>
+            </div>
+            <div class="field">
+              <span class="field-top"><label for="rx-directe">{rx.directe}</label><output for="rx-directe" data-out="directe">{rDef.directe} %</output></span>
+              <input id="rx-directe" type="range" name="directe" min="0" max="100" step="5" value={rDef.directe} aria-describedby="rx-directe-a" />
+              <small id="rx-directe-a">{rx.directeAjuda}</small>
+            </div>
+          </form>
+
+          <a class="cx-dock" href="#resultat-rural" aria-hidden="true" tabindex="-1">
+            <span class="cx-dock-label" data-r="netLabel">{rNet >= 0 ? rx.net : rx.perdua}</span>
+            <span class="cx-dock-num" data-r="net">{eur(rNet)}</span>
+            <span class="cx-dock-more">{tx.veure} <Icon name="arrow" /></span>
+          </a>
+
+          <div class="result" id="resultat-rural">
+            <p class="result-head">{tx.resultat}</p>
+            <div aria-live="polite">
+              <dl class="rows">
+                <div class="row">
+                  <dt>{rx.comissions}</dt>
+                  <dd data-r="comissions">{eur(rComissions)}</dd>
+                </div>
+                <div class="row">
+                  <dt>{rx.estalvi}</dt>
+                  <dd data-r="estalvi">{eur(rEstalvi)}</dd>
+                </div>
+                <div class="row">
+                  <dt>{rx.web} <small>{rx.webDetall}</small></dt>
+                  <dd>− {eur(costRural)}</dd>
+                </div>
+                <div class={`row row-total${rNet < 0 ? ' is-neg' : ''}`} data-r-total>
+                  <dt data-r="netLabel">{rNet >= 0 ? rx.net : rx.perdua}</dt>
+                  <dd data-r="net">{eur(rNet)}</dd>
+                </div>
+              </dl>
+              <p class="breakeven"><strong data-r="nitsMin">{rNitsMin}</strong> {rx.nitsMin}</p>
+            </div>
+            <div class="result-actions">
+              <a class="btn" href={`${r.proposta}?negoci=allotjament`}>{rx.cta} <Icon name="arrow" /></a>
+              <a class="link-arrow" href={demoUrl} target="_blank" rel="noopener">{rx.demo} <Icon name="arrow" /></a>
+            </div>
+            <p class="note">{rx.nota}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script
+    type="application/json"
+    id="cx-cfg"
+    set:html={JSON.stringify({
+      locale,
+      costAny,
+      costRural,
+      tx: {
+        net: tx.net,
+        perdua: tx.perdua,
+        pagada: tx.pagada('{n}'),
+        copiat: tx.copiat,
+        noCopiat: tx.noCopiat,
+        shareText: tx.shareText,
+        title: tx.title,
+        noms: tx.tipus.noms,
+        unitats: Object.fromEntries(ordre.map((k) => [k, tx.camps[k].unitat])),
+        calc: tx.propostaCalc('{tipus}', { tr: '{tr}', np: '{np}', ma: '{ma}', tq: '{tq}', mi: '{mi}', on: '{on}' }, {
+          clients: '{clients}',
+          ingressos: '{ingressos}',
+          hores: '{hores}',
+          net: '{net}',
+        }),
+      },
+      rx: { net: rx.net, perdua: rx.perdua, any: rx.any },
+      proposta: r.proposta,
+    })}
+  />
+</Base>
+
+<script>
+  import { CAMPS, NEGOCI_PROPOSTA, TIQUET, aParams, calcula, llegeix, type Camp, type Tipus, type Valors } from '../scripts/calc-cites';
+
+  const cfg = JSON.parse(document.getElementById('cx-cfg')!.textContent || '{}');
+  const nf = new Intl.NumberFormat(cfg.locale, { maximumFractionDigits: 0 });
+  const eur = (n: number) => `${nf.format(Math.round(n))} €`;
+  const camps = Object.keys(CAMPS) as Camp[];
+
+  /* ---------- Pestanyes ---------- */
+  const tabs = [...document.querySelectorAll<HTMLAnchorElement>('[data-tab]')];
+  const panels = [...document.querySelectorAll<HTMLElement>('[data-panel]')];
+  const tablist = document.querySelector<HTMLElement>('[data-tabs]')!;
+  tablist.setAttribute('role', 'tablist');
+  tabs.forEach((t) => {
+    const id = t.dataset.tab!;
+    t.setAttribute('role', 'tab');
+    t.id = `tab-${id}`;
+    t.setAttribute('aria-controls', id);
+    t.removeAttribute('aria-current');
+  });
+  panels.forEach((p) => {
+    p.setAttribute('role', 'tabpanel');
+    p.setAttribute('aria-labelledby', `tab-${p.dataset.panel}`);
+  });
+  function select(id: string, focusTab = false) {
+    if (!panels.some((p) => p.dataset.panel === id)) id = 'cites';
+    tabs.forEach((t) => {
+      const on = t.dataset.tab === id;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      if (on && focusTab) t.focus();
+    });
+    panels.forEach((p) => (p.hidden = p.dataset.panel !== id));
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = t.dataset.tab!;
+      select(id);
+      history.replaceState(null, '', id === 'cites' ? location.pathname + location.search : `#${id}`);
+    });
+    t.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      const next = tabs[(i + d + tabs.length) % tabs.length];
+      next.click();
+      next.focus();
+    });
+  });
+  select(location.hash.slice(1) || 'cites');
+  window.addEventListener('hashchange', () => select(location.hash.slice(1) || 'cites'));
+
+  /* ---------- Negoci amb cites ---------- */
+  const form = document.querySelector<HTMLFormElement>('[data-cites]')!;
+  const panel = document.querySelector<HTMLElement>('[data-panel="cites"]')!;
+  const input = (k: string) => form.elements.namedItem(k) as HTMLInputElement;
+  const setAll = (sel: string, v: string) => panel.querySelectorAll(sel).forEach((el) => (el.textContent = v));
+
+  function valors(): Valors {
+    const t = (form.querySelector<HTMLInputElement>('[name="t"]:checked')?.value || 'perruqueria') as Tipus;
+    const v = { t } as Valors;
+    camps.forEach((k) => (v[k] = Number(input(k).value)));
+    return v;
+  }
+  function posa(v: Valors) {
+    const r = form.querySelector<HTMLInputElement>(`[name="t"][value="${v.t}"]`);
+    if (r) r.checked = true;
+    camps.forEach((k) => (input(k).value = String(v[k])));
+  }
+  function shareUrl(v: Valors) {
+    return `${location.origin}${location.pathname}?${aParams(v)}`;
+  }
+
+  let raf = 0;
+  function update(desa = true) {
+    const v = valors();
+    camps.forEach((k) => setAll(`[data-out="${k}"]`, `${v[k]}${cfg.tx.unitats[k]}`));
+    const c = calcula(v, cfg.costAny);
+    setAll('[data-c="clients"]', nf.format(c.clients));
+    setAll('[data-c="ingressos"]', eur(c.ingressos));
+    setAll('[data-c="hores"]', nf.format(c.hores));
+    setAll('[data-c="net"]', eur(c.net));
+    setAll('[data-c="netLabel"]', c.net >= 0 ? cfg.tx.net : cfg.tx.perdua);
+    panel.querySelector('[data-c-total]')?.classList.toggle('is-neg', c.net < 0);
+    panel.querySelector('[data-c-html="pagada"]')!.innerHTML = cfg.tx.pagada.replace('{n}', nf.format(c.clientsMin));
+    const max = Math.max(c.ingressos, cfg.costAny) || 1;
+    panel.querySelector<HTMLElement>('[data-bar="ingressos"]')!.style.setProperty('--w', `${(c.ingressos / max) * 100}%`);
+    panel.querySelector<HTMLElement>('[data-bar="cost"]')!.style.setProperty('--w', `${(cfg.costAny / max) * 100}%`);
+
+    // Enllaç a la proposta amb el tipus i els números, perquè arribin amb la sol·licitud
+    const url = shareUrl(v);
+    const text = (cfg.tx.calc as string)
+      .replace('{tipus}', cfg.tx.noms[v.t])
+      .replace(/\{(tr|np|ma|tq|mi|on)\}/g, (_: string, k: Camp) => String(v[k]))
+      .replace('{clients}', nf.format(c.clients))
+      .replace('{ingressos}', eur(c.ingressos))
+      .replace('{hores}', nf.format(c.hores))
+      .replace('{net}', eur(c.net));
+    const qs = new URLSearchParams({ negoci: NEGOCI_PROPOSTA[v.t], calc: `${text} ${url}` });
+    panel.querySelector<HTMLAnchorElement>('[data-proposta]')!.href = `${cfg.proposta}?${qs}`;
+
+    // L'adreça guarda el càlcul, per compartir-lo o tornar-hi
+    if (!desa) return;
+    clearTimeout(raf);
+    raf = window.setTimeout(() => {
+      if (!panel.hidden) history.replaceState(null, '', `${location.pathname}?${aParams(v)}`);
+    }, 150);
+  }
+
+  form.addEventListener('change', (e) => {
+    const t = e.target as HTMLInputElement;
+    // En canviar el tipus de negoci, només canvia el tiquet mitjà per defecte
+    if (t.name === 't') input('tq').value = String(TIQUET[t.value as Tipus]);
+    update();
+  });
+  form.addEventListener('input', () => update());
+
+  const qs = new URLSearchParams(location.search);
+  if ([...qs.keys()].some((k) => k === 't' || k in CAMPS)) posa(llegeix(qs));
+  update(false);
+
+  // Compartir: full natiu al mòbil; si no n'hi ha, copia l'enllaç
+  const shareBtn = panel.querySelector<HTMLButtonElement>('[data-share]')!;
+  const status = panel.querySelector<HTMLElement>('[data-share-status]')!;
+  shareBtn.hidden = false;
+  let statusTimer = 0;
+  const say = (m: string) => {
+    status.textContent = m;
+    clearTimeout(statusTimer);
+    statusTimer = window.setTimeout(() => (status.textContent = ''), 4000);
+  };
+  shareBtn.addEventListener('click', async () => {
+    const url = shareUrl(valors());
+    const touch = matchMedia('(pointer: coarse)').matches;
+    if (touch && 'share' in navigator) {
+      try {
+        await navigator.share({ title: cfg.tx.title, text: cfg.tx.shareText, url });
+        return;
+      } catch (err) {
+        if ((err as DOMException)?.name === 'AbortError') return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      say(cfg.tx.copiat);
+    } catch {
+      say(cfg.tx.noCopiat);
+    }
+  });
+
+  /* ---------- Casa rural ---------- */
+  const rform = document.querySelector<HTMLFormElement>('[data-rural]')!;
+  const rpanel = document.querySelector<HTMLElement>('[data-panel="rural"]')!;
+  const rnum = (n: string) => Number((rform.elements.namedItem(n) as HTMLInputElement).value);
+  const rset = (k: string, v: string) => rpanel.querySelectorAll(`[data-r="${k}"]`).forEach((el) => (el.textContent = v));
+  const rout = (k: string, v: string) => {
+    const el = rform.querySelector(`[data-out="${k}"]`);
+    if (el) el.textContent = v;
+  };
+  function rupdate() {
+    const preu = rnum('preu');
+    const nits = rnum('nits');
+    const pct = rnum('pct');
+    const directe = rnum('directe');
+    rout('preu', `${preu} €`);
+    rout('nits', `${nits} ${cfg.rx.any}`);
+    rout('pct', `${pct} %`);
+    rout('directe', `${directe} %`);
+    const comissions = preu * nits * (pct / 100);
+    const estalvi = comissions * (directe / 100);
+    const net = estalvi - cfg.costRural;
+    const perNit = preu * (pct / 100);
+    rset('comissions', eur(comissions));
+    rset('estalvi', eur(estalvi));
+    rset('net', eur(net));
+    rset('netLabel', net >= 0 ? cfg.rx.net : cfg.rx.perdua);
+    rset('nitsMin', String(perNit > 0 ? Math.ceil(cfg.costRural / perNit) : 0));
+    rpanel.querySelector('[data-r-total]')?.classList.toggle('is-neg', net < 0);
+  }
+  rform.addEventListener('input', rupdate);
+  rupdate();
+</script>
+
+<style>
+  .cx-hero {
+    padding-block: clamp(36px, 7vw, 96px) 0;
+  }
+  .cx-title {
+    max-width: 18ch;
+    font-size: clamp(2.25rem, 6.4vw, 4.5rem);
+    line-height: 1.02;
+  }
+  .cx-lede {
+    margin-top: 16px;
+  }
+
+  /* Pestanyes: dues pedres tallades sobre el llit de la filada següent */
+  .cx-tabs {
+    display: flex;
+    gap: 3px;
+    margin-top: clamp(24px, 4vw, 44px);
+  }
+  .cx-tabs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 52px;
+    padding: 0 clamp(16px, 3vw, 28px);
+    border-radius: 3px 3px 0 0;
+    background: var(--slate);
+    color: var(--mist-2);
+    font-weight: 650;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .cx-tabs a[aria-selected='true'],
+  .cx-tabs a[aria-current='true'] {
+    background: var(--lime);
+    color: var(--ink);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .cx-tabs a:not([aria-selected='true']):not([aria-current='true']):hover {
+      color: var(--chalk);
+      background: var(--slate-2);
+    }
+  }
+  /* Sense JS els dos panells es veuen seguits: el segon arrenca amb el seu propi junt */
+  .cx-panel:focus {
+    outline: none;
+  }
+  .cx-panel + .cx-panel > .course:first-child {
+    border-top: 2px solid var(--lime-bed);
+  }
+  .js .cx-panel + .cx-panel > .course:first-child {
+    border-top: 0;
+  }
+
+  .cx-course {
+    padding-block: clamp(28px, 5vw, 64px) var(--course);
+  }
+  .cx-rural-head {
+    display: grid;
+    gap: 14px;
+    margin-bottom: clamp(28px, 4vw, 44px);
+  }
+  .cx-rural-head .h2 {
+    max-width: 20ch;
+  }
+  .cx-head {
+    margin-bottom: clamp(28px, 4vw, 48px);
+  }
+
+  .cx {
+    display: grid;
+    gap: 24px;
+    align-items: start;
+  }
+  .cx-form {
+    display: grid;
+    gap: 3px;
+    padding: 3px;
+    margin: 0;
+    background: var(--joint-lime);
+    border-radius: 4px;
+  }
+  .field {
+    display: grid;
+    gap: 14px;
+    min-width: 0;
+    margin: 0;
+    padding: clamp(18px, 3vw, 28px);
+    border: 0;
+    background: var(--face);
+  }
+  .field-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 0;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .field output {
+    flex: none;
+    font-family: var(--display);
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .field small {
+    color: var(--ink-muted);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+  .field input[type='range'] {
+    width: 100%;
+    height: 32px;
+    margin: 0;
+    accent-color: var(--lichen-ink);
+    cursor: pointer;
+  }
+  .cx-type legend {
+    float: left;
+    width: 100%;
+  }
+  .chips {
+    clear: both;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    position: relative;
+  }
+  .chip input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 3px;
+    background: var(--lime);
+    box-shadow: inset 0 0 0 1.5px var(--lime-bed);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    pointer-events: none;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .chip input:checked + span {
+    background: var(--ink);
+    box-shadow: none;
+    color: var(--face);
+  }
+  .chip input:focus-visible + span {
+    outline: 2px solid var(--lichen-ink);
+    outline-offset: 2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .chip input:not(:checked):hover + span {
+      box-shadow: inset 0 0 0 1.5px var(--joint-lime);
+    }
+  }
+  .cx-example {
+    padding: 14px clamp(18px, 3vw, 28px);
+    background: var(--lime);
+    color: var(--ink-muted);
+    font-size: 0.9375rem;
+  }
+
+  /* Barra fixa del mòbil: s'enganxa a baix mentre el formulari és a la vista */
+  .cx-dock {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 2px 16px;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom, 0px));
+    background: var(--basalt);
+    border-top: 2px solid var(--bed);
+    color: var(--chalk);
+    text-decoration: none;
+    box-shadow: 0 -10px 24px -12px rgb(0 0 0 / 0.45);
+  }
+  .cx-dock-label {
+    color: var(--mist-2);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .cx-dock-num {
+    grid-row: 2;
+    font-family: var(--display);
+    font-size: 1.875rem;
+    line-height: 1.05;
+    color: var(--lichen-hi);
+    font-variant-numeric: tabular-nums;
+  }
+  .cx-dock-more {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--mist-2);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .cx-dock-more :global(svg) {
+    width: 14px;
+    height: 14px;
+    transform: rotate(90deg);
+  }
+
+  .result {
+    display: grid;
+    gap: 22px;
+    padding: clamp(24px, 4vw, 44px);
+    border-radius: 4px;
+    background:
+      linear-gradient(rgb(19 21 23 / 0.9), rgb(19 21 23 / 0.9)),
+      url('/img/basalt.webp') 40% 30% / cover no-repeat;
+    color: #f2f1ed;
+    scroll-margin-top: calc(var(--header-h) + 16px);
+  }
+  .result-head {
+    color: var(--mist);
+    font-weight: 650;
+  }
+  .rows {
+    display: grid;
+    margin: 0;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .row dt small {
+    display: block;
+    color: var(--mist);
+    font-size: 0.875rem;
+  }
+  .row dd {
+    margin: 0;
+    flex: none;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+    font-size: 1.125rem;
+  }
+  .row-total {
+    border-bottom: 0;
+    padding-top: 20px;
+    flex-wrap: wrap;
+  }
+  .row-total dt {
+    font-weight: 650;
+  }
+  .row-total dd {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 7vw, 3.5rem);
+    line-height: 1;
+    color: var(--lichen-hi);
+  }
+  .row-total.is-neg dd {
+    color: var(--mist-2);
+  }
+  .breakeven {
+    margin-top: 6px;
+    color: var(--mist-2);
+  }
+  .breakeven :global(strong) {
+    color: #f2f1ed;
+    font-size: 1.25rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Barres: ingressos recuperats contra cost de la web */
+  .bars {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 18px 0 4px;
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .bar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px 12px;
+    font-size: 0.9375rem;
+  }
+  .bar-label {
+    color: var(--mist-2);
+  }
+  .bar-val {
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+  .bar-track {
+    grid-column: 1 / -1;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--slate-2);
+    overflow: hidden;
+  }
+  .bar-fill {
+    display: block;
+    height: 100%;
+    width: var(--w, 0%);
+    min-width: 2px;
+    border-radius: 2px;
+    transition: width 200ms var(--ease-out);
+  }
+  .bar-gain {
+    background: var(--lichen);
+  }
+  .bar-cost {
+    background: var(--mist);
+  }
+
+  .result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+  }
+  .result-actions .btn :global(svg) {
+    width: 18px;
+    height: 18px;
+  }
+  .btn-line {
+    color: #f2f1ed;
+  }
+  .share-status {
+    flex-basis: 100%;
+    min-height: 0;
+    color: var(--lichen-hi);
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .share-status:empty {
+    display: none;
+  }
+  .note {
+    color: var(--mist);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* Avantatges: mur de pedres a trencajunts */
+  .wall {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 3px;
+    margin: 0;
+    padding: 3px;
+    list-style: none;
+    background: var(--bed);
+    border-radius: 4px;
+  }
+  .stone {
+    grid-column: span 12;
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    padding: clamp(24px, 3.4vw, 40px);
+    background:
+      linear-gradient(rgb(36 40 44 / 0.72), rgb(36 40 44 / 0.72)),
+      url('/img/basalt.webp') var(--bx, 50%) var(--by, 50%) / 260% no-repeat;
+    border-radius: 2px;
+    color: #f2f1ed;
+  }
+  .stone:nth-child(1) { --bx: 8%; --by: 12%; }
+  .stone:nth-child(2) { --bx: 70%; --by: 20%; }
+  .stone:nth-child(3) { --bx: 30%; --by: 55%; }
+  .stone:nth-child(4) { --bx: 85%; --by: 64%; }
+  .stone:nth-child(5) { --bx: 18%; --by: 90%; }
+  .stone h3 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+    line-height: 1.15;
+  }
+  .stone p {
+    color: var(--mist-2);
+    max-width: 36ch;
+  }
+
+  /* Comparativa */
+  .cmp-wrap {
+    display: grid;
+    gap: 16px;
+  }
+  .cmp {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 3px;
+    font-size: 1rem;
+  }
+  .cmp thead th {
+    padding: 0 16px 6px;
+    color: var(--ink-muted);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    text-align: left;
+  }
+  .cmp tbody th,
+  .cmp td {
+    padding: 16px;
+    background: var(--face);
+    text-align: left;
+    vertical-align: top;
+  }
+  .cmp tbody th {
+    font-weight: 650;
+    border-radius: 2px 0 0 2px;
+  }
+  .cmp td:last-child {
+    border-radius: 0 2px 2px 0;
+  }
+  .cmp td {
+    color: var(--ink-muted);
+  }
+  .cmp .num {
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .cmp td.num {
+    color: var(--ink);
+    font-weight: 650;
+  }
+  .cmp tbody .cmp-own th,
+  .cmp tbody .cmp-own td {
+    background: var(--ink);
+    color: var(--face);
+  }
+  .cmp tbody .cmp-own td.num {
+    color: var(--lichen-hi);
+  }
+  .cmp td.cmp-na {
+    color: var(--ink-muted);
+    font-weight: 500;
+    font-style: italic;
+  }
+  .src {
+    display: block;
+    width: fit-content;
+    margin-top: 4px;
+    color: var(--lichen-ink);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .cmp-note {
+    color: var(--ink-muted);
+    font-size: 0.875rem;
+    max-width: 60ch;
+  }
+  @media (max-width: 639px) {
+    .cmp thead {
+      display: none;
+    }
+    .cmp,
+    .cmp tbody,
+    .cmp tr,
+    .cmp th,
+    .cmp td {
+      display: block;
+    }
+    .cmp tr {
+      margin-bottom: 3px;
+      background: var(--face);
+      border-radius: 2px;
+    }
+    .cmp tbody th,
+    .cmp td {
+      padding: 6px 16px;
+      border-radius: 0;
+    }
+    .cmp tbody th {
+      padding-top: 16px;
+    }
+    .cmp td.num {
+      padding-bottom: 16px;
+      text-align: left;
+      font-size: 1.25rem;
+    }
+    .cmp-own {
+      background: var(--ink) !important;
+    }
+  }
+
+  @media (min-width: 720px) {
+    .stone:nth-child(4n + 1),
+    .stone:nth-child(4n + 4) {
+      grid-column: span 7;
+    }
+    .stone:nth-child(4n + 2),
+    .stone:nth-child(4n + 3) {
+      grid-column: span 5;
+    }
+    .stone:last-child:nth-child(odd) {
+      grid-column: span 12;
+    }
+  }
+  @media (min-width: 960px) {
+    .cx {
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+    .cx-dock {
+      display: none;
+    }
+    .result {
+      position: sticky;
+      top: calc(var(--header-h) + 24px);
+    }
+  }
+</style>

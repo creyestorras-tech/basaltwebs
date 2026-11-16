@@ -95,6 +95,20 @@ const wa = whatsapp(lang);
   </div>
 </section>
 
+<!-- Calculadora de beneficis -->
+<section class="course course-lime calc-cta">
+  <div class="wrap calc-cta-in" data-set>
+    <div>
+      <h2 class="h2 calc-cta-title">{t.calcBloc.titol}</h2>
+      <p class="lede calc-cta-text">{t.calcBloc.text}</p>
+    </div>
+    <a class="btn" href={rutes[lang].calculadora}>
+      {t.calcBloc.cta}
+      <Icon name="arrow" />
+    </a>
+  </div>
+</section>
+
 <!-- Preu -->
 <section class="course course-lime" id="preu">
   <div class="wrap price">
@@ -342,6 +356,31 @@ const wa = whatsapp(lang);
     .stone:nth-child(4n + 2),
     .stone:nth-child(4n + 3) {
       grid-column: span 5;
+    }
+  }
+
+  /* ---------- Calculadora ---------- */
+  .calc-cta {
+    padding-block: clamp(56px, 8vw, 104px);
+  }
+  .calc-cta-in {
+    display: grid;
+    gap: 28px;
+    align-items: end;
+  }
+  .calc-cta-title {
+    max-width: 18ch;
+  }
+  .calc-cta-text {
+    margin-top: 16px;
+  }
+  .calc-cta-in .btn {
+    justify-self: start;
+  }
+  @media (min-width: 900px) {
+    .calc-cta-in {
+      grid-template-columns: 1fr auto;
+      gap: 64px;
     }
   }
 

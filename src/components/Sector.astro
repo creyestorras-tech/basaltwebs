@@ -140,8 +140,10 @@ const jsonLd = [
           <li><Icon name="check" />{p}</li>
         ))}
       </ul>
-      {sector.id === 'rural' && (
-        <a class="link-arrow price-calc" href={r.calculadora}>{ui.calculadora} <Icon name="arrow" /></a>
+      {sector.id === 'rural' ? (
+        <a class="link-arrow price-calc" href={`${r.calculadora}#rural`}>{ui.calculadora} <Icon name="arrow" /></a>
+      ) : (
+        <a class="link-arrow price-calc" href={`${r.calculadora}?t=${sector.id}`}>{ui.calculadoraCites} <Icon name="arrow" /></a>
       )}
     </div>
   </section>
