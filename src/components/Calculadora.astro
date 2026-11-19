@@ -13,7 +13,6 @@ import {
   TIQUET,
   NEGOCI_PROPOSTA,
   PER_DEFECTE,
-  IVA,
   calcula,
   costWeb,
   aParams,
@@ -107,13 +106,6 @@ const rEstalvi = rComissions * (rDef.directe / 100);
 const rNet = rEstalvi - costRural;
 const rNitsMin = Math.ceil(costRural / (rDef.preu * (rDef.pct / 100)));
 const demoUrl = lang === 'ca' ? 'https://demorural.pages.dev/ca/' : 'https://demorural.pages.dev/es/';
-
-/* ---------- Comparativa ---------- */
-const [ay, am, ad] = comparativa.data.split('-').map(Number);
-const dataText = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(
-  new Date(Date.UTC(ay, am - 1, ad, 12)),
-);
-const booksyAny = Math.round(comparativa.booksy.mes * 12 * (1 + IVA) * 100) / 100;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -269,35 +261,33 @@ const jsonLd = {
             <thead>
               <tr>
                 <th scope="col">{tx.comp.servei}</th>
-                <th scope="col">{tx.comp.publicat}</th>
-                <th scope="col" class="num">{tx.comp.any}</th>
+                <th scope="col">{tx.comp.preu}</th>
               </tr>
             </thead>
             <tbody>
               <tr class="cmp-own">
                 <th scope="row">{tx.comp.basalt}</th>
-                <td>{tx.comp.basaltPreu(plaR.mes, plaR.unic)}</td>
-                <td class="num">{eur2(costAny)}</td>
+                <td>{tx.comp.basaltPreu(plaR.mes, plaR.unic, eur2(costAny))}</td>
               </tr>
               <tr>
-                <th scope="row">
-                  {tx.comp.booksy}
-                  <a class="src" href={comparativa.booksy.url} target="_blank" rel="noopener">{tx.comp.font}</a>
-                </th>
-                <td>{tx.comp.booksyPreu(nf2.format(comparativa.booksy.mes), comparativa.booksy.extra)}</td>
-                <td class="num">{eur2(booksyAny)}</td>
+                <th scope="row">{tx.comp.booksy}</th>
+                <td>
+                  <a class="link-arrow" href={comparativa.booksy.url} target="_blank" rel="noopener">
+                    {tx.comp.consultaWeb} <Icon name="arrow" />
+                  </a>
+                </td>
               </tr>
               <tr>
-                <th scope="row">
-                  {tx.comp.wix}
-                  <a class="src" href={comparativa.wix.url} target="_blank" rel="noopener">{tx.comp.font}</a>
-                </th>
-                <td>{tx.comp.wixPreu(comparativa.wix.desDe, comparativa.wix.finsA)}</td>
-                <td class="num cmp-na">{tx.comp.noPublicat}</td>
+                <th scope="row">{tx.comp.wix}</th>
+                <td>
+                  <a class="link-arrow" href={comparativa.wix.url} target="_blank" rel="noopener">
+                    {tx.comp.consultaWeb} <Icon name="arrow" />
+                  </a>
+                </td>
               </tr>
             </tbody>
           </table>
-          <p class="cmp-note">{tx.comp.consultats(dataText)} {tx.comp.avis}</p>
+          <p class="cmp-note">{tx.comp.avis}</p>
         </div>
       </div>
     </section>
@@ -1023,34 +1013,13 @@ const jsonLd = {
   .cmp td {
     color: var(--ink-muted);
   }
-  .cmp .num {
-    text-align: right;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-  }
-  .cmp td.num {
-    color: var(--ink);
-    font-weight: 650;
-  }
   .cmp tbody .cmp-own th,
   .cmp tbody .cmp-own td {
     background: var(--ink);
     color: var(--face);
   }
-  .cmp tbody .cmp-own td.num {
-    color: var(--lichen-hi);
-  }
-  .cmp td.cmp-na {
-    color: var(--ink-muted);
-    font-weight: 500;
-    font-style: italic;
-  }
-  .src {
-    display: block;
-    width: fit-content;
-    margin-top: 4px;
+  .cmp td .link-arrow {
     color: var(--lichen-ink);
-    font-size: 0.875rem;
     font-weight: 600;
   }
   .cmp-note {
@@ -1082,10 +1051,8 @@ const jsonLd = {
     .cmp tbody th {
       padding-top: 16px;
     }
-    .cmp td.num {
+    .cmp td {
       padding-bottom: 16px;
-      text-align: left;
-      font-size: 1.25rem;
     }
     .cmp-own {
       background: var(--ink) !important;

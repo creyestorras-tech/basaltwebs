@@ -4,21 +4,12 @@
 import type { Lang } from '../config/site';
 import type { Tipus } from '../scripts/calc-cites';
 
-// Comparativa de preus. Només preus públics, copiats de la web oficial el dia indicat.
-// Si un preu no és públic, va a null i es mostra "no publicat". Revisa-ho abans de tocar-ho.
+// Comparativa de preus. No hi posem cap xifra de Booksy ni Wix que no s'hagi pogut
+// verificar, avui mateix, a la seva pàgina oficial de preus (i amb l'enllaç a la font):
+// sense aquesta verificació, la fila només enllaça a la seva web, sense cap número.
 export const comparativa = {
-  data: '2026-11-16',
-  booksy: {
-    url: 'https://biz.booksy.com/es-es/precios',
-    mes: 34.99, // + IVA, 1 professional
-    extra: 8, // + IVA per cada professional addicional
-  },
-  wix: {
-    url: 'https://es.wix.com/pricing',
-    desDe: 14, // pla Light, pagament anual, sense impostos
-    finsA: 149, // pla Business Elite
-    reserves: null, // la pàgina de preus no diu quin pla permet acceptar reserves
-  },
+  booksy: { url: 'https://biz.booksy.com/es-es/precios' },
+  wix: { url: 'https://es.wix.com/pricing' },
 };
 
 const ca = {
@@ -82,20 +73,16 @@ const ca = {
     ],
   },
   comp: {
-    titol: 'Quant et costaria a l’any',
+    titol: 'Quant et costaria',
     servei: 'Servei',
-    publicat: 'Preu publicat',
-    any: 'A l’any, amb IVA',
+    preu: 'Preu',
     basalt: 'Basalt Webs, pla Reserves',
-    basaltPreu: (mes: number, unic: number) => `${mes} €/mes + IVA, o ${unic} € en un sol pagament`,
+    basaltPreu: (mes: number, unic: number, any: string) => `${mes} €/mes + IVA, o ${unic} € en un sol pagament (${any} a l’any, amb IVA)`,
     booksy: 'Booksy',
-    booksyPreu: (mes: string, extra: number) => `${mes} €/mes + IVA per a 1 professional, i ${extra} € + IVA per cada professional més`,
     wix: 'Wix amb reserves',
-    wixPreu: (a: number, b: number) => `Plans de ${a} € a ${b} €/mes + impostos (pagament anual). No diu quin pla accepta reserves.`,
-    noPublicat: 'no publicat',
+    consultaWeb: 'Consulta el preu actualitzat a la seva web',
     font: 'font',
-    consultats: (d: string) => `Preus consultats el ${d} a la web oficial de cada empresa.`,
-    avis: 'Cada servei inclou coses diferents: aquí només es compara el preu que publiquen.',
+    avis: 'Preu de Basalt Webs, pla Reserves. El de Booksy i Wix no hem pogut verificar-lo nosaltres mateixos a la seva pàgina oficial: consulta’l directament a la seva web abans de comparar-lo.',
   },
   ld: 'Calculadora de beneficis de les reserves en línia per a negocis amb cites i cases rurals.',
 };
@@ -163,20 +150,16 @@ const es: CalcDict = {
     ],
   },
   comp: {
-    titol: 'Cuánto te costaría al año',
+    titol: 'Cuánto te costaría',
     servei: 'Servicio',
-    publicat: 'Precio publicado',
-    any: 'Al año, con IVA',
+    preu: 'Precio',
     basalt: 'Basalt Webs, plan Reservas',
-    basaltPreu: (mes, unic) => `${mes} €/mes + IVA, o ${unic} € en un solo pago`,
+    basaltPreu: (mes, unic, any) => `${mes} €/mes + IVA, o ${unic} € en un solo pago (${any} al año, con IVA)`,
     booksy: 'Booksy',
-    booksyPreu: (mes, extra) => `${mes} €/mes + IVA para 1 profesional, y ${extra} € + IVA por cada profesional más`,
     wix: 'Wix con reservas',
-    wixPreu: (a, b) => `Planes de ${a} € a ${b} €/mes + impuestos (pago anual). No dice qué plan acepta reservas.`,
-    noPublicat: 'no publicado',
+    consultaWeb: 'Consulta el precio actualizado en su web',
     font: 'fuente',
-    consultats: (d) => `Precios consultados el ${d} en la web oficial de cada empresa.`,
-    avis: 'Cada servicio incluye cosas distintas: aquí solo se compara el precio que publican.',
+    avis: 'Precio de Basalt Webs, plan Reservas. El de Booksy y Wix no hemos podido verificarlo nosotros mismos en su página oficial: consúltalo directamente en su web antes de compararlo.',
   },
   ld: 'Calculadora de beneficios de las reservas online para negocios con citas y casas rurales.',
 };
